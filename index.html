@@ -1,0 +1,1557 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Momo Music Cloud</title>
+<meta name="description" content="MP3 태그 편집과 앨범 커버 제작을 한 곳에서.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=Sora:wght@300;400;600;700;800&family=Manrope:wght@400;500;700;800&family=Syne:wght@500;700;800&family=Unbounded:wght@400;700;900&family=Michroma&family=Orbitron:wght@500;700;900&family=Bebas+Neue&family=DM+Serif+Display&family=Cormorant+Garamond:wght@500;600;700&family=Instrument+Serif&family=Space+Mono:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&family=IBM+Plex+Sans+KR:wght@400;500;700&family=Gowun+Batang:wght@400;700&family=Nanum+Myeongjo:wght@400;700;800&family=Black+Han+Sans&family=Orbit&family=Do+Hyeon&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+<style>
+@font-face{font-family:'Paperlogy';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-1Thin.woff2') format('woff2');font-weight:100;font-display:swap}
+@font-face{font-family:'Paperlogy';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-2ExtraLight.woff2') format('woff2');font-weight:200;font-display:swap}
+@font-face{font-family:'Paperlogy';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-3Light.woff2') format('woff2');font-weight:300;font-display:swap}
+@font-face{font-family:'Paperlogy';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-4Regular.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Paperlogy';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-5Medium.woff2') format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'Paperlogy';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-6SemiBold.woff2') format('woff2');font-weight:600;font-display:swap}
+@font-face{font-family:'Paperlogy';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-7Bold.woff2') format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:'Paperlogy';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2') format('woff2');font-weight:800;font-display:swap}
+@font-face{font-family:'Paperlogy';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-9Black.woff2') format('woff2');font-weight:900;font-display:swap}
+
+:root{
+  --bg:#f4f3f1; --surface:#ffffff; --surface-2:#f6f5f3; --line:#e7e5e1; --line-2:#d8d5cf;
+  --text:#18171a; --muted:#7d7a76; --faint:#aeaaa4;
+  --accent:#ef7fae; --on:#18171a; --on-ink:#ffffff;
+  --stage:#ecebe8; --dot:#d6d3cd; --shadow:0 1px 2px rgba(0,0,0,.04),0 18px 48px -18px rgba(0,0,0,.22);
+  --r:12px; --sans:'Paperlogy','Pretendard Variable',Pretendard,system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#101012; --surface:#17171a; --surface-2:#1d1d21; --line:#27272c; --line-2:#33333a;
+    --text:#efedea; --muted:#8e8c90; --faint:#5f5e63;
+    --on:#efedea; --on-ink:#121214; --stage:#0b0b0d; --dot:#202024; --shadow:0 1px 2px rgba(0,0,0,.4),0 20px 50px -16px rgba(0,0,0,.7);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#101012; --surface:#17171a; --surface-2:#1d1d21; --line:#27272c; --line-2:#33333a;
+  --text:#efedea; --muted:#8e8c90; --faint:#5f5e63;
+  --on:#efedea; --on-ink:#121214; --stage:#0b0b0d; --dot:#202024; --shadow:0 1px 2px rgba(0,0,0,.4),0 20px 50px -16px rgba(0,0,0,.7);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--text);font:400 12px/1.5 var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden;font-variant-numeric:tabular-nums}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.app{display:grid;grid-template-columns:200px 1fr;height:100vh;height:100dvh}
+
+.nav{border-right:1px solid var(--line);background:var(--surface);display:flex;flex-direction:column;padding:20px 12px 14px;gap:4px;min-width:0}
+.brand{display:flex;align-items:baseline;gap:5px;padding:2px 10px 24px;flex:none;white-space:nowrap;font-family:'Outfit','Pretendard Variable',sans-serif;line-height:1}
+.brand b{font-size:17px;font-weight:700;letter-spacing:-.03em}
+.brand span{font-size:13px;font-weight:400;color:var(--muted);letter-spacing:-.01em}
+.brand i{width:5px;height:5px;border-radius:50%;background:var(--accent);align-self:flex-end;margin:0 0 3px 1px;flex:none}
+.nav-item{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;padding:8px 10px;border-radius:9px;color:var(--muted);text-align:left;font-weight:500;font-size:12.5px}
+.nav-item:hover{background:var(--surface-2);color:var(--text)}
+.nav-item.active{background:var(--surface-2);color:var(--text);font-weight:600}
+.soon{margin-left:auto;font-size:10px;font-weight:600;border:1px solid var(--line-2);color:var(--muted);padding:1px 7px;border-radius:99px}
+.nav-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;padding:12px 8px 0;border-top:1px solid var(--line);font-size:11px;color:var(--faint)}
+.icon-btn{border:1px solid var(--line);background:var(--surface);width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:var(--muted)}
+.icon-btn:hover{color:var(--text);border-color:var(--line-2)}
+
+main{min-width:0;min-height:0;display:flex;flex-direction:column}
+.view{display:flex;flex-direction:column;min-height:0;flex:1}
+.view[hidden]{display:none}
+.topbar{display:flex;align-items:center;gap:10px;padding:10px 18px;border-bottom:1px solid var(--line);background:var(--surface);min-height:54px;flex-wrap:wrap}
+.topbar h1{font-size:14px;margin:0;font-weight:700;letter-spacing:-.02em}
+.chip{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:3px 11px;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.spacer{flex:1}
+.tb-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+select.sm{height:30px;border:1px solid var(--line);background:var(--surface);border-radius:9px;padding:0 6px;font-size:11.5px}
+.btn{height:30px;padding:0 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface);font-weight:600;font-size:11.5px;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.btn:hover{border-color:var(--line-2)}
+.btn.primary{background:var(--on);color:var(--on-ink);border-color:var(--on)}
+.btn.primary:hover{opacity:.88}
+.btn.sm{height:27px;padding:0 10px;font-size:11px}
+.btn[hidden]{display:none}
+
+.workspace{flex:1;display:grid;grid-template-columns:1fr 344px;min-height:0}
+.stage{min-width:0;min-height:0;display:flex;flex-direction:column;background:var(--stage);background-image:radial-gradient(var(--dot) 1px,transparent 1px);background-size:18px 18px}
+.canvas-area{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px 28px 24px}
+.lockbar{display:flex;gap:4px;padding:3px;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.lock{display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 10px;border:0;border-radius:7px;background:none;color:var(--muted);font-size:11px;font-weight:500}
+.lock:hover{color:var(--text)}
+.lock .i-open{display:none}
+.lock.unlocked{background:var(--on);color:var(--on-ink)}
+.lock.unlocked .i-open{display:block}
+.lock.unlocked .i-lock{display:none}
+.canvas-wrap{position:relative;width:min(100%, calc(100dvh - 240px));aspect-ratio:1;box-shadow:var(--shadow);border-radius:6px;overflow:hidden;background:#000}
+.canvas-wrap canvas{display:block;width:100%;height:100%;touch-action:none}
+.canvas-wrap.grab canvas{cursor:grab}
+.canvas-wrap.grabbing canvas{cursor:grabbing}
+.canvas-wrap.move canvas{cursor:move}
+
+.player{display:grid;grid-template-columns:auto minmax(0,200px) 1fr auto;align-items:center;gap:14px;padding:12px 20px;border-top:1px solid var(--line);background:var(--surface)}
+.play{width:34px;height:34px;border-radius:50%;border:0;background:var(--on);color:var(--on-ink);display:grid;place-items:center}
+.play:disabled{opacity:.3;cursor:default}
+.pl-meta{min-width:0}
+.pl-meta b{display:block;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl-meta span{display:block;font-size:10.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl-wave{height:40px;width:100%;display:block;cursor:pointer}
+.pl-time{font-size:10.5px;color:var(--muted);white-space:nowrap}
+
+.panel{border-left:1px solid var(--line);background:var(--surface);display:flex;flex-direction:column;min-height:0}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:12px 16px 0;padding:3px;background:var(--surface-2);border:1px solid var(--line);border-radius:11px}
+.tab{border:0;background:none;padding:6px 0;border-radius:7px;font-weight:600;font-size:11.5px;color:var(--muted)}
+.tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.panel-body{flex:1;overflow:auto;padding:2px 16px 28px}
+.pane[hidden]{display:none}
+.sec{padding:16px 0 6px;border-bottom:1px solid var(--line)}
+.sec:last-child{border-bottom:0}
+.sec-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.sec-h h3{margin:0;font-size:12.5px;font-weight:700;letter-spacing:-.02em}
+.sec-h small{font-size:11.5px;color:var(--muted);font-weight:400}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.field.full{grid-column:1/-1}
+.field label,.lbl{font-size:11px;color:var(--muted);font-weight:500}
+.inp,.field input[type=text],.field select,.field textarea{width:100%;height:32px;border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:0 10px;font-size:12px;outline:none;min-width:0}
+.field textarea{height:auto;min-height:72px;padding:9px 11px;resize:vertical;line-height:1.5}
+.inp:focus,.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--text);background:var(--surface)}
+.link{border:0;background:none;padding:0;font-size:11px;font-weight:500;color:var(--muted);text-decoration:underline;text-decoration-color:var(--line-2);text-underline-offset:3px}
+.link:hover{color:var(--text)}
+.note{font-size:11px;color:var(--muted);margin:0 0 12px}
+
+.drop{border:1px dashed var(--line-2);border-radius:var(--r);padding:12px;display:flex;align-items:center;gap:12px;cursor:pointer;background:var(--surface-2);transition:border-color .15s;margin-bottom:12px}
+.drop:hover,.drop.over{border-color:var(--text)}
+.drop .di{width:34px;height:34px;border-radius:10px;background:var(--surface);border:1px solid var(--line);display:grid;place-items:center;flex:none;color:var(--muted);overflow:hidden}
+.drop .di img{width:100%;height:100%;object-fit:cover}
+.drop b{display:block;font-size:12px;font-weight:600}
+.drop span{display:block;font-size:10.5px;color:var(--muted);word-break:break-all}
+.drop input{display:none}
+.file-stats{display:flex;gap:6px;flex-wrap:wrap;margin:-4px 0 12px}
+.file-stats span{font-size:10px;color:var(--muted);background:var(--surface-2);border:1px solid var(--line);padding:2px 9px;border-radius:99px}
+.inline-btns{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+
+.range{display:grid;grid-template-columns:60px 1fr 38px;align-items:center;gap:8px;margin-bottom:6px}
+.range output{font-size:10.5px;color:var(--muted);text-align:right}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:20px;background:transparent;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--line-2);border-radius:2px}
+input[type=range]::-moz-range-track{height:2px;background:var(--line-2);border-radius:2px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--surface);border:1.5px solid var(--text);margin-top:-6px}
+input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:var(--surface);border:1.5px solid var(--text)}
+
+.color{display:flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:3px 7px 3px 3px;height:32px}
+.color input[type=color]{width:24px;height:24px;border:0;padding:0;background:none;border-radius:6px;cursor:pointer;flex:none}
+.color input[type=color]::-webkit-color-swatch-wrapper{padding:0}
+.color input[type=color]::-webkit-color-swatch{border:1px solid rgba(128,128,128,.3);border-radius:6px}
+.color span{font-size:10.5px;color:var(--muted);overflow:hidden}
+.colors4{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;margin-bottom:12px}
+.seg button{border:1px solid var(--line);background:var(--surface-2);border-radius:8px;height:40px;display:grid;place-items:center;padding:0;color:var(--muted)}
+.seg button.on{border-color:var(--text);color:var(--text);background:var(--surface)}
+
+.sw{position:relative;display:inline-block;width:34px;height:20px;flex:none}
+.sw input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;z-index:1}
+.sw span{position:absolute;inset:0;background:var(--line-2);border-radius:99px;transition:background .15s}
+.sw span::after{content:"";position:absolute;left:2px;top:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .15s;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.sw input:checked+span{background:var(--on)}
+.sw input:checked+span::after{transform:translateX(14px);background:var(--on-ink)}
+.sw input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
+.fold-body[hidden]{display:none}
+
+.dgroup{margin-bottom:14px}
+.dgroup-h{font-size:10.5px;font-weight:600;color:var(--faint);margin:4px 0 6px;letter-spacing:.02em}
+.dlist{border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.ditem{border-bottom:1px solid var(--line);background:var(--surface)}
+.ditem:last-child{border-bottom:0}
+.drow{display:flex;align-items:center;gap:9px;padding:8px 10px}
+.dico{width:24px;height:24px;border-radius:7px;background:none;border:0;display:grid;place-items:center;color:var(--muted);flex:none}
+.ditem.is-on .dico{color:var(--accent)}
+.dname{flex:1;min-width:0}
+.dname b{display:block;font-size:12px;font-weight:500}
+.dname small{display:none;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.adj{border:1px solid var(--line);background:var(--surface);border-radius:7px;height:22px;padding:0 7px;font-size:10.5px;font-weight:500;color:var(--muted);display:none;align-items:center;gap:4px;flex:none}
+.adj:hover{color:var(--text);border-color:var(--line-2)}
+.ditem.is-on .adj{display:inline-flex}
+.adj svg{transition:transform .15s}
+.ditem.open .adj svg{transform:rotate(180deg)}
+.dsub{display:none;padding:2px 10px 8px 43px}
+.ditem.is-on.open .dsub{display:block}
+.dsub .inp{margin-bottom:9px;height:32px}
+
+.saverow{display:flex;gap:6px;margin-bottom:10px}
+.saverow .inp{flex:1}
+.sets{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.setrow{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:9px;padding:5px 6px 5px 11px;background:var(--surface-2)}
+.setrow b{flex:1;font-size:12px;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.setrow small{font-size:10.5px;color:var(--faint)}
+.setrow .x{border:0;background:none;color:var(--faint);width:24px;height:24px;border-radius:6px;font-size:15px;line-height:1}
+.setrow .x:hover{color:var(--text);background:var(--surface)}
+.sets-empty{font-size:11px;color:var(--faint);padding:12px;border:1px dashed var(--line-2);border-radius:10px;text-align:center;margin-bottom:10px}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.chipt{position:relative}
+.chipt input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.chipt span{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:4px 10px;font-size:11px;font-weight:500;color:var(--muted);background:var(--surface-2)}
+.chipt input:checked+span{background:var(--on);border-color:var(--on);color:var(--on-ink)}
+
+.empty{flex:1;display:grid;place-items:center;background:var(--stage);background-image:radial-gradient(var(--dot) 1px,transparent 1px);background-size:18px 18px;padding:24px}
+.empty-card{text-align:center;max-width:360px}
+.empty-card svg{width:84px;height:84px;margin:0 auto 18px;color:var(--muted);display:block}
+.empty-card h2{margin:0 0 6px;font-size:17px;font-weight:700;letter-spacing:-.02em}
+.empty-card p{margin:0;color:var(--muted)}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--on);color:var(--on-ink);padding:8px 16px;border-radius:99px;font-weight:500;font-size:11.5px;opacity:0;pointer-events:none;transition:all .2s;z-index:50;max-width:calc(100vw - 32px)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (max-width: 1100px){ .workspace{grid-template-columns:1fr 320px} }
+@media (max-width: 900px){
+  body{overflow:auto}
+  .app{grid-template-columns:1fr;height:auto;min-height:100dvh}
+  .nav{flex-direction:row;align-items:center;padding:10px 16px;border-right:0;border-bottom:1px solid var(--line);gap:6px;overflow-x:auto}
+  .brand{padding:0 8px 0 0}
+  .brand b{font-size:15px}
+  .brand span{font-size:12px}
+  .nav-item{width:auto;padding:7px 10px;white-space:nowrap}
+  .nav-foot{margin:0 0 0 auto;border:0;padding:0}
+  .nav-foot span{display:none}
+  .topbar{padding:10px 16px}
+  .workspace{grid-template-columns:1fr}
+  .canvas-area{padding:16px}
+  .canvas-wrap{width:100%}
+  .player{grid-template-columns:auto 1fr auto;padding:10px 16px}
+  .pl-meta{display:none}
+  .panel{border-left:0;border-top:1px solid var(--line)}
+  .panel-body{overflow:visible;padding:4px 16px 28px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="nav">
+    <div class="brand" aria-label="Momo Music Cloud">
+      <b>Momo</b><span>Music Cloud</span><i aria-hidden="true"></i>
+    </div>
+    <button class="nav-item active" data-view="cover">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.5" y="1.5" width="13" height="13" rx="2"/><circle cx="8" cy="8" r="3"/></svg>
+      앨범 커버
+    </button>
+    <button class="nav-item" data-view="video">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.5" y="3" width="13" height="10" rx="2"/><path d="M6.5 6v4l3.5-2z" fill="currentColor" stroke="none"/></svg>
+      영상<span class="soon">준비 중</span>
+    </button>
+    <div class="nav-foot"><span>테마</span>
+      <button class="icon-btn" id="themeBtn" title="테마 전환" aria-label="테마 전환">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6"/><path d="M8 2a6 6 0 0 0 0 12z" fill="currentColor"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <main>
+    <section class="view" id="view-cover">
+      <header class="topbar">
+        <h1>앨범 커버</h1>
+        <span class="chip" id="fileChip">MP3 없음</span>
+        <div class="spacer"></div>
+        <div class="tb-group">
+          <select class="sm" id="expSize" aria-label="내보내기 크기">
+            <option value="1000">1000px</option>
+            <option value="1500">1500px</option>
+            <option value="3000" selected>3000px</option>
+          </select>
+          <select class="sm" id="expFmt" aria-label="이미지 형식">
+            <option value="png">PNG</option>
+            <option value="jpeg">JPG</option>
+          </select>
+          <button class="btn" id="btnExportImg">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v8m0 0 3-3m-3 3L5 7M2.5 11v2.5h11V11"/></svg>커버 저장</button>
+          <button class="btn primary" id="btnExportMp3">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 12.5V3.5l7-1.5v9"/><circle cx="4.5" cy="12.5" r="1.8"/><circle cx="11.5" cy="11" r="1.8"/></svg>MP3 저장</button>
+        </div>
+      </header>
+
+      <div class="workspace">
+        <div class="stage">
+          <div class="canvas-area">
+            <div class="lockbar" role="group" aria-label="이동 잠금">
+              <button class="lock" id="lockImg" aria-pressed="false"><svg class="i-lock" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="10" height="7.5" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg><svg class="i-open" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="10" height="7.5" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5-.5"/></svg><span>이미지 잠금</span></button>
+              <button class="lock" id="lockDeco" aria-pressed="false"><svg class="i-lock" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="10" height="7.5" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg><svg class="i-open" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="10" height="7.5" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5-.5"/></svg><span>꾸밈 잠금</span></button>
+            </div>
+            <div class="canvas-wrap" id="canvasWrap"><canvas id="preview" width="1200" height="1200" aria-label="앨범 커버 미리보기"></canvas></div>
+          </div>
+          <div class="player">
+            <button class="play" id="playBtn" aria-label="재생" disabled>
+              <svg id="icPlay" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.5v11l9.5-5.5z"/></svg>
+              <svg id="icPause" width="14" height="14" viewBox="0 0 16 16" fill="currentColor" style="display:none"><rect x="3.5" y="2.5" width="3" height="11" rx=".5"/><rect x="9.5" y="2.5" width="3" height="11" rx=".5"/></svg>
+            </button>
+            <div class="pl-meta"><b id="plTitle">재생할 곡이 없어요</b><span id="plArtist">트랙 탭에서 MP3를 불러오세요</span></div>
+            <canvas class="pl-wave" id="plWave" aria-label="파형 · 클릭해서 이동"></canvas>
+            <div class="pl-time" id="plTime">0:00 / 0:00</div>
+          </div>
+        </div>
+
+        <aside class="panel">
+          <div class="tabs" role="tablist">
+            <button class="tab active" data-tab="track">트랙</button>
+            <button class="tab" data-tab="image">이미지</button>
+            <button class="tab" data-tab="text">텍스트</button>
+            <button class="tab" data-tab="design">꾸밈</button>
+          </div>
+          <div class="panel-body">
+
+            <!-- TRACK -->
+            <div class="pane" data-pane="track">
+              <div class="sec">
+                <div class="sec-h"><h3>음원</h3></div>
+                <label class="drop" id="dropAudio">
+                  <div class="di"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6 12.5V3.5l7-1.5v9"/><circle cx="4.5" cy="12.5" r="1.8"/><circle cx="11.5" cy="11" r="1.8"/></svg></div>
+                  <div><b id="audioName">MP3 파일 불러오기</b><span id="audioSub">끌어다 놓거나 클릭 · 기존 태그와 커버를 읽어와요</span></div>
+                  <input type="file" accept=".mp3,audio/mpeg" id="inAudio">
+                </label>
+                <div class="file-stats" id="fileStats" hidden></div>
+              </div>
+              <div id="metaGroups"></div>
+              <div class="sec">
+                <div class="sec-h"><h3>저장 옵션</h3></div>
+                <div class="sec-h" style="margin-bottom:4px"><span style="font-weight:500">현재 커버를 MP3에 넣기</span><label class="sw"><input type="checkbox" id="embedCover" checked><span></span></label></div>
+                <p class="note">끄면 원래 들어 있던 커버를 그대로 유지해요.</p>
+                <div class="inline-btns">
+                  <button class="btn sm" id="btnResetMeta">기본값으로</button>
+                  <button class="btn sm" id="btnReloadMeta" disabled>원래 태그로 되돌리기</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- IMAGE -->
+            <div class="pane" data-pane="image" hidden>
+              <div class="sec">
+                <div class="sec-h"><h3>이미지</h3></div>
+                <label class="drop" id="dropImage">
+                  <div class="di" id="imgThumb"></div>
+                  <div><b id="imgName">이미지 불러오기</b><span>끌어다 놓거나 클릭 · 정사각형에 꽉 차게 맞춰져요</span></div>
+                  <input type="file" accept="image/*" id="inImage">
+                </label>
+                <div class="inline-btns">
+                  <button class="btn sm" id="btnUseEmbedded" hidden>MP3 내장 커버 사용</button>
+                  <button class="btn sm" id="btnRemoveImg" hidden>이미지 제거</button>
+                </div>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>위치 · 크기</h3><button class="link" data-reset="transform">초기화</button></div>
+                <div class="range"><span class="lbl">확대</span><input type="range" min="1" max="4" step="0.01" data-bind="cover.zoom"><output data-out="cover.zoom" data-fmt="x"></output></div>
+                <div class="range"><span class="lbl">가로</span><input type="range" min="-1" max="1" step="0.005" data-bind="cover.ox"><output data-out="cover.ox" data-fmt="off"></output></div>
+                <div class="range"><span class="lbl">세로</span><input type="range" min="-1" max="1" step="0.005" data-bind="cover.oy"><output data-out="cover.oy" data-fmt="off"></output></div>
+                <p class="note">커버 위 "이미지 잠금"을 풀면 드래그·휠로도 조절할 수 있어요. 빈 공간이 생기지 않는 범위에서만 움직여요.</p>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>색 보정</h3><label class="sw"><input type="checkbox" data-bind="cover.adjustOn"><span></span></label></div>
+                <div class="fold-body" data-fold="cover.adjustOn">
+                  <div class="range"><span class="lbl">밝기</span><input type="range" min="20" max="180" step="1" data-bind="cover.bright"><output data-out="cover.bright" data-fmt="pct"></output></div>
+                  <div class="range"><span class="lbl">대비</span><input type="range" min="20" max="200" step="1" data-bind="cover.contrast"><output data-out="cover.contrast" data-fmt="pct"></output></div>
+                  <div class="range"><span class="lbl">채도</span><input type="range" min="0" max="200" step="1" data-bind="cover.sat"><output data-out="cover.sat" data-fmt="pct"></output></div>
+                  <div class="range"><span class="lbl">흑백</span><input type="range" min="0" max="100" step="1" data-bind="cover.gray"><output data-out="cover.gray" data-fmt="pct"></output></div>
+                  <div class="range"><span class="lbl">블러</span><input type="range" min="0" max="40" step="0.5" data-bind="cover.blur"><output data-out="cover.blur" data-fmt="int"></output></div>
+                  <div class="range"><span class="lbl">불투명도</span><input type="range" min="0" max="100" step="1" data-bind="cover.opacity"><output data-out="cover.opacity" data-fmt="pct"></output></div>
+                  <button class="link" data-reset="adjust" style="margin-bottom:12px">보정값 초기화</button>
+                </div>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>컬러 틴트</h3><label class="sw"><input type="checkbox" data-bind="cover.tintOn"><span></span></label></div>
+                <div class="fold-body" data-fold="cover.tintOn">
+                  <div class="grid2">
+                    <div class="field"><label>색</label><div class="color"><input type="color" data-bind="cover.tint"><span data-out="cover.tint" data-fmt="hex"></span></div></div>
+                    <div class="field"><label>블렌드</label><select data-bind="cover.tintMode"><option value="color">Color</option><option value="multiply">Multiply</option><option value="screen">Screen</option><option value="overlay">Overlay</option><option value="soft-light">Soft light</option></select></div>
+                  </div>
+                  <div class="range"><span class="lbl">강도</span><input type="range" min="0" max="100" step="1" data-bind="cover.tintAmt"><output data-out="cover.tintAmt" data-fmt="pct"></output></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- TEXT -->
+            <div class="pane" data-pane="text" hidden>
+              <div class="sec">
+                <div class="sec-h"><h3>배치</h3></div>
+                <div class="seg">
+                  <button data-set="text.layout" data-val="bl" title="왼쪽 아래"><svg width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="currentColor"><rect x="2.5" y="2.5" width="25" height="25" rx="3"/><path d="M7 19h10M7 22.5h6" stroke-width="2" stroke-linecap="round"/></svg></button>
+                  <button data-set="text.layout" data-val="tl" title="왼쪽 위"><svg width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="currentColor"><rect x="2.5" y="2.5" width="25" height="25" rx="3"/><path d="M7 8h10M7 11.5h6" stroke-width="2" stroke-linecap="round"/></svg></button>
+                  <button data-set="text.layout" data-val="tr" title="오른쪽 위"><svg width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="currentColor"><rect x="2.5" y="2.5" width="25" height="25" rx="3"/><path d="M13 8h10M17 11.5h6" stroke-width="2" stroke-linecap="round"/></svg></button>
+                  <button data-set="text.layout" data-val="center" title="가운데"><svg width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="currentColor"><rect x="2.5" y="2.5" width="25" height="25" rx="3"/><path d="M10 13.5h10M12 17h6" stroke-width="2" stroke-linecap="round"/></svg></button>
+                  <button data-set="text.layout" data-val="bc" title="가운데 아래"><svg width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="currentColor"><rect x="2.5" y="2.5" width="25" height="25" rx="3"/><path d="M10 19h10M12 22.5h6" stroke-width="2" stroke-linecap="round"/></svg></button>
+                </div>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>제목</h3></div>
+                <div class="grid2">
+                  <div class="field full"><label>폰트</label><select data-bind="text.titleFont" class="font-select"></select></div>
+                  <div class="field"><label>굵기</label><select data-bind="text.titleWeight"><option value="300">Light</option><option value="400">Regular</option><option value="500">Medium</option><option value="600">SemiBold</option><option value="700">Bold</option><option value="800">ExtraBold</option><option value="900">Black</option></select></div>
+                  <div class="field"><label>대소문자</label><select data-bind="text.titleCase"><option value="none">입력한 그대로</option><option value="upper">모두 대문자</option></select></div>
+                </div>
+                <div class="range"><span class="lbl">크기</span><input type="range" min="30" max="200" step="1" data-bind="text.titleSize"><output data-out="text.titleSize" data-fmt="int"></output></div>
+                <div class="range"><span class="lbl">자간</span><input type="range" min="-10" max="40" step="1" data-bind="text.titleTrack"><output data-out="text.titleTrack" data-fmt="int"></output></div>
+                <div class="range"><span class="lbl">아티스트</span><input type="range" min="15" max="80" step="1" data-bind="text.artistScale"><output data-out="text.artistScale" data-fmt="pct"></output></div>
+                <div class="range"><span class="lbl">위아래 간격</span><input type="range" min="0" max="250" step="5" data-bind="text.lineGap"><output data-out="text.lineGap" data-fmt="pct"></output></div>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>곡 정보</h3></div>
+                <div class="grid2">
+                  <div class="field full"><label>폰트</label><select data-bind="text.infoFont" class="font-select"></select></div>
+                  <div class="field"><label>굵기</label><select data-bind="text.infoWeight"><option value="300">Light</option><option value="400">Regular</option><option value="500">Medium</option><option value="600">SemiBold</option><option value="700">Bold</option></select></div>
+                  <div class="field"><label>대소문자</label><select data-bind="text.infoCase"><option value="upper">모두 대문자</option><option value="none">입력한 그대로</option></select></div>
+                </div>
+                <div class="range"><span class="lbl">크기</span><input type="range" min="8" max="40" step="0.5" data-bind="text.infoSize"><output data-out="text.infoSize" data-fmt="int"></output></div>
+                <div class="range"><span class="lbl">자간</span><input type="range" min="0" max="50" step="1" data-bind="text.infoTrack"><output data-out="text.infoTrack" data-fmt="int"></output></div>
+                <label class="btn sm" style="margin-bottom:12px">
+                  <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 13 7 3h2l4 10M5 9.5h6"/></svg>내 폰트 파일 추가
+                  <input type="file" accept=".ttf,.otf,.woff,.woff2" id="inFont" hidden>
+                </label>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>텍스트 그림자</h3><label class="sw"><input type="checkbox" data-bind="text.shadow"><span></span></label></div>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>커버에 표시할 정보</h3></div>
+                <p class="note">내용은 트랙 탭에서 수정해요.</p>
+                <div class="chips" id="showChips"></div>
+              </div>
+            </div>
+
+            <!-- DESIGN -->
+            <div class="pane" data-pane="design" hidden>
+              <div class="sec">
+                <div class="sec-h"><h3>내 꾸밈 세트</h3></div>
+                <div class="saverow"><input class="inp" id="setName" placeholder="세트 이름" maxlength="30"><button class="btn primary sm" id="btnSaveSet" style="height:32px">저장</button></div>
+                <div class="sets" id="setList"></div>
+                <div class="inline-btns">
+                  <button class="btn sm" id="btnExportSets">파일로 내보내기</button>
+                  <label class="btn sm">파일 불러오기<input type="file" accept=".json,application/json" id="inSets" hidden></label>
+                  <button class="btn sm" id="btnResetDeco">처음 상태로</button>
+                </div>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>색상</h3></div>
+                <div class="colors4">
+                  <div class="field"><label>배경</label><div class="color"><input type="color" data-bind="cover.bg"><span data-out="cover.bg" data-fmt="hex"></span></div></div>
+                  <div class="field"><label>텍스트</label><div class="color"><input type="color" data-bind="cover.text"><span data-out="cover.text" data-fmt="hex"></span></div></div>
+                  <div class="field"><label>라인</label><div class="color"><input type="color" data-bind="cover.deco"><span data-out="cover.deco" data-fmt="hex"></span></div></div>
+                  <div class="field"><label>포인트</label><div class="color"><input type="color" data-bind="cover.accent"><span data-out="cover.accent" data-fmt="hex"></span></div></div>
+                </div>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>꾸밈 요소</h3>
+                  <div style="display:flex;gap:12px"><button class="link" id="allOn">모두 켜기</button><button class="link" id="allOff">모두 끄기</button></div>
+                </div>
+                <p class="note">커버 위 "꾸밈 잠금"을 풀면 꾸밈을 마우스로 끌어 옮기고 휠로 크기를 바꿀 수 있어요.</p>
+                <div id="decoList"></div>
+                <div class="range" style="margin-top:4px"><span class="lbl">전체 농도</span><input type="range" min="10" max="100" step="1" data-bind="design.intensity"><output data-out="design.intensity" data-fmt="pct"></output></div>
+              </div>
+            </div>
+
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="view" id="view-video" hidden>
+      <header class="topbar"><h1>영상</h1></header>
+      <div class="empty">
+        <div class="empty-card">
+          <svg viewBox="0 0 84 84" fill="none" stroke="currentColor">
+            <circle cx="42" cy="42" r="26" stroke-width="1.2"/>
+            <ellipse cx="42" cy="42" rx="40" ry="11" transform="rotate(-20 42 42)" stroke-width="1"/>
+            <path d="M38 34v16l12-8z" fill="currentColor" stroke="none"/>
+            <circle cx="76" cy="30" r="3" fill="#ef7fae" stroke="none"/>
+          </svg>
+          <h2>영상 만들기는 준비 중이에요</h2>
+          <p>곡과 커버로 영상을 만드는 기능이 이곳에 들어올 예정이에요.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+'use strict';
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const YEAR = String(new Date().getFullYear());
+
+/* ================= constants ================= */
+// [family, fallback, label]
+const FONTS = [
+  ['Paperlogy','sans-serif','페이퍼로지'],['Pretendard Variable','sans-serif','프리텐다드'],
+  ['Outfit','sans-serif','Outfit'],['Sora','sans-serif','Sora'],['Manrope','sans-serif','Manrope'],['Inter','sans-serif','Inter'],
+  ['Syne','sans-serif','Syne'],['Unbounded','sans-serif','Unbounded'],['Michroma','sans-serif','Michroma'],['Orbitron','sans-serif','Orbitron'],
+  ['Bebas Neue','sans-serif','Bebas Neue'],['DM Serif Display','serif','DM Serif Display'],['Cormorant Garamond','serif','Cormorant Garamond'],
+  ['Instrument Serif','serif','Instrument Serif'],['Space Mono','monospace','Space Mono'],
+  ['Noto Sans KR','sans-serif','본고딕 (Noto Sans KR)'],['IBM Plex Sans KR','sans-serif','IBM Plex Sans KR'],['Orbit','sans-serif','오르빗 (Orbit)'],
+  ['Gowun Batang','serif','고운바탕'],['Nanum Myeongjo','serif','나눔명조'],['Black Han Sans','sans-serif','검은고딕'],['Do Hyeon','sans-serif','도현']
+];
+const fallbackOf = f => (FONTS.find(x => x[0] === f) || [0, 'sans-serif'])[1];
+
+const DEFAULT_META = {
+  title:'Untitled Track', artist:'Artist Name', feat:'', album:'Album Title', albumArtist:'',
+  track:'1', trackTotal:'10', disc:'1', year:YEAR, genre:'Electronic',
+  composer:'', lyricist:'', producer:'', label:'Label Name', catalog:'MMC-001', isrc:'',
+  copyright:'℗ ' + YEAR + ' Label Name', bpm:'120', key:'A min', comment:'', lyrics:''
+};
+const META_GROUPS = [
+  ['기본 정보', [['title','곡 제목',1],['artist','아티스트'],['feat','피처링'],['album','앨범',1],['albumArtist','앨범 아티스트',1]]],
+  ['번호 · 날짜', [['track','트랙 번호'],['trackTotal','총 트랙 수'],['disc','디스크'],['year','연도'],['genre','장르',1]]],
+  ['크레딧', [['composer','작곡'],['lyricist','작사'],['producer','프로듀서'],['label','레이블'],['catalog','카탈로그 번호'],['isrc','ISRC'],['copyright','저작권 표기',1]]],
+  ['사운드', [['bpm','BPM'],['key','키 (Key)']]],
+  ['메모', [['comment','코멘트',1,1],['lyrics','가사',1,1]]]
+];
+const SHOW_LIST = [['track','트랙 번호'],['genre','장르'],['artist','아티스트'],['feat','피처링'],['album','앨범'],['year','연도'],
+  ['label','레이블'],['catalog','카탈로그'],['bpm','BPM'],['key','키'],['duration','재생 시간'],['copyright','저작권']];
+
+const IC = {
+  globe:'<circle cx="8" cy="8" r="4.5"/><ellipse cx="8" cy="8" rx="7.2" ry="2.2" transform="rotate(-20 8 8)"/>',
+  ornament:'<path d="M8 2.2 13 5v6l-5 2.8L3 11V5z"/><path d="M8 5.5l2 2.5-2 2.5-2-2.5z"/>',
+  sparkle:'<path d="M7 2q.5 4.5 5 5-4.5.5-5 5-.5-4.5-5-5 4.5-.5 5-5z"/><path d="M13 1.5q.2 1.3 1.5 1.5-1.3.2-1.5 1.5-.2-1.3-1.5-1.5 1.3-.2 1.5-1.5z"/>',
+  hearts:'<path d="M8 13.5S2 10 2 6.2A3 3 0 0 1 8 5a3 3 0 0 1 6 1.2C14 10 8 13.5 8 13.5z"/>',
+  target:'<circle cx="8" cy="8" r="3.6"/><path d="M8 1v4M8 11v4M1 8h4M11 8h4"/>',
+  circle:'<circle cx="8" cy="8" r="6"/><circle cx="12.3" cy="3.8" r="1" fill="currentColor"/>',
+  orbit:'<ellipse cx="8" cy="8" rx="7" ry="2.6" transform="rotate(-18 8 8)"/><ellipse cx="8" cy="8" rx="5.2" ry="1.6" transform="rotate(-18 8 8)" stroke-dasharray="1.5 1.5"/>',
+  glow:'<circle cx="8" cy="8" r="2.4" fill="currentColor"/><circle cx="8" cy="8" r="5.5" stroke-dasharray="1 2"/>',
+  percent:'<path d="M3 13 13 3"/><circle cx="4.5" cy="4.5" r="1.8"/><circle cx="11.5" cy="11.5" r="1.8"/>',
+  progress:'<path d="M2 8h12"/><circle cx="6.5" cy="8" r="1.8" fill="currentColor"/>',
+  tags:'<rect x="1.5" y="5" width="13" height="6" rx="3"/><circle cx="4.5" cy="8" r="1" fill="currentColor"/>',
+  waveform:'<path d="M2 6v4M4.5 4v8M7 6.5v3M9.5 3v10M12 5.5v5M14.5 7v2"/>',
+  bignum:'<path d="M5 3.5 7 2.5V13M9.5 5.5a2 2 0 0 1 4 0c0 2-4 4.5-4 7.5h4"/>',
+  barcode:'<path d="M2 3v10M4 3v10M5.5 3v10M8 3v10M10 3v10M11.5 3v10M14 3v10"/>',
+  explicit:'<rect x="2" y="2" width="12" height="12" rx="2"/><path d="M10 5H6.5v6H10M6.5 8H9.5"/>',
+  header:'<path d="M2 4h4M10 4h4M2 6.5h12"/>',
+  frame:'<rect x="2" y="2" width="12" height="12" rx="1"/>',
+  brackets:'<path d="M2 5V2h3M11 2h3v3M14 11v3h-3M5 14H2v-3"/>',
+  side:'<path d="M12 2v12M9 4v4"/>',
+  grid:'<path d="M2 5.5h12M2 10.5h12M5.5 2v12M10.5 2v12"/>',
+  dust:'<circle cx="4" cy="4" r=".8" fill="currentColor"/><circle cx="11" cy="6" r=".8" fill="currentColor"/><circle cx="6" cy="11" r=".8" fill="currentColor"/><path d="M12 10.5v3M10.5 12h3"/>',
+  fade:'<rect x="2" y="2" width="12" height="12" rx="1.5"/><path d="M2 10h12M2 12.5h12"/>',
+  grain:'<circle cx="4" cy="5" r=".6" fill="currentColor"/><circle cx="8" cy="3.5" r=".6" fill="currentColor"/><circle cx="12" cy="6" r=".6" fill="currentColor"/><circle cx="5.5" cy="9.5" r=".6" fill="currentColor"/><circle cx="10" cy="10" r=".6" fill="currentColor"/><circle cx="7" cy="13" r=".6" fill="currentColor"/>'
+};
+
+// key, name, desc, group, default position (x%, y%, size%, rotation°) or null, extra fields
+const DECOS = [
+  ['globe','지구본','와이어프레임 구체와 궤도 링','심볼',{x:71,y:33,s:100,r:0}],
+  ['ornament','엠블럼','육각 하이라이트 문양','심볼',{x:50,y:28,s:90,r:0}],
+  ['sparkle','반짝이','네 갈래 별 하이라이트','심볼',{x:88,y:15,s:100,r:0}],
+  ['hearts','하트','작은 라인 하트 무리','심볼',{x:30,y:40,s:100,r:-12}],
+  ['target','조준점','레티클과 좌표','심볼',{x:30,y:32,s:100,r:0}],
+  ['circle','원형 라인','큰 원과 작은 포인트','심볼',{x:50,y:42,s:100,r:0}],
+  ['orbit','궤도선','커버를 가로지르는 타원','심볼',{x:52,y:40,s:100,r:-16}],
+  ['glow','하이라이트 빛','은은하게 번지는 빛','심볼',{x:70,y:32,s:100,r:0}],
+  ['percent','퍼센트','수치와 게이지','데이터',{x:8,y:16,s:100,r:0},[['pct','수치','range',0,100,1],['pctLabel','라벨','text']]],
+  ['progress','재생 바','진행 바와 재생 버튼','데이터',{x:50,y:52,s:100,r:0},[['prog','진행도','range',0,100,1]]],
+  ['tags','태그','알약 모양 라벨','데이터',{x:8,y:29,s:100,r:0},[['tagText','내용 ( · 로 구분)','text']]],
+  ['waveform','웨이브폼','곡에서 추출한 실제 파형','데이터',{x:50,y:16,s:100,r:0}],
+  ['bignum','트랙 넘버','배경에 깔리는 큰 숫자','데이터',{x:93,y:11,s:100,r:0}],
+  ['barcode','바코드','카탈로그 번호 바코드','데이터',{x:92,y:92,s:100,r:0}],
+  ['explicit','Explicit','청취 등급 표시','데이터',{x:92,y:84,s:100,r:0}],
+  ['header','상단 라인','레이블과 연도를 담은 한 줄','구조',null],
+  ['frame','테두리','안쪽의 가는 테두리','구조',null],
+  ['brackets','코너 브래킷','네 귀퉁이 꺾쇠와 + 표시','구조',null],
+  ['side','세로 텍스트','가장자리를 따라 흐르는 곡 정보','구조',null],
+  ['grid','그리드','아주 옅은 격자','구조',null],
+  ['dust','별가루','흩뿌려진 점과 작은 별','질감',null],
+  ['fade','그라데이션','글자가 잘 보이도록 깔리는 음영','질감',null],
+  ['grain','그레인','부드러운 필름 질감','질감',null]
+];
+// hit boxes in local units [x0, y0, x1, y1] — used for dragging on the canvas
+const HIT = {
+  globe:[-215,-150,215,150], ornament:[-110,-125,110,125], sparkle:[-60,-55,65,50], hearts:[-50,-50,60,50],
+  target:[-80,-80,160,90], circle:[-285,-285,285,285], orbit:[-700,-220,700,220], glow:[-140,-140,140,140],
+  percent:[-8,-16,165,82], tags:[-6,-20,300,12], progress:[-305,-16,305,64], waveform:[-425,-30,425,30],
+  bignum:[-400,0,0,270], barcode:[-135,-56,4,6], explicit:[-92,-28,2,2]
+};
+let HL = null; // decoration under the pointer (preview only)
+const NO_ROT = new Set(['percent','tags','bignum','barcode','explicit','progress','waveform','target','circle','glow']);
+
+function defaultDesign(){
+  const on = {}, pos = {};
+  DECOS.forEach(d => { on[d[0]] = false; if (d[4]) pos[d[0]] = {...d[4]}; });
+  ['header','globe','sparkle','target','dust','fade','grain','brackets','percent'].forEach(k => on[k] = true);
+  return {intensity:100, on, pos, pct:87, pctLabel:'Sync', prog:36, tagText:'REC · Hi-Fi · Lossless'};
+}
+const DEFAULT_COVER = {bg:'#2b2b31', text:'#f7f5f2', deco:'#ffffff', accent:'#f4a3c6', zoom:1, ox:0, oy:0, adjustOn:false,
+  bright:100, contrast:100, sat:100, gray:0, blur:0, opacity:100, tintOn:false, tint:'#f4a3c6', tintAmt:30, tintMode:'soft-light'};
+const DEFAULT_TEXT = {layout:'bl', titleFont:'Paperlogy', titleWeight:'700', titleCase:'none', titleSize:96, titleTrack:-3, artistScale:28, lineGap:100,
+  infoFont:'Paperlogy', infoWeight:'500', infoCase:'upper', infoSize:13, infoTrack:6, shadow:false};
+const DEFAULT_SHOW = {track:false, genre:false, artist:true, feat:true, album:true, year:true, label:false, catalog:false, bpm:false, key:false, duration:false, copyright:false};
+const clone = o => JSON.parse(JSON.stringify(o));
+
+/* ================= state ================= */
+const state = {meta:{...DEFAULT_META}, cover:clone(DEFAULT_COVER), text:clone(DEFAULT_TEXT), show:clone(DEFAULT_SHOW), design:defaultDesign()};
+const IMG = {el:null, name:'', url:null};
+const AU = {file:null, buf:null, tag:null, origMeta:null, pic:null, url:null, duration:0, peaks:null};
+const getPath = p => p.split('.').reduce((o, k) => o == null ? o : o[k], state);
+const setPath = (p, v) => { const ks = p.split('.'); const last = ks.pop(); ks.reduce((o, k) => o[k], state)[last] = v; };
+
+/* ================= utils ================= */
+function hexRgb(h){ h = String(h).replace('#',''); if (h.length === 3) h = h.split('').map(c => c + c).join(''); const n = parseInt(h, 16) || 0; return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+function col(h, a){ const [r,g,b] = hexRgb(h); return `rgba(${r},${g},${b},${Math.max(0, Math.min(1, a))})`; }
+function hash(s){ let h = 2166136261; s = String(s); for (let i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+function rng(seed){ let a = seed >>> 0; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const pad2 = v => { const n = parseInt(v, 10); return isNaN(n) ? String(v) : String(n).padStart(2, '0'); };
+const fmtTime = s => { if (!isFinite(s) || s < 0) s = 0; const m = Math.floor(s / 60), r = Math.floor(s % 60); return m + ':' + String(r).padStart(2, '0'); };
+const fmtBytes = b => b > 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.round(b / 1024) + ' KB';
+const safeName = s => String(s).replace(/[\\/:*?"<>|]+/g, '_').trim() || 'momo';
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let toastT;
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2600); }
+function download(blob, name){ const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
+function lsGet(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }
+function lsSet(k, v){ try { localStorage.setItem(k, v); return true; } catch(e){ return false; } }
+// copy values from s into t, only for keys t already knows (with matching types)
+function mergeInto(t, s){
+  if (!s || typeof s !== 'object') return;
+  for (const k of Object.keys(s)){
+    if (!(k in t)) continue;
+    if (t[k] && typeof t[k] === 'object' && !Array.isArray(t[k])) mergeInto(t[k], s[k]);
+    else if (typeof s[k] === typeof t[k]) t[k] = s[k];
+  }
+}
+
+/* ================= ID3 read ================= */
+const syncsafe = (b, o) => ((b[o] & 0x7f) << 21) | ((b[o+1] & 0x7f) << 14) | ((b[o+2] & 0x7f) << 7) | (b[o+3] & 0x7f);
+const be32 = (b, o) => ((b[o] << 24) | (b[o+1] << 16) | (b[o+2] << 8) | b[o+3]) >>> 0;
+function unsync(arr){ const out = []; for (let i = 0; i < arr.length; i++){ out.push(arr[i]); if (arr[i] === 0xFF && arr[i+1] === 0x00) i++; } return new Uint8Array(out); }
+function tryDecode(label, bytes, fatal){ try { return new TextDecoder(label, {fatal: !!fatal}).decode(bytes); } catch(e){ return null; } }
+function decodeText(bytes, enc){
+  let s = '';
+  if (enc === 1){
+    if (bytes[0] === 0xFE && bytes[1] === 0xFF) s = tryDecode('utf-16be', bytes.subarray(2)) || '';
+    else if (bytes[0] === 0xFF && bytes[1] === 0xFE) s = tryDecode('utf-16le', bytes.subarray(2)) || '';
+    else s = tryDecode('utf-16le', bytes) || '';
+  } else if (enc === 2) s = tryDecode('utf-16be', bytes) || '';
+  else if (enc === 3) s = tryDecode('utf-8', bytes) || '';
+  else {
+    let hi = false; for (let i = 0; i < bytes.length; i++) if (bytes[i] > 0x7f){ hi = true; break; }
+    if (!hi) s = String.fromCharCode.apply(null, bytes);
+    else s = tryDecode('utf-8', bytes, true) ?? tryDecode('euc-kr', bytes, true) ?? tryDecode('windows-1252', bytes) ?? '';
+  }
+  return s.replace(/\u0000+$/,'').replace(/\u0000/g, ' / ').replace(/^﻿/,'');
+}
+function term(b, start, enc){
+  if (enc === 1 || enc === 2){ let i = start; while (i + 1 < b.length && !(b[i] === 0 && b[i+1] === 0)) i += 2; return [b.subarray(start, i), Math.min(i + 2, b.length)]; }
+  let i = start; while (i < b.length && b[i] !== 0) i++; return [b.subarray(start, i), Math.min(i + 1, b.length)];
+}
+function tagEndOf(b){ let off = 0; while (b.length >= off + 10 && b[off] === 0x49 && b[off+1] === 0x44 && b[off+2] === 0x33) off += 10 + syncsafe(b, off + 6) + ((b[off+5] & 0x10) ? 10 : 0); return Math.min(off, b.length); }
+function parseID3(ab){
+  const b = new Uint8Array(ab);
+  const res = {ver:0, tagEnd:tagEndOf(b), frames:[], text:{}, txxx:{}, comm:'', uslt:'', pic:null};
+  if (b.length < 10 || b[0] !== 0x49 || b[1] !== 0x44 || b[2] !== 0x33) return res;
+  const ver = b[3], flags = b[5], size = syncsafe(b, 6);
+  res.ver = ver;
+  if (ver < 3 || ver > 4) return res;
+  let data = b.subarray(0, Math.min(10 + size, b.length));
+  if ((flags & 0x80) && ver === 3){ const u = unsync(data.subarray(10)); data = new Uint8Array(10 + u.length); data.set(u, 10); }
+  const end = data.length; let p = 10;
+  if (flags & 0x40) p += ver === 3 ? 4 + be32(data, p) : syncsafe(data, p);
+  while (p + 10 <= end){
+    const id = String.fromCharCode(data[p], data[p+1], data[p+2], data[p+3]);
+    if (!/^[A-Z0-9]{4}$/.test(id)) break;
+    const fs = ver === 4 ? syncsafe(data, p + 4) : be32(data, p + 4);
+    const ff = (data[p+8] << 8) | data[p+9];
+    if (fs <= 0 || p + 10 + fs > end) break;
+    let body = data.subarray(p + 10, p + 10 + fs);
+    res.frames.push({id, raw: data.slice(p, p + 10 + fs)});
+    let skip = false;
+    if (ver === 3 && (ff & 0x00C0)) skip = true;
+    if (ver === 4){ if (ff & 0x000C) skip = true; if (ff & 0x0002) body = unsync(body); if (ff & 0x0001) body = body.subarray(4); }
+    if (!skip && body.length){ try { readFrame(id, body, res); } catch(e){} }
+    p += 10 + fs;
+  }
+  return res;
+}
+function readFrame(id, body, res){
+  const enc = body[0];
+  if (id === 'TXXX'){ const [d, i] = term(body, 1, enc); res.txxx[decodeText(d, enc).toUpperCase()] = decodeText(body.subarray(i), enc); }
+  else if (id[0] === 'T'){ res.text[id] = decodeText(body.subarray(1), enc); }
+  else if (id === 'COMM' || id === 'USLT'){
+    const [d, i] = term(body, 4, enc); const desc = decodeText(d, enc); const txt = decodeText(body.subarray(i), enc);
+    if (id === 'USLT'){ if (!res.uslt) res.uslt = txt; }
+    else if (!/^(iTun|ID3v1)/i.test(desc) && (!res.comm || !desc)) res.comm = txt;
+  } else if (id === 'APIC'){
+    const [m, i] = term(body, 1, 0); let mime = String.fromCharCode.apply(null, m).toLowerCase() || 'image/jpeg';
+    if (!mime.includes('/')) mime = 'image/' + (mime === 'png' ? 'png' : 'jpeg');
+    const type = body[i]; const [, j] = term(body, i + 1, enc); const data = body.slice(j);
+    if (data.length && (!res.pic || type === 3)) res.pic = {mime, data, type};
+  }
+}
+function metaFromTag(tag, fileName){
+  const T = tag.text, X = tag.txxx, m = {...DEFAULT_META};
+  const set = (k, v) => { if (v != null && String(v).trim() !== '') m[k] = String(v).trim(); };
+  set('title', T.TIT2); set('artist', T.TPE1); set('album', T.TALB); set('albumArtist', T.TPE2);
+  const yr = T.TYER || T.TDRC || T.TORY || T.TDOR; if (yr) set('year', String(yr).slice(0, 4));
+  if (T.TCON) set('genre', T.TCON.replace(/^\((\d+)\)\s*(?=\S)/, ''));
+  if (T.TRCK){ const [a, c] = T.TRCK.split('/'); set('track', a); if (c) set('trackTotal', c); else m.trackTotal = ''; }
+  if (T.TPOS) set('disc', T.TPOS.split('/')[0]);
+  set('composer', T.TCOM); set('lyricist', T.TEXT); set('label', T.TPUB); set('copyright', T.TCOP);
+  set('isrc', T.TSRC); set('bpm', T.TBPM); set('key', T.TKEY);
+  set('catalog', X.CATALOGNUMBER || X.CATALOG || X['CATALOG NUMBER']);
+  set('producer', X.PRODUCER); set('feat', X.FEATURING);
+  m.comment = tag.comm || ''; m.lyrics = tag.uslt || '';
+  if (!T.TIT2 && fileName) m.title = fileName.replace(/\.[^.]+$/, '');
+  return m;
+}
+
+/* ================= ID3 write (v2.3) ================= */
+function enc16(str){ const out = new Uint8Array(2 + str.length * 2); out[0] = 0xFF; out[1] = 0xFE; for (let i = 0; i < str.length; i++){ const c = str.charCodeAt(i); out[2 + i*2] = c & 255; out[3 + i*2] = c >> 8; } return out; }
+const ascii = s => Uint8Array.from(String(s), c => c.charCodeAt(0) & 255);
+function concat(arrs){ const n = arrs.reduce((a, x) => a + x.length, 0); const out = new Uint8Array(n); let o = 0; for (const a of arrs){ out.set(a, o); o += a.length; } return out; }
+function frame(id, body){ const h = new Uint8Array(10); h.set(ascii(id), 0); const n = body.length; h[4] = n >>> 24 & 255; h[5] = n >>> 16 & 255; h[6] = n >>> 8 & 255; h[7] = n & 255; return concat([h, body]); }
+const textFrame = (id, s) => frame(id, concat([Uint8Array.of(1), enc16(s)]));
+const txxxFrame = (d, v) => frame('TXXX', concat([Uint8Array.of(1), enc16(d), Uint8Array.of(0, 0), enc16(v)]));
+const langFrame = (id, s) => frame(id, concat([Uint8Array.of(1), ascii('kor'), enc16(''), Uint8Array.of(0, 0), enc16(s)]));
+const apicFrame = pic => frame('APIC', concat([Uint8Array.of(0), ascii(pic.mime), Uint8Array.of(0, 3, 0), pic.data]));
+const MANAGED = new Set(['TIT2','TPE1','TALB','TPE2','TYER','TDRC','TCON','TRCK','TPOS','TCOM','TEXT','TPUB','TCOP','TSRC','TBPM','TKEY','COMM','USLT','APIC','TXXX','TDAT','TIME','TORY','TDOR','TRDA','TSIZ']);
+function buildMp3(ab, tag, m, pic){
+  const src = new Uint8Array(ab);
+  let audio = src.subarray(tag.tagEnd);
+  if (audio.length > 128 && audio[audio.length-128] === 0x54 && audio[audio.length-127] === 0x41 && audio[audio.length-126] === 0x47) audio = audio.subarray(0, audio.length - 128);
+  const fr = [];
+  const t = (id, v) => { if (v && String(v).trim()) fr.push(textFrame(id, String(v).trim())); };
+  t('TIT2', m.title); t('TPE1', m.artist); t('TALB', m.album); t('TPE2', m.albumArtist);
+  t('TYER', m.year); t('TCON', m.genre);
+  if (m.track) t('TRCK', m.trackTotal ? `${m.track}/${m.trackTotal}` : m.track);
+  t('TPOS', m.disc); t('TCOM', m.composer); t('TEXT', m.lyricist); t('TPUB', m.label); t('TCOP', m.copyright);
+  t('TSRC', m.isrc); t('TBPM', m.bpm); t('TKEY', m.key);
+  if (m.catalog) fr.push(txxxFrame('CATALOGNUMBER', m.catalog));
+  if (m.producer) fr.push(txxxFrame('PRODUCER', m.producer));
+  if (m.feat) fr.push(txxxFrame('FEATURING', m.feat));
+  if (m.comment) fr.push(langFrame('COMM', m.comment));
+  if (m.lyrics) fr.push(langFrame('USLT', m.lyrics));
+  if (tag.ver === 3) for (const f of tag.frames) if (!MANAGED.has(f.id)) fr.push(f.raw);
+  if (pic) fr.push(apicFrame(pic));
+  const body = concat([...fr, new Uint8Array(2048)]);
+  const n = body.length;
+  const head = Uint8Array.of(0x49, 0x44, 0x33, 3, 0, 0, n >>> 21 & 127, n >>> 14 & 127, n >>> 7 & 127, n & 127);
+  return concat([head, body, audio]);
+}
+
+/* ================= canvas helpers ================= */
+const HAS_LS = typeof CanvasRenderingContext2D !== 'undefined' && 'letterSpacing' in CanvasRenderingContext2D.prototype;
+function setFont(ctx, w, px, fam){ ctx.font = `${w} ${px}px "${fam}", ${fallbackOf(fam)}`; }
+function textW(ctx, t, sp){
+  if (!sp) return ctx.measureText(t).width;
+  if (HAS_LS){ ctx.letterSpacing = sp + 'px'; const w = ctx.measureText(t).width; ctx.letterSpacing = '0px'; return w - sp; }
+  let w = 0; for (const ch of t) w += ctx.measureText(ch).width + sp; return w - sp;
+}
+function drawT(ctx, t, x, y, sp, align, stroke){
+  const w = textW(ctx, t, sp);
+  let x0 = align === 'right' ? x - w : align === 'center' ? x - w / 2 : x;
+  ctx.textAlign = 'left';
+  const put = (s, xx) => stroke ? ctx.strokeText(s, xx, y) : ctx.fillText(s, xx, y);
+  if (!sp){ put(t, x0); return w; }
+  if (HAS_LS){ ctx.letterSpacing = sp + 'px'; put(t, x0); ctx.letterSpacing = '0px'; return w; }
+  for (const ch of t){ put(ch, x0); x0 += ctx.measureText(ch).width + sp; }
+  return w;
+}
+function wrap(ctx, text, maxW, sp, maxLines){
+  const out = [];
+  for (const para of String(text).split('\n')){
+    let cur = '';
+    for (const w of para.split(' ')){
+      const test = cur ? cur + ' ' + w : w;
+      if (textW(ctx, test, sp) <= maxW){ cur = test; continue; }
+      if (cur){ out.push(cur); cur = ''; }
+      if (textW(ctx, w, sp) <= maxW){ cur = w; continue; }
+      let piece = '';
+      for (const ch of w){ if (piece && textW(ctx, piece + ch, sp) > maxW){ out.push(piece); piece = ch; } else piece += ch; }
+      cur = piece;
+    }
+    out.push(cur);
+  }
+  if (out.length > maxLines){ const r = out.slice(0, maxLines); r[maxLines-1] = r[maxLines-1].replace(/\s*\S?$/, '…'); return r; }
+  return out;
+}
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+function star4(ctx, x, y, r){ ctx.beginPath(); ctx.moveTo(x, y - r); ctx.quadraticCurveTo(x, y, x + r, y); ctx.quadraticCurveTo(x, y, x, y + r); ctx.quadraticCurveTo(x, y, x - r, y); ctx.quadraticCurveTo(x, y, x, y - r); ctx.closePath(); }
+function heart(ctx, x, y, s){ ctx.beginPath(); ctx.moveTo(x, y + s * .55); ctx.bezierCurveTo(x - s * 1.2, y - s * .2, x - s * .6, y - s * 1.1, x, y - s * .45); ctx.bezierCurveTo(x + s * .6, y - s * 1.1, x + s * 1.2, y - s * .2, x, y + s * .55); ctx.closePath(); }
+
+const fontReady = new Set(), fontPending = new Set();
+let fontNeeds = [];
+function need(fam, w, text){
+  const spec = `${w} 64px "${fam}"`;
+  fontNeeds.push([spec, text]);
+  const key = spec + '|' + text;
+  if (fontReady.has(key) || fontPending.has(key) || !document.fonts) return;
+  fontPending.add(key);
+  document.fonts.load(spec, text || 'A').then(() => { fontPending.delete(key); fontReady.add(key); scheduleRender(); }).catch(() => fontPending.delete(key));
+}
+async function fontsForExport(){ if (!document.fonts) return; try { await Promise.all(fontNeeds.map(([s, t]) => document.fonts.load(s, t || 'A'))); await document.fonts.ready; } catch(e){} }
+
+let NOISE = null;
+function noiseCanvas(){
+  if (NOISE) return NOISE;
+  const c = document.createElement('canvas'); c.width = c.height = 256;
+  const x = c.getContext('2d'); const d = x.createImageData(256, 256);
+  for (let i = 0; i < d.data.length; i += 4){ const v = Math.random() * 255; d.data[i] = d.data[i+1] = d.data[i+2] = v; d.data[i+3] = 255; }
+  x.putImageData(d, 0, 0); return NOISE = c;
+}
+function getPeaks(n){
+  const out = new Array(n);
+  if (AU.peaks){ const P = AU.peaks; for (let i = 0; i < n; i++){ const a = Math.floor(i * P.length / n), b = Math.max(a + 1, Math.floor((i + 1) * P.length / n)); let m = 0; for (let j = a; j < b; j++) if (P[j] > m) m = P[j]; out[i] = m; } return out; }
+  const r = rng(hash(state.meta.title + state.meta.artist));
+  for (let i = 0; i < n; i++){ const t = i / n; out[i] = Math.min(1, 0.25 + 0.45 * Math.abs(Math.sin(t * 9.3 + 1)) * (0.6 + 0.4 * Math.sin(t * 3.1)) + r() * 0.35); }
+  return out;
+}
+
+/* ================= render ================= */
+function render(ctx, S, preview){
+  fontNeeds = [];
+  const u = S / 1000, C = state.cover, D = state.design, O = D.on, T = state.text, M = state.meta, k = D.intensity / 100;
+  const L = T.layout, top = L[0] === 't', bottom = L[0] === 'b';
+  const iF = T.infoFont, iW = T.infoWeight;
+  const LN = a => col(C.deco, a * k), AC = a => col(C.accent, a * k), TX = a => col(C.text, a * k);
+  ctx.save();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none'; ctx.textBaseline = 'alphabetic';
+  ctx.fillStyle = C.bg; ctx.fillRect(0, 0, S, S);
+
+  if (IMG.el){
+    const im = IMG.el, sc = Math.max(S / im.naturalWidth, S / im.naturalHeight) * C.zoom;
+    const dw = im.naturalWidth * sc, dh = im.naturalHeight * sc;
+    const dx = (S - dw) / 2 + C.ox * (dw - S) / 2, dy = (S - dh) / 2 + C.oy * (dh - S) / 2;
+    ctx.save();
+    ctx.globalAlpha = C.adjustOn ? C.opacity / 100 : 1;
+    if (C.adjustOn){
+      const f = `brightness(${C.bright}%) contrast(${C.contrast}%) saturate(${C.sat}%) grayscale(${C.gray}%)` + (C.blur > 0 ? ` blur(${C.blur * u}px)` : '');
+      if (f !== 'brightness(100%) contrast(100%) saturate(100%) grayscale(0%)') ctx.filter = f;
+    }
+    const ex = C.adjustOn && C.blur > 0 ? C.blur * u * 2 : 0;
+    ctx.drawImage(im, dx - ex, dy - ex, dw + ex * 2, dh + ex * 2);
+    ctx.restore();
+    if (C.tintOn){ ctx.save(); ctx.globalCompositeOperation = C.tintMode; ctx.globalAlpha = C.tintAmt / 100; ctx.fillStyle = C.tint; ctx.fillRect(0, 0, S, S); ctx.restore(); }
+  } else {
+    let g = ctx.createRadialGradient(S*.72, S*.3, 0, S*.72, S*.3, S*.8);
+    g.addColorStop(0, col(C.accent, .2)); g.addColorStop(.55, col(C.accent, .05)); g.addColorStop(1, col(C.accent, 0));
+    ctx.fillStyle = g; ctx.fillRect(0, 0, S, S);
+    g = ctx.createRadialGradient(S*.12, S*.98, 0, S*.12, S*.98, S*.7);
+    g.addColorStop(0, col(C.text, .08)); g.addColorStop(1, col(C.text, 0));
+    ctx.fillStyle = g; ctx.fillRect(0, 0, S, S);
+  }
+
+  if (O.fade){
+    let g;
+    if (top){ g = ctx.createLinearGradient(0, 0, 0, S * .62); g.addColorStop(0, col(C.bg, .8 * k)); g.addColorStop(1, col(C.bg, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, S, S); }
+    else if (bottom){ g = ctx.createLinearGradient(0, S, 0, S * .38); g.addColorStop(0, col(C.bg, .82 * k)); g.addColorStop(1, col(C.bg, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, S, S); }
+    else { ctx.fillStyle = col(C.bg, .28 * k); ctx.fillRect(0, 0, S, S); }
+    g = ctx.createRadialGradient(S/2, S/2, S*.35, S/2, S/2, S*.75);
+    g.addColorStop(0, col(C.bg, 0)); g.addColorStop(1, col(C.bg, .4 * k));
+    ctx.fillStyle = g; ctx.fillRect(0, 0, S, S);
+  }
+
+  if (O.grid){
+    ctx.strokeStyle = LN(.06); ctx.lineWidth = Math.max(1, u); ctx.beginPath();
+    for (let i = 1; i < 10; i++){ const p = Math.round(i * S / 10) + .5; ctx.moveTo(p, 0); ctx.lineTo(p, S); ctx.moveTo(0, p); ctx.lineTo(S, p); }
+    ctx.stroke();
+  }
+
+  if (O.dust){
+    const r = rng(hash('dust' + M.title));
+    for (let i = 0; i < 90; i++){ ctx.fillStyle = LN(.15 + r() * .5); ctx.beginPath(); ctx.arc(r() * S, r() * S, (.6 + r() * 1.6) * u, 0, Math.PI * 2); ctx.fill(); }
+    ctx.strokeStyle = LN(.4); ctx.lineWidth = u;
+    for (let i = 0; i < 9; i++){ const x = r() * S, y = r() * S, s = (4 + r() * 4) * u; ctx.beginPath(); ctx.moveTo(x - s, y); ctx.lineTo(x + s, y); ctx.moveTo(x, y - s); ctx.lineTo(x, y + s); ctx.stroke(); }
+    for (let i = 0; i < 6; i++){ ctx.fillStyle = i % 2 ? LN(.7) : AC(.85); star4(ctx, r() * S, r() * S, (5 + r() * 7) * u); ctx.fill(); }
+  }
+
+  // positioned decorations — drawn in local units (1 unit = 1/1000 of the canvas at 100% size)
+  const deco = (key, fn) => {
+    if (!O[key]) return; const p = D.pos[key];
+    ctx.save(); ctx.translate(p.x * S / 100, p.y * S / 100);
+    if (p.r && !NO_ROT.has(key)) ctx.rotate(p.r * Math.PI / 180);
+    const sc = u * p.s / 100; ctx.scale(sc, sc);
+    ctx.save(); fn(); ctx.restore();
+    if (preview && HL === key && HIT[key]){
+      const [x0, y0, x1, y1] = HIT[key];
+      ctx.setLineDash([4 / sc, 4 / sc]); ctx.lineWidth = 1.2 / sc; ctx.strokeStyle = col(C.accent, .95);
+      ctx.strokeRect(x0, y0, x1 - x0, y1 - y0); ctx.setLineDash([]);
+    }
+    ctx.restore();
+  };
+
+  deco('orbit', () => {
+    ctx.lineWidth = 1.1;
+    [[640, 150, .5, 0], [700, 220, .28, 1], [560, 95, .38, 0]].forEach(([rx, ry, a, dash], i) => {
+      ctx.setLineDash(dash ? [5, 9] : []); ctx.strokeStyle = LN(a);
+      ctx.beginPath(); ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2); ctx.stroke();
+      const t = [-.7, 2.4, .9][i];
+      ctx.fillStyle = i === 0 ? AC(1) : LN(.8); ctx.beginPath(); ctx.arc(Math.cos(t) * rx, Math.sin(t) * ry, i === 0 ? 6 : 3.5, 0, Math.PI * 2); ctx.fill();
+    });
+    ctx.setLineDash([]);
+  });
+
+  deco('glow', () => {
+    ctx.globalCompositeOperation = 'screen';
+    let g = ctx.createRadialGradient(0, 0, 0, 0, 0, 280);
+    g.addColorStop(0, AC(.55)); g.addColorStop(.45, AC(.16)); g.addColorStop(1, AC(0));
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, 280, 0, Math.PI * 2); ctx.fill();
+    g = ctx.createRadialGradient(0, 0, 0, 0, 0, 70); g.addColorStop(0, LN(.35)); g.addColorStop(1, LN(0));
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, 70, 0, Math.PI * 2); ctx.fill();
+  });
+
+  deco('circle', () => {
+    ctx.lineWidth = 1.2; ctx.strokeStyle = LN(.3);
+    ctx.beginPath(); ctx.arc(0, 0, 270, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = LN(.14); ctx.beginPath(); ctx.arc(0, 0, 168, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = AC(1); ctx.beginPath(); ctx.arc(Math.cos(-.8) * 270, Math.sin(-.8) * 270, 8, 0, Math.PI * 2); ctx.fill();
+  });
+
+  deco('globe', () => {
+    const R = 130, tilt = -.36;
+    const ring = (rx, ry, a, dash, front) => {
+      ctx.save(); ctx.rotate(tilt); ctx.setLineDash(dash ? [4, 7] : []); ctx.strokeStyle = LN(a); ctx.lineWidth = 1.1;
+      ctx.beginPath(); ctx.ellipse(0, 0, rx, ry, 0, front ? 0 : Math.PI, front ? Math.PI : Math.PI * 2); ctx.stroke(); ctx.restore();
+    };
+    ring(R * 1.6, R * .36, .75, 0, false); ring(R * 1.85, R * .46, .4, 1, false);
+    const g = ctx.createRadialGradient(-R * .38, -R * .42, R * .08, 0, 0, R);
+    g.addColorStop(0, col('#ffffff', .55 * k)); g.addColorStop(.25, AC(.65)); g.addColorStop(.8, AC(.28)); g.addColorStop(1, AC(.12));
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2); ctx.fill();
+    ctx.save(); ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2); ctx.clip(); ctx.rotate(-.22);
+    ctx.strokeStyle = LN(.5); ctx.lineWidth = .9;
+    for (const d of [-60, -40, -20, 0, 20, 40, 60]){ const a = d * Math.PI / 180, y = R * Math.sin(a), rx = R * Math.cos(a); ctx.beginPath(); ctx.ellipse(0, y, rx, rx * .2, 0, 0, Math.PI * 2); ctx.stroke(); }
+    for (const d of [0, 30, 60, 90, 120, 150]){ const rx = Math.abs(R * Math.cos(d * Math.PI / 180)); ctx.beginPath(); ctx.ellipse(0, 0, Math.max(.5, rx), R, 0, 0, Math.PI * 2); ctx.stroke(); }
+    ctx.restore();
+    ctx.strokeStyle = LN(.9); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2); ctx.stroke();
+    ring(R * 1.6, R * .36, .9, 0, true); ring(R * 1.85, R * .46, .45, 1, true);
+    ctx.save(); ctx.rotate(tilt);
+    const sx = Math.cos(.55) * R * 1.6, sy = Math.sin(.55) * R * .36;
+    ctx.fillStyle = LN(1); ctx.beginPath(); ctx.arc(sx, sy, 5.5, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = AC(.9); ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(sx, sy, 11, 0, Math.PI * 2); ctx.stroke();
+    ctx.restore();
+    ctx.strokeStyle = LN(.6); ctx.lineWidth = 1;
+    [[-R * 1.35, -R * .95], [R * 1.25, R * 1.05], [R * 1.05, -R * 1.1]].forEach(([x, y]) => { ctx.beginPath(); ctx.moveTo(x - 6, y); ctx.lineTo(x + 6, y); ctx.moveTo(x, y - 6); ctx.lineTo(x, y + 6); ctx.stroke(); });
+    ctx.fillStyle = LN(.85); star4(ctx, -R * .52, -R * .55, 9); ctx.fill();
+  });
+
+  deco('ornament', () => {
+    const hex = r => { ctx.beginPath(); for (let i = 0; i < 6; i++){ const a = i * Math.PI / 3 - Math.PI / 2; const x = Math.cos(a) * r, y = Math.sin(a) * r; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.closePath(); };
+    ctx.lineWidth = 1.4; ctx.strokeStyle = LN(.9); hex(62); ctx.stroke();
+    ctx.lineWidth = 1; ctx.strokeStyle = LN(.55); hex(46); ctx.stroke();
+    for (let i = 0; i < 6; i++){ const a = i * Math.PI / 3 - Math.PI / 2; ctx.fillStyle = LN(.9); ctx.beginPath(); ctx.arc(Math.cos(a) * 62, Math.sin(a) * 62, 2.6, 0, Math.PI * 2); ctx.fill(); }
+    ctx.beginPath(); ctx.moveTo(0, -30); ctx.lineTo(20, 0); ctx.lineTo(0, 30); ctx.lineTo(-20, 0); ctx.closePath();
+    ctx.fillStyle = AC(.45); ctx.fill(); ctx.strokeStyle = AC(1); ctx.lineWidth = 1.3; ctx.stroke();
+    ctx.fillStyle = LN(1); ctx.beginPath(); ctx.arc(0, 0, 3.5, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = LN(.7); ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, -62); ctx.lineTo(0, -112); ctx.moveTo(0, 62); ctx.lineTo(0, 112); ctx.stroke();
+    [-118, 118].forEach(y => { ctx.beginPath(); ctx.moveTo(0, y - 6); ctx.lineTo(5, y); ctx.lineTo(0, y + 6); ctx.lineTo(-5, y); ctx.closePath(); ctx.fillStyle = LN(.9); ctx.fill(); });
+    ctx.lineWidth = 1.2; ctx.strokeStyle = LN(.75);
+    ctx.beginPath(); ctx.arc(0, 0, 92, -.75, .75); ctx.stroke();
+    ctx.beginPath(); ctx.arc(0, 0, 92, Math.PI - .75, Math.PI + .75); ctx.stroke();
+    ctx.strokeStyle = LN(.35);
+    ctx.beginPath(); ctx.arc(0, 0, 104, -.45, .45); ctx.stroke();
+    ctx.beginPath(); ctx.arc(0, 0, 104, Math.PI - .45, Math.PI + .45); ctx.stroke();
+  });
+
+  deco('hearts', () => {
+    [[0, 0, 26, 1], [46, -30, 13, 0], [-38, 30, 10, 0], [30, 36, 7, 1]].forEach(([x, y, s, fill]) => {
+      heart(ctx, x, y, s);
+      if (fill){ ctx.fillStyle = AC(.8); ctx.fill(); }
+      ctx.strokeStyle = LN(.9); ctx.lineWidth = 1.2; ctx.stroke();
+    });
+  });
+
+  deco('target', () => {
+    ctx.strokeStyle = LN(.9); ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.arc(0, 0, 34, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = LN(.4); ctx.setLineDash([2, 4]); ctx.beginPath(); ctx.arc(0, 0, 50, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+    ctx.strokeStyle = LN(.9); ctx.beginPath();
+    ctx.moveTo(-64, 0); ctx.lineTo(-14, 0); ctx.moveTo(14, 0); ctx.lineTo(64, 0); ctx.moveTo(0, -64); ctx.lineTo(0, -14); ctx.moveTo(0, 14); ctx.lineTo(0, 64); ctx.stroke();
+    ctx.lineWidth = 1.6; ctx.beginPath();
+    [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(([a, b]) => { ctx.moveTo(a * 76, b * 62); ctx.lineTo(a * 76, b * 76); ctx.lineTo(a * 62, b * 76); });
+    ctx.stroke();
+    ctx.fillStyle = AC(1); ctx.beginPath(); ctx.arc(0, 0, 4.5, 0, Math.PI * 2); ctx.fill();
+    setFont(ctx, iW, 10, iF);
+    const h = hash(M.title + M.artist), t1 = 'LOCK ' + pad2(M.track || 1), t2 = `${(h % 9000 / 100).toFixed(2)} / ${((h >>> 8) % 18000 / 100).toFixed(2)}`;
+    need(iF, iW, t1 + t2); ctx.fillStyle = LN(.8);
+    drawT(ctx, t1, 86, 70, 1.5, 'left'); ctx.fillStyle = LN(.5); drawT(ctx, t2, 86, 84, 1, 'left');
+  });
+
+  deco('sparkle', () => {
+    [[0, 0, 36, 'w'], [-52, 34, 15, 'a'], [40, -40, 11, 'a'], [56, 28, 7, 'w'], [-28, -46, 6, 'w']].forEach(([x, y, r, c]) => {
+      ctx.save(); ctx.shadowColor = AC(.9); ctx.shadowBlur = r * .9;
+      ctx.fillStyle = c === 'w' ? LN(.95) : AC(1); star4(ctx, x, y, r); ctx.fill(); ctx.restore();
+    });
+  });
+
+  deco('bignum', () => {
+    const t = pad2(M.track || '1'), sz = 360;
+    setFont(ctx, T.titleWeight, sz, T.titleFont); need(T.titleFont, T.titleWeight, t);
+    ctx.fillStyle = LN(.1); drawT(ctx, t, 0, sz * .74, -8, 'right');
+  });
+
+  deco('waveform', () => {
+    const W = 840, bh = 46, n = 96, P = getPeaks(n), bw = W / n, w = Math.max(1, bw * .42), ph = D.prog / 100;
+    for (let i = 0; i < n; i++){
+      const h = Math.max(.08, P[i]) * bh, x = -W / 2 + i * bw + (bw - w) / 2;
+      ctx.fillStyle = i / n < ph ? AC(.95) : LN(.5);
+      rr(ctx, x, -h / 2, w, h, w / 2); ctx.fill();
+    }
+  });
+
+  if (O.frame){ const m = 36 * u; ctx.strokeStyle = LN(.28); ctx.lineWidth = 1.2 * u; ctx.strokeRect(m, m, S - 2*m, S - 2*m); }
+
+  if (O.brackets){
+    const m = 52 * u, l = 30 * u;
+    ctx.strokeStyle = LN(.85); ctx.lineWidth = 2 * u; ctx.beginPath();
+    [[m, m, 1, 1], [S - m, m, -1, 1], [m, S - m, 1, -1], [S - m, S - m, -1, -1]].forEach(([x, y, sx, sy]) => { ctx.moveTo(x + sx * l, y); ctx.lineTo(x, y); ctx.lineTo(x, y + sy * l); });
+    ctx.stroke();
+    ctx.strokeStyle = LN(.5); ctx.lineWidth = 1.2 * u; ctx.beginPath();
+    [[S / 2, m], [S / 2, S - m], [m, S / 2], [S - m, S / 2]].forEach(([x, y]) => { ctx.moveTo(x - 7*u, y); ctx.lineTo(x + 7*u, y); ctx.moveTo(x, y - 7*u); ctx.lineTo(x, y + 7*u); });
+    ctx.stroke();
+  }
+
+  if (O.header){
+    setFont(ctx, iW, 12.5 * u, iF);
+    const left = (M.label || M.artist || '').toUpperCase(), right = [M.album, M.year].filter(Boolean).join('  ·  ').toUpperCase();
+    need(iF, iW, left + right);
+    ctx.fillStyle = TX(.75);
+    drawT(ctx, left, 80*u, 84*u, 1.4*u, 'left');
+    drawT(ctx, right, S - 80*u, 84*u, 1.4*u, 'right');
+    ctx.fillStyle = LN(.2); ctx.fillRect(80*u, 102*u, S - 160*u, Math.max(1, u));
+    ctx.fillStyle = AC(1); ctx.beginPath(); ctx.arc(80*u, 102.5*u, 2.6*u, 0, Math.PI * 2); ctx.fill();
+  }
+
+  if (O.side){
+    const t = [M.title, M.artist, M.year].filter(Boolean).join('   —   ').toUpperCase();
+    setFont(ctx, iW, 10.5 * u, iF); need(iF, iW, t);
+    ctx.save(); ctx.translate(S - 64*u, S/2); ctx.rotate(Math.PI / 2);
+    ctx.fillStyle = TX(.5); drawT(ctx, t, 0, 3.5*u, 1.6*u, 'center'); ctx.restore();
+  }
+
+  drawTextBlock(ctx, S);
+
+  deco('percent', () => {
+    const v = Math.round(D.pct);
+    setFont(ctx, iW, 11, iF); const lab = (D.pctLabel || '').toUpperCase(); need(iF, iW, lab);
+    ctx.fillStyle = LN(.7); drawT(ctx, lab, 0, 0, 2.2, 'left');
+    setFont(ctx, '700', 54, iF); need(iF, '700', v + '%');
+    ctx.fillStyle = TX(1); const w = drawT(ctx, String(v), 0, 56, -1, 'left');
+    setFont(ctx, '500', 24, iF); ctx.fillStyle = AC(1); drawT(ctx, '%', w + 4, 56, 0, 'left');
+    for (let i = 0; i < 12; i++){ ctx.fillStyle = i < Math.round(v / 100 * 12) ? AC(1) : LN(.22); rr(ctx, i * 13, 70, 9, 6, 1.5); ctx.fill(); }
+  });
+
+  deco('tags', () => {
+    const items = String(D.tagText || '').split(/\s*[·,|]\s*/).filter(Boolean).slice(0, 6);
+    setFont(ctx, iW, 11, iF); need(iF, iW, items.join('').toUpperCase());
+    let x = 0;
+    items.forEach((t, i) => {
+      t = t.toUpperCase(); const tw = textW(ctx, t, 1.6), dot = i === 0 ? 12 : 0, w = tw + 22 + dot;
+      rr(ctx, x, -16, w, 24, 12); ctx.strokeStyle = LN(.75); ctx.lineWidth = 1; ctx.stroke();
+      if (i === 0){ ctx.fillStyle = AC(1); ctx.beginPath(); ctx.arc(x + 13, -4, 3.5, 0, Math.PI * 2); ctx.fill(); }
+      ctx.fillStyle = TX(.9); drawT(ctx, t, x + 11 + dot, 0, 1.6, 'left');
+      x += w + 7;
+    });
+  });
+
+  deco('progress', () => {
+    const W = 600, ph = D.prog / 100, dur = AU.duration || 210;
+    setFont(ctx, iW, 11, iF); const a = fmtTime(dur * ph), b = fmtTime(dur); need(iF, iW, '0123456789:');
+    ctx.fillStyle = TX(.75); drawT(ctx, a, -W / 2, 4, 1, 'left'); drawT(ctx, b, W / 2, 4, 1, 'right');
+    const x0 = -W / 2 + 48, x1 = W / 2 - 48, xp = x0 + (x1 - x0) * ph;
+    ctx.lineCap = 'round'; ctx.lineWidth = 2.5;
+    ctx.strokeStyle = LN(.28); ctx.beginPath(); ctx.moveTo(x0, 0); ctx.lineTo(x1, 0); ctx.stroke();
+    ctx.strokeStyle = AC(1); ctx.beginPath(); ctx.moveTo(x0, 0); ctx.lineTo(xp, 0); ctx.stroke();
+    ctx.lineCap = 'butt';
+    ctx.fillStyle = LN(1); ctx.beginPath(); ctx.arc(xp, 0, 7, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = TX(.9);
+    const tri = (x, y, s, dir) => { ctx.beginPath(); ctx.moveTo(x - dir * s * .6, y - s); ctx.lineTo(x + dir * s * .8, y); ctx.lineTo(x - dir * s * .6, y + s); ctx.closePath(); ctx.fill(); };
+    tri(2, 38, 10, 1);
+    tri(-56, 38, 7, -1); tri(-66, 38, 7, -1); ctx.fillRect(-77, 31, 2.2, 14);
+    tri(56, 38, 7, 1); tri(66, 38, 7, 1); ctx.fillRect(75, 31, 2.2, 14);
+    ctx.strokeStyle = LN(.6); ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(0, 38, 22, 0, Math.PI * 2); ctx.stroke();
+  });
+
+  deco('barcode', () => {
+    const bw = 130, bh = 36, r = rng(hash(M.catalog || M.title)); let cx = -bw;
+    ctx.fillStyle = TX(.85);
+    while (cx < 0){ const w = (r() < .55 ? 1 : r() < .75 ? 2 : 3) * 1.3; if (r() > .38) ctx.fillRect(cx, -16 - bh, Math.min(w, -cx), bh); cx += w + 1.3; }
+    setFont(ctx, iW, 9.5, iF); const ct = (M.catalog || '').toUpperCase(); need(iF, iW, ct);
+    ctx.fillStyle = TX(.65); drawT(ctx, ct, -bw, 0, 2, 'left');
+  });
+
+  deco('explicit', () => {
+    setFont(ctx, '600', 10.5, iF); need(iF, '600', 'EXPLICIT');
+    const tw = textW(ctx, 'EXPLICIT', 2), bw = tw + 22, bh = 24;
+    rr(ctx, -bw, -bh, bw, bh, 4); ctx.strokeStyle = TX(.8); ctx.lineWidth = 1.2; ctx.stroke();
+    ctx.fillStyle = TX(.85); drawT(ctx, 'EXPLICIT', -bw / 2, -bh / 2 + 3.8, 2, 'center');
+  });
+
+  if (O.grain){
+    const p = ctx.createPattern(noiseCanvas(), 'repeat');
+    if (p){
+      if (p.setTransform && typeof DOMMatrix !== 'undefined') p.setTransform(new DOMMatrix().scale(u * .8));
+      ctx.save(); ctx.globalCompositeOperation = 'overlay'; ctx.globalAlpha = .1 * k; ctx.fillStyle = p; ctx.fillRect(0, 0, S, S); ctx.restore();
+    }
+  }
+  ctx.restore();
+}
+
+function drawTextBlock(ctx, S){
+  const u = S / 1000, T = state.text, M = state.meta, SH = state.show, C = state.cover, D = state.design;
+  const L = T.layout, align = L === 'tr' ? 'right' : (L === 'bc' || L === 'center') ? 'center' : 'left';
+  const x = align === 'left' ? 80*u : align === 'right' ? S - 80*u : S / 2;
+  const maxW = (align === 'center' ? .76 : .64) * S;
+  const tU = s => T.titleCase === 'upper' ? s.toLocaleUpperCase() : s;
+  const iU = s => T.infoCase === 'upper' ? s.toLocaleUpperCase() : s;
+  const tsz = T.titleSize * u, isz = T.infoSize * u, asz = tsz * T.artistScale / 100;
+  const tF = T.titleFont, iF = T.infoFont, tW = T.titleWeight, iW = T.infoWeight;
+  const tSp = T.titleTrack / 100 * tsz, iSp = T.infoTrack / 100 * isz, aSp = Math.max(0, T.titleTrack) / 100 * asz;
+  const items = [], lg = (T.lineGap ?? 100) / 100, LH = (base, extra) => base + extra * lg;
+  const kick = [SH.track && M.track ? `TRACK ${pad2(M.track)}${M.trackTotal ? ' / ' + pad2(M.trackTotal) : ''}` : '', SH.genre && M.genre ? M.genre : ''].filter(Boolean).join('   ·   ');
+  if (kick) items.push({t: iU(kick), f: iF, w: iW, s: isz, sp: iSp, c: C.accent, a: 1, gap: 0, lh: isz * LH(1.05, .2)});
+  setFont(ctx, tW, tsz, tF);
+  wrap(ctx, tU(M.title || 'Untitled'), maxW, tSp, 3).forEach((t, i) => items.push({t, f: tF, w: tW, s: tsz, sp: tSp, c: C.text, a: 1, gap: i === 0 && items.length ? isz * .8 * lg : 0, lh: tsz * LH(.88, .12)}));
+  if (SH.artist && M.artist){
+    const at = M.artist + (SH.feat && M.feat ? ` (feat. ${M.feat})` : '');
+    const aw = String(Math.min(+tW, 500));
+    setFont(ctx, aw, asz, tF);
+    wrap(ctx, tU(at), maxW, aSp, 2).forEach((t, i) => items.push({t, f: tF, w: aw, s: asz, sp: aSp, c: C.text, a: .9, gap: i === 0 ? asz * .3 * lg : 0, lh: asz * LH(1.02, .14)}));
+  }
+  const rows = [
+    [SH.album && M.album, SH.year && M.year].filter(Boolean).join('  —  '),
+    [SH.label && M.label, SH.catalog && M.catalog].filter(Boolean).join('  /  '),
+    [SH.bpm && M.bpm && `${M.bpm} BPM`, SH.key && M.key, SH.duration && AU.duration ? fmtTime(AU.duration) : ''].filter(Boolean).join('  ·  ')
+  ].filter(Boolean);
+  setFont(ctx, iW, isz, iF);
+  let first = true;
+  rows.forEach(r => wrap(ctx, iU(r), maxW, iSp, 2).forEach(t => { items.push({t, f: iF, w: iW, s: isz, sp: iSp, c: C.text, a: .8, gap: first ? isz * 1.15 * lg : isz * .1 * lg, lh: isz * LH(1.08, .2)}); first = false; }));
+  if (SH.copyright && M.copyright){
+    const cs = isz * .82; setFont(ctx, iW, cs, iF);
+    wrap(ctx, M.copyright, maxW, iSp * .8, 2).forEach((t, i) => items.push({t, f: iF, w: iW, s: cs, sp: iSp * .8, c: C.text, a: .55, gap: i === 0 ? isz * .7 * lg : 0, lh: cs * LH(1.05, .2)}));
+  }
+  const H = items.reduce((a, it) => a + it.gap + it.lh, 0);
+  let y = L[0] === 't' ? (D.on.header ? 140 : 88) * u : L === 'center' ? (S - H) / 2 : S - 80*u - H;
+  ctx.save();
+  if (T.shadow){ ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = 24 * u; ctx.shadowOffsetY = 4 * u; }
+  for (const it of items){
+    y += it.gap;
+    setFont(ctx, it.w, it.s, it.f); need(it.f, it.w, it.t);
+    ctx.fillStyle = col(it.c, it.a);
+    drawT(ctx, it.t, x, y + it.lh * .8, it.sp, align);
+    y += it.lh;
+  }
+  ctx.restore();
+}
+
+/* ================= preview ================= */
+const pv = $('#preview'), pctx = pv.getContext('2d');
+let rq = 0;
+function scheduleRender(){ if (rq) return; rq = requestAnimationFrame(() => { rq = 0; render(pctx, pv.width, true); }); }
+
+/* ================= UI build ================= */
+function buildMeta(){
+  $('#metaGroups').innerHTML = META_GROUPS.map(([ko, fields]) => `
+    <div class="sec"><div class="sec-h"><h3>${ko}</h3></div>
+    <div class="grid2">${fields.map(([k, lab, full, ta]) => `
+      <div class="field${full ? ' full' : ''}"><label for="m-${k}">${lab}</label>
+      ${ta ? `<textarea id="m-${k}" data-bind="meta.${k}" rows="${k === 'lyrics' ? 5 : 3}"></textarea>` : `<input type="text" id="m-${k}" data-bind="meta.${k}" autocomplete="off"${['track','trackTotal','disc','year','bpm'].includes(k) ? ' inputmode="numeric"' : ''}>`}
+      </div>`).join('')}</div></div>`).join('');
+}
+function buildFonts(){
+  $$('.font-select').forEach(sel => { sel.innerHTML = FONTS.map(([f,, lab]) => `<option value="${esc(f)}">${esc(lab || f)}</option>`).join(''); });
+}
+function buildDecos(){
+  const groups = {};
+  DECOS.forEach(d => (groups[d[3]] = groups[d[3]] || []).push(d));
+  const rg = (path, lab, min, max, step, fmt) => `<div class="range"><span class="lbl">${lab}</span><input type="range" min="${min}" max="${max}" step="${step}" data-bind="${path}"><output data-out="${path}" data-fmt="${fmt}"></output></div>`;
+  $('#decoList').innerHTML = Object.entries(groups).map(([g, list]) => `
+    <div class="dgroup"><div class="dgroup-h">${g}</div><div class="dlist">${list.map(([k, n, desc, , pos, extra]) => `
+      <div class="ditem" data-key="${k}">
+        <div class="drow">
+          <span class="dico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">${IC[k] || ''}</svg></span>
+          <span class="dname"><b>${n}</b><small>${desc}</small></span>
+          ${pos || extra ? `<button class="adj" data-adj="${k}">조정 <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m2 3.5 3 3 3-3"/></svg></button>` : ''}
+          <label class="sw"><input type="checkbox" data-bind="design.on.${k}" aria-label="${n}"><span></span></label>
+        </div>
+        ${pos || extra ? `<div class="dsub">
+          ${(extra || []).map(([f, lab, type, a, b, st]) => type === 'range' ? rg(`design.${f}`, lab, a, b, st, 'int') : `<input class="inp" type="text" data-bind="design.${f}" placeholder="${lab}" aria-label="${lab}">`).join('')}
+          ${pos ? rg(`design.pos.${k}.x`, '가로', 0, 100, .5, 'int') + rg(`design.pos.${k}.y`, '세로', 0, 100, .5, 'int') + rg(`design.pos.${k}.s`, '크기', 30, 260, 1, 'pct') + (NO_ROT.has(k) ? '' : rg(`design.pos.${k}.r`, '회전', -180, 180, 1, 'deg')) : ''}
+          ${pos ? `<button class="link" data-posreset="${k}" style="margin-bottom:4px">위치 초기화</button>` : ''}
+        </div>` : ''}
+      </div>`).join('')}</div></div>`).join('');
+  $('#showChips').innerHTML = SHOW_LIST.map(([k, n]) => `<label class="chipt"><input type="checkbox" data-bind="show.${k}"><span>${n}</span></label>`).join('');
+}
+const FMT = {
+  x: v => (+v).toFixed(2) + '×', off: v => (v > 0 ? '+' : '') + Math.round(v * 100), pct: v => Math.round(v) + '%',
+  int: v => (Math.round(v * 10) / 10).toString(), hex: v => String(v).toUpperCase(), deg: v => Math.round(v) + '°'
+};
+function updateOut(p){ $$(`[data-out="${p}"]`).forEach(o => { const f = FMT[o.dataset.fmt] || (v => v); o.textContent = f(getPath(p)); }); }
+function syncUI(){
+  $$('[data-bind]').forEach(el => {
+    const v = getPath(el.dataset.bind);
+    if (el.type === 'checkbox') el.checked = !!v;
+    else if (document.activeElement !== el || el.type === 'range' || el.type === 'color') el.value = v ?? '';
+  });
+  $$('[data-out]').forEach(o => updateOut(o.dataset.out));
+  $$('[data-set]').forEach(b => b.classList.toggle('on', String(getPath(b.dataset.set)) === b.dataset.val));
+  $$('[data-fold]').forEach(b => b.hidden = !getPath(b.dataset.fold));
+  $$('.ditem').forEach(d => d.classList.toggle('is-on', !!state.design.on[d.dataset.key]));
+  updatePlayerMeta();
+}
+
+document.addEventListener('input', e => {
+  const el = e.target, p = el.dataset && el.dataset.bind; if (!p) return;
+  const v = el.type === 'checkbox' ? el.checked : el.type === 'range' ? parseFloat(el.value) : el.value;
+  setPath(p, v);
+  if (el.type === 'color' || el.type === 'checkbox') syncUI(); else updateOut(p);
+  if (p.startsWith('meta.')) updatePlayerMeta();
+  scheduleRender();
+});
+document.addEventListener('click', e => {
+  const s = e.target.closest('[data-set]');
+  if (s){ setPath(s.dataset.set, s.dataset.val); syncUI(); scheduleRender(); return; }
+  const adj = e.target.closest('[data-adj]');
+  if (adj){ adj.closest('.ditem').classList.toggle('open'); return; }
+  const pr = e.target.closest('[data-posreset]');
+  if (pr){ const k = pr.dataset.posreset; state.design.pos[k] = {...DECOS.find(d => d[0] === k)[4]}; syncUI(); scheduleRender(); return; }
+  const rs = e.target.closest('[data-reset]');
+  if (rs){
+    if (rs.dataset.reset === 'transform') Object.assign(state.cover, {zoom:1, ox:0, oy:0});
+    else Object.assign(state.cover, {bright:100, contrast:100, sat:100, gray:0, blur:0, opacity:100});
+    syncUI(); scheduleRender();
+  }
+});
+$('#allOn').onclick = () => { DECOS.forEach(([k]) => state.design.on[k] = true); syncUI(); scheduleRender(); };
+$('#allOff').onclick = () => { DECOS.forEach(([k]) => state.design.on[k] = false); syncUI(); scheduleRender(); };
+
+$$('.tab').forEach(t => t.onclick = () => {
+  $$('.tab').forEach(x => x.classList.toggle('active', x === t));
+  $$('.pane').forEach(p => p.hidden = p.dataset.pane !== t.dataset.tab);
+});
+$$('.nav-item').forEach(n => n.onclick = () => {
+  $$('.nav-item').forEach(x => x.classList.toggle('active', x === n));
+  $('#view-cover').hidden = n.dataset.view !== 'cover';
+  $('#view-video').hidden = n.dataset.view !== 'video';
+  if (n.dataset.view === 'cover') requestAnimationFrame(drawPlayer);
+});
+(function(){
+  const saved = lsGet('mmc-theme'); if (saved) document.documentElement.dataset.theme = saved;
+  $('#themeBtn').onclick = () => {
+    const cur = document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next; lsSet('mmc-theme', next); drawPlayer();
+  };
+})();
+
+/* ================= saved decoration sets ================= */
+const SET_KEY = 'mmc-deco-sets';
+function loadSets(){ try { const a = JSON.parse(lsGet(SET_KEY) || '[]'); return Array.isArray(a) ? a : []; } catch(e){ return []; } }
+function storeSets(a){ if (!lsSet(SET_KEY, JSON.stringify(a))) toast('이 브라우저에서는 저장이 막혀 있어요 · 파일로 내보내기를 써 주세요'); }
+function snapshot(){
+  const c = state.cover;
+  return {design: clone(state.design), text: clone(state.text), show: clone(state.show),
+    cover: {bg:c.bg, text:c.text, deco:c.deco, accent:c.accent, tintOn:c.tintOn, tint:c.tint, tintAmt:c.tintAmt, tintMode:c.tintMode}};
+}
+function applySnapshot(d){
+  if (!d) return;
+  if (d.design) mergeInto(state.design, d.design);
+  if (d.text){
+    mergeInto(state.text, d.text);
+    if (!FONTS.some(f => f[0] === state.text.titleFont)) state.text.titleFont = DEFAULT_TEXT.titleFont;
+    if (!FONTS.some(f => f[0] === state.text.infoFont)) state.text.infoFont = DEFAULT_TEXT.infoFont;
+  }
+  if (d.show) mergeInto(state.show, d.show);
+  if (d.cover) mergeInto(state.cover, d.cover);
+  syncUI(); scheduleRender();
+}
+function renderSets(){
+  const sets = loadSets(), el = $('#setList');
+  if (!sets.length){ el.innerHTML = '<div class="sets-empty">아직 저장한 세트가 없어요</div>'; return; }
+  el.innerHTML = sets.map((s, i) => `<div class="setrow"><b title="${esc(s.name)}">${esc(s.name)}</b>
+    <button class="btn sm" data-apply="${i}" style="height:24px">적용</button><button class="x" data-del="${i}" aria-label="삭제">×</button></div>`).join('');
+}
+$('#btnSaveSet').onclick = () => {
+  const sets = loadSets();
+  const name = $('#setName').value.trim() || '내 세트 ' + (sets.length + 1);
+  const entry = {name, data: snapshot()};
+  const ex = sets.findIndex(s => s.name === name);
+  if (ex >= 0) sets[ex] = entry; else sets.unshift(entry);
+  storeSets(sets); renderSets(); $('#setName').value = '';
+  toast(ex >= 0 ? `'${name}' 세트를 덮어썼어요` : `'${name}' 세트를 저장했어요`);
+};
+$('#setName').addEventListener('keydown', e => { if (e.key === 'Enter') $('#btnSaveSet').click(); });
+$('#setList').addEventListener('click', e => {
+  const a = e.target.closest('[data-apply]'), d = e.target.closest('[data-del]'), sets = loadSets();
+  if (a){ const s = sets[+a.dataset.apply]; if (s){ applySnapshot(s.data); toast(`'${s.name}' 세트를 적용했어요`); } }
+  if (d){ const s = sets.splice(+d.dataset.del, 1)[0]; storeSets(sets); renderSets(); if (s) toast(`'${s.name}' 세트를 지웠어요`); }
+});
+$('#btnExportSets').onclick = () => {
+  const sets = loadSets();
+  const payload = {app:'momo-music-cloud', version:1, sets: sets.length ? sets : [{name:'현재 꾸밈', data: snapshot()}]};
+  download(new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'}), 'momo-deco-sets.json');
+};
+$('#inSets').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  try {
+    const j = JSON.parse(await f.text());
+    const incoming = Array.isArray(j) ? j : Array.isArray(j.sets) ? j.sets : j.data ? [j] : [];
+    const valid = incoming.filter(s => s && s.data && s.name);
+    if (!valid.length) throw 0;
+    const sets = loadSets();
+    valid.forEach(s => { const i = sets.findIndex(x => x.name === s.name); if (i >= 0) sets[i] = s; else sets.push(s); });
+    storeSets(sets); renderSets(); toast(`세트 ${valid.length}개를 불러왔어요`);
+  } catch(err){ toast('세트 파일을 읽을 수 없어요'); }
+});
+$('#btnResetDeco').onclick = () => {
+  state.design = defaultDesign(); state.text = clone(DEFAULT_TEXT); state.show = clone(DEFAULT_SHOW);
+  ['bg','text','deco','accent','tintOn','tint','tintAmt','tintMode'].forEach(k => state.cover[k] = DEFAULT_COVER[k]);
+  syncUI(); scheduleRender(); toast('꾸밈을 처음 상태로 되돌렸어요');
+};
+
+/* ================= files ================= */
+function setupDrop(el, handler){
+  const input = el.querySelector('input[type=file]');
+  input.addEventListener('change', () => { if (input.files[0]) handler(input.files[0]); input.value = ''; });
+  el.addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); el.classList.add('over'); });
+  el.addEventListener('dragleave', () => el.classList.remove('over'));
+  el.addEventListener('drop', e => { e.preventDefault(); e.stopPropagation(); el.classList.remove('over'); const f = e.dataTransfer.files[0]; if (f) handler(f); });
+}
+const isMp3 = f => /\.mp3$/i.test(f.name) || f.type === 'audio/mpeg' || f.type === 'audio/mp3';
+const isFont = f => /\.(ttf|otf|woff2?)$/i.test(f.name);
+function routeFile(f){
+  if (isMp3(f)) loadMp3(f);
+  else if (f.type.startsWith('image/')) loadImageFile(f);
+  else if (isFont(f)) loadFont(f);
+  else toast('MP3, 이미지, 폰트 파일만 지원해요');
+}
+window.addEventListener('dragover', e => e.preventDefault());
+window.addEventListener('drop', e => { e.preventDefault(); const f = e.dataTransfer && e.dataTransfer.files[0]; if (f) routeFile(f); });
+setupDrop($('#dropAudio'), f => isMp3(f) ? loadMp3(f) : toast('MP3 파일을 넣어 주세요'));
+setupDrop($('#dropImage'), f => f.type.startsWith('image/') ? loadImageFile(f) : toast('이미지 파일을 넣어 주세요'));
+$('#inFont').addEventListener('change', e => { const f = e.target.files[0]; if (f) loadFont(f); e.target.value = ''; });
+
+function loadImageBlob(blob, name){
+  return new Promise(res => {
+    const url = URL.createObjectURL(blob), im = new Image();
+    im.onload = () => {
+      if (IMG.url) URL.revokeObjectURL(IMG.url);
+      IMG.el = im; IMG.name = name; IMG.url = url;
+      Object.assign(state.cover, {zoom:1, ox:0, oy:0});
+      updateImgUI(); syncUI(); scheduleRender(); res(true);
+    };
+    im.onerror = () => { URL.revokeObjectURL(url); toast('이미지를 열 수 없어요'); res(false); };
+    im.src = url;
+  });
+}
+const loadImageFile = f => loadImageBlob(f, f.name).then(ok => ok && toast('이미지를 커버에 적용했어요'));
+const IMG_ICON = '<svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><circle cx="5.5" cy="6.5" r="1.3"/><path d="m2 12 4-4 3 3 2-2 3.5 3.5"/></svg>';
+function updateImgUI(){
+  $('#imgThumb').innerHTML = IMG.el ? `<img src="${IMG.url}" alt="">` : IMG_ICON;
+  $('#imgName').textContent = IMG.el ? IMG.name : '이미지 불러오기';
+  $('#btnRemoveImg').hidden = !IMG.el;
+  $('#btnUseEmbedded').hidden = !AU.pic;
+  $('#canvasWrap').classList.toggle('grab', !!IMG.el && !LOCK.img);
+}
+$('#btnRemoveImg').onclick = () => { if (IMG.url) URL.revokeObjectURL(IMG.url); IMG.el = null; IMG.url = null; updateImgUI(); scheduleRender(); };
+$('#btnUseEmbedded').onclick = () => { if (AU.pic) loadImageBlob(new Blob([AU.pic.data], {type: AU.pic.mime}), '내장 커버'); };
+
+let fontCount = 0;
+async function loadFont(f){
+  try {
+    const name = 'Custom ' + (++fontCount) + ' ' + f.name.replace(/\.[^.]+$/, '');
+    const ff = new FontFace(name, await f.arrayBuffer());
+    await ff.load(); document.fonts.add(ff);
+    FONTS.push([name, 'sans-serif', '내 폰트 · ' + f.name.replace(/\.[^.]+$/, '')]); buildFonts();
+    state.text.titleFont = name; syncUI(); scheduleRender();
+    toast('폰트를 추가하고 제목에 적용했어요');
+  } catch(e){ toast('폰트 파일을 읽을 수 없어요'); }
+}
+
+/* ================= audio ================= */
+const audio = new Audio(); audio.preload = 'auto';
+async function loadMp3(f){
+  try {
+    const ab = await f.arrayBuffer();
+    const tag = parseID3(ab);
+    AU.file = f; AU.buf = ab; AU.tag = tag; AU.pic = tag.pic; AU.peaks = null; AU.duration = 0;
+    state.meta = metaFromTag(tag, f.name); AU.origMeta = {...state.meta};
+    if (AU.url) URL.revokeObjectURL(AU.url);
+    AU.url = URL.createObjectURL(f); audio.src = AU.url;
+    $('#audioName').textContent = f.name;
+    $('#audioSub').textContent = '다른 파일을 넣으면 교체돼요';
+    $('#fileChip').textContent = f.name;
+    $('#playBtn').disabled = false; $('#btnReloadMeta').disabled = false;
+    if (tag.pic && !IMG.el) await loadImageBlob(new Blob([tag.pic.data], {type: tag.pic.mime}), '내장 커버');
+    updateImgUI(); syncUI(); scheduleRender(); renderStats();
+    toast(tag.ver ? `ID3v2.${tag.ver} 태그를 불러왔어요` : '태그가 없는 파일이라 기본값으로 채웠어요');
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      const ac = new AC(); const dec = await ac.decodeAudioData(ab.slice(0)); if (ac.close) ac.close();
+      AU.duration = dec.duration; AU.peaks = computePeaks(dec, 600);
+    } catch(e){}
+    renderStats(); drawPlayer(); scheduleRender();
+  } catch(e){ console.error(e); toast('MP3 파일을 읽지 못했어요'); }
+}
+function computePeaks(buf, N){
+  const a = buf.getChannelData(0), b = buf.numberOfChannels > 1 ? buf.getChannelData(1) : null;
+  const step = Math.max(1, Math.floor(a.length / N)), out = new Float32Array(N); let max = 0;
+  for (let i = 0; i < N; i++){
+    let m = 0; const s = i * step, e = Math.min(s + step, a.length);
+    for (let j = s; j < e; j += 8){ const v = Math.abs(b ? (a[j] + b[j]) / 2 : a[j]); if (v > m) m = v; }
+    out[i] = m; if (m > max) max = m;
+  }
+  if (max > 0) for (let i = 0; i < N; i++) out[i] /= max;
+  return out;
+}
+function renderStats(){
+  const el = $('#fileStats'); if (!AU.file){ el.hidden = true; return; }
+  el.hidden = false;
+  el.innerHTML = [AU.tag.ver ? 'ID3v2.' + AU.tag.ver : '태그 없음', fmtBytes(AU.file.size), AU.duration ? fmtTime(AU.duration) : null, AU.pic ? '커버 있음' : '커버 없음'].filter(Boolean).map(s => `<span>${s}</span>`).join('');
+}
+audio.addEventListener('loadedmetadata', () => { if (!AU.duration && isFinite(audio.duration)){ AU.duration = audio.duration; renderStats(); scheduleRender(); } drawPlayer(); });
+audio.addEventListener('play', () => { $('#icPlay').style.display = 'none'; $('#icPause').style.display = ''; $('#playBtn').setAttribute('aria-label','일시정지'); loop(); });
+audio.addEventListener('pause', () => { $('#icPlay').style.display = ''; $('#icPause').style.display = 'none'; $('#playBtn').setAttribute('aria-label','재생'); drawPlayer(); });
+audio.addEventListener('ended', drawPlayer);
+$('#playBtn').onclick = () => { if (!AU.url) return; audio.paused ? audio.play().catch(() => toast('재생할 수 없는 파일이에요')) : audio.pause(); };
+function loop(){ drawPlayer(); if (!audio.paused) requestAnimationFrame(loop); }
+const wave = $('#plWave');
+wave.addEventListener('pointerdown', e => {
+  const dur = audio.duration || AU.duration; if (!AU.url || !dur) return;
+  const r = wave.getBoundingClientRect(); audio.currentTime = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * dur; drawPlayer();
+});
+function drawPlayer(){
+  const dpr = window.devicePixelRatio || 1, w = wave.clientWidth, h = wave.clientHeight; if (!w) return;
+  if (wave.width !== Math.round(w * dpr)){ wave.width = Math.round(w * dpr); wave.height = Math.round(h * dpr); }
+  const x = wave.getContext('2d'); x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, h);
+  const cs = getComputedStyle(document.documentElement);
+  const cText = cs.getPropertyValue('--text').trim(), cLine = cs.getPropertyValue('--line-2').trim(), cAcc = cs.getPropertyValue('--accent').trim();
+  const n = Math.max(20, Math.floor(w / 3)), dur = audio.duration || AU.duration || 0;
+  const prog = dur ? audio.currentTime / dur : 0;
+  const P = AU.peaks ? getPeaks(n) : null;
+  for (let i = 0; i < n; i++){
+    const v = P ? Math.max(.06, P[i]) : .08, bh = v * (h - 4);
+    x.fillStyle = !P ? cLine : (i / n < prog ? cText : cLine);
+    x.fillRect(i * 3, (h - bh) / 2, 2, bh);
+  }
+  if (P && dur){ x.fillStyle = cAcc; x.fillRect(Math.min(w - 2, prog * w), 2, 2, h - 4); }
+  $('#plTime').textContent = `${fmtTime(audio.currentTime || 0)} / ${fmtTime(dur)}`;
+}
+function updatePlayerMeta(){
+  if (!AU.file) return;
+  $('#plTitle').textContent = state.meta.title || AU.file.name;
+  $('#plArtist').textContent = [state.meta.artist, state.meta.album].filter(Boolean).join(' — ');
+}
+window.addEventListener('resize', drawPlayer);
+
+/* ================= canvas interaction ================= */
+const wrapEl = $('#canvasWrap');
+function canvasPoint(e){ const r = pv.getBoundingClientRect(); return {x: (e.clientX - r.left) / r.width * 1000, y: (e.clientY - r.top) / r.height * 1000, r}; }
+function hitDeco(pt){
+  const D = state.design;
+  const keys = Object.keys(HIT).filter(k => D.on[k]).sort((a, b) => {
+    const A = HIT[a], B = HIT[b];
+    return (A[2]-A[0]) * (A[3]-A[1]) * D.pos[a].s * D.pos[a].s - (B[2]-B[0]) * (B[3]-B[1]) * D.pos[b].s * D.pos[b].s;
+  });
+  for (const k of keys){
+    const p = D.pos[k], sc = p.s / 100;
+    let dx = pt.x - p.x * 10, dy = pt.y - p.y * 10;
+    if (p.r && !NO_ROT.has(k)){ const a = -p.r * Math.PI / 180, c = Math.cos(a), s_ = Math.sin(a); [dx, dy] = [dx * c - dy * s_, dx * s_ + dy * c]; }
+    dx /= sc; dy /= sc;
+    const [x0, y0, x1, y1] = HIT[k];
+    if (dx >= x0 && dx <= x1 && dy >= y0 && dy <= y1) return k;
+  }
+  return null;
+}
+function setHL(k){ if (HL !== k){ HL = k; scheduleRender(); } wrapEl.classList.toggle('move', !!k); }
+const LOCK = {img:true, deco:true};
+function updateLocks(){
+  [['lockImg','img','이미지'],['lockDeco','deco','꾸밈']].forEach(([id, k, n]) => {
+    const b = $('#' + id); b.classList.toggle('unlocked', !LOCK[k]);
+    b.setAttribute('aria-pressed', String(!LOCK[k])); b.querySelector('span').textContent = n + (LOCK[k] ? ' 잠금' : ' 이동 중');
+  });
+  wrapEl.classList.toggle('grab', !!IMG.el && !LOCK.img);
+  if (LOCK.deco) setHL(null);
+}
+$('#lockImg').onclick = () => { LOCK.img = !LOCK.img; updateLocks(); toast(LOCK.img ? '이미지를 잠갔어요' : '이제 이미지를 끌어서 옮길 수 있어요'); };
+$('#lockDeco').onclick = () => { LOCK.deco = !LOCK.deco; updateLocks(); toast(LOCK.deco ? '꾸밈을 잠갔어요' : '이제 꾸밈을 끌어서 옮길 수 있어요'); };
+let drag = null;
+pv.addEventListener('pointerdown', e => {
+  const pt = canvasPoint(e), k = LOCK.deco ? null : hitDeco(pt);
+  if (k){
+    drag = {kind:'deco', key:k, x:e.clientX, y:e.clientY, px:state.design.pos[k].x, py:state.design.pos[k].y};
+    setHL(k); const it = $(`.ditem[data-key="${k}"]`); if (it) it.classList.add('open');
+  } else if (IMG.el && !LOCK.img){
+    drag = {kind:'img', x:e.clientX, y:e.clientY, ox:state.cover.ox, oy:state.cover.oy};
+    wrapEl.classList.add('grabbing');
+  } else return;
+  pv.setPointerCapture(e.pointerId);
+});
+pv.addEventListener('pointermove', e => {
+  if (!drag){ setHL(LOCK.deco ? null : hitDeco(canvasPoint(e))); return; }
+  const r = pv.getBoundingClientRect();
+  if (drag.kind === 'deco'){
+    const p = state.design.pos[drag.key];
+    p.x = Math.round(Math.max(0, Math.min(100, drag.px + (e.clientX - drag.x) / r.width * 100)) * 2) / 2;
+    p.y = Math.round(Math.max(0, Math.min(100, drag.py + (e.clientY - drag.y) / r.height * 100)) * 2) / 2;
+  } else {
+    const im = IMG.el, z = state.cover.zoom;
+    const sc = Math.max(1 / im.naturalWidth, 1 / im.naturalHeight) * z;
+    const sx = im.naturalWidth * sc - 1, sy = im.naturalHeight * sc - 1;
+    if (sx > 0.0005) state.cover.ox = Math.max(-1, Math.min(1, drag.ox + 2 * (e.clientX - drag.x) / r.width / sx));
+    if (sy > 0.0005) state.cover.oy = Math.max(-1, Math.min(1, drag.oy + 2 * (e.clientY - drag.y) / r.height / sy));
+  }
+  syncUI(); scheduleRender();
+});
+const endDrag = () => { drag = null; wrapEl.classList.remove('grabbing'); };
+pv.addEventListener('pointerup', endDrag); pv.addEventListener('pointercancel', endDrag);
+pv.addEventListener('pointerleave', () => { if (!drag) setHL(null); });
+pv.addEventListener('wheel', e => {
+  const k = LOCK.deco ? null : (HL || hitDeco(canvasPoint(e)));
+  if (k){
+    e.preventDefault();
+    const p = state.design.pos[k]; p.s = Math.round(Math.max(30, Math.min(260, p.s * (1 - e.deltaY * .0012))));
+    syncUI(); scheduleRender(); return;
+  }
+  if (!IMG.el || LOCK.img) return; e.preventDefault();
+  state.cover.zoom = Math.max(1, Math.min(4, state.cover.zoom * (1 - e.deltaY * .0015)));
+  syncUI(); scheduleRender();
+}, {passive: false});
+
+/* ================= export ================= */
+function baseName(){ const m = state.meta; return safeName([m.artist, m.title].filter(Boolean).join(' - ')); }
+$('#btnExportImg').onclick = async () => {
+  const S = +$('#expSize').value, fmt = $('#expFmt').value;
+  render(pctx, pv.width); await fontsForExport();
+  const c = document.createElement('canvas'); c.width = c.height = S;
+  render(c.getContext('2d'), S);
+  c.toBlob(b => { if (!b) return toast('이미지를 만들지 못했어요'); download(b, baseName() + (fmt === 'jpeg' ? '.jpg' : '.png')); toast('커버 이미지를 저장했어요'); }, 'image/' + fmt, .95);
+};
+$('#btnExportMp3').onclick = async () => {
+  if (!AU.buf){ toast('먼저 트랙 탭에서 MP3를 불러와 주세요'); return; }
+  try {
+    let pic = null;
+    if ($('#embedCover').checked){
+      render(pctx, pv.width); await fontsForExport();
+      const c = document.createElement('canvas'); c.width = c.height = 1400;
+      render(c.getContext('2d'), 1400);
+      const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', .92));
+      pic = {mime: 'image/jpeg', data: new Uint8Array(await blob.arrayBuffer())};
+    } else if (AU.pic) pic = {mime: AU.pic.mime, data: AU.pic.data};
+    const out = buildMp3(AU.buf, AU.tag, state.meta, pic);
+    download(new Blob([out], {type: 'audio/mpeg'}), baseName() + '.mp3');
+    toast('태그와 커버를 담은 MP3를 저장했어요');
+  } catch(e){ console.error(e); toast('MP3 저장 중 문제가 생겼어요'); }
+};
+$('#btnResetMeta').onclick = () => { state.meta = {...DEFAULT_META}; syncUI(); scheduleRender(); toast('곡 정보를 기본값으로 바꿨어요'); };
+$('#btnReloadMeta').onclick = () => { if (AU.origMeta){ state.meta = {...AU.origMeta}; syncUI(); scheduleRender(); toast('원래 태그로 되돌렸어요'); } };
+
+/* ================= init ================= */
+buildMeta(); buildFonts(); buildDecos(); renderSets(); syncUI(); updateImgUI(); updateLocks();
+render(pctx, pv.width);
+if (document.fonts) document.fonts.ready.then(scheduleRender);
+requestAnimationFrame(drawPlayer);
+window.MMC = {state, parseID3, buildMp3, render};
+})();
+</script>
+</body>
+</html>
