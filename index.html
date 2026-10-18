@@ -1004,6 +1004,7 @@ const HIT = {
   bignum:[-400,0,0,270], barcode:[-135,-56,4,6], explicit:[-92,-28,2,2]
 };
 let HL = null; // decoration under the pointer (preview only)
+let TEXT_RECT = null; // last drawn text block (0..1 units) — dust avoids it
 const GRID = {show:false, snap:true}; let GUIDE = [], SEL = null;
 const NO_ROT = new Set();
 
@@ -1293,11 +1294,19 @@ function render(ctx, S, preview){
   }
 
   if (O.dust){
-    const r = rng(hash('dust' + M.title));
-    for (let i = 0; i < 90; i++){ ctx.fillStyle = LN(.15 + r() * .5); ctx.beginPath(); ctx.arc(r() * S, r() * S, (.6 + r() * 1.6) * u, 0, Math.PI * 2); ctx.fill(); }
+    const r = rng(hash('dust' + M.title)), pad = .03;
+    const TR = TEXT_RECT && !T.rot ? TEXT_RECT : null;
+    const clear = (x, y) => {
+      const nx = x / S, ny = y / S;
+      if (TR && nx > TR.x0 - pad && nx < TR.x1 + pad && ny > TR.y0 - pad && ny < TR.y1 + pad) return false;
+      if (O.header && ny > .055 && ny < .115 && nx > .06 && nx < .94) return false;
+      if (O.side && nx > .925 && nx < .962) return false;
+      return true;
+    };
+    for (let i = 0; i < 90; i++){ const x = r() * S, y = r() * S, rad = (.6 + r() * 1.6) * u, a = .15 + r() * .5; if (!clear(x, y)) continue; ctx.fillStyle = LN(a); ctx.beginPath(); ctx.arc(x, y, rad, 0, Math.PI * 2); ctx.fill(); }
     ctx.strokeStyle = LN(.4); ctx.lineWidth = u;
-    for (let i = 0; i < 9; i++){ const x = r() * S, y = r() * S, s = (4 + r() * 4) * u; ctx.beginPath(); ctx.moveTo(x - s, y); ctx.lineTo(x + s, y); ctx.moveTo(x, y - s); ctx.lineTo(x, y + s); ctx.stroke(); }
-    for (let i = 0; i < 6; i++){ ctx.fillStyle = i % 2 ? LN(.7) : AC(.85); star4(ctx, r() * S, r() * S, (5 + r() * 7) * u); ctx.fill(); }
+    for (let i = 0; i < 9; i++){ const x = r() * S, y = r() * S, s = (4 + r() * 4) * u; if (!clear(x, y)) continue; ctx.beginPath(); ctx.moveTo(x - s, y); ctx.lineTo(x + s, y); ctx.moveTo(x, y - s); ctx.lineTo(x, y + s); ctx.stroke(); }
+    for (let i = 0; i < 6; i++){ const x = r() * S, y = r() * S, rad = (5 + r() * 7) * u; if (!clear(x, y)) continue; ctx.fillStyle = i % 2 ? LN(.7) : AC(.85); star4(ctx, x, y, rad); ctx.fill(); }
   }
 
   // positioned decorations — drawn in local units (1 unit = 1/1000 of the canvas at 100% size)
@@ -1587,13 +1596,15 @@ function drawTextBlock(ctx, S){
   ctx.save();
   if (T.rot){ const py = y + H / 2; ctx.translate(x, py); ctx.rotate(T.rot * Math.PI / 180); ctx.translate(-x, -py); }
   if (T.shadow){ ctx.shadowColor = col(T.shadowColor || '#000000', (T.shadowAmt ?? 45) / 100); ctx.shadowBlur = (T.shadowBlur ?? 24) * u; ctx.shadowOffsetY = (T.shadowDist ?? 4) * u; }
+  let maxLW = 0; const yTop = y;
   for (const it of items){
     y += it.gap;
     setFont(ctx, it.w, it.s, it.f); need(it.f, it.w, it.t);
     ctx.fillStyle = col(it.c, it.a);
-    drawT(ctx, it.t, x, y + it.lh * .8, it.sp, align);
+    const lw = drawT(ctx, it.t, x, y + it.lh * .8, it.sp, align); if (lw > maxLW) maxLW = lw;
     y += it.lh;
   }
+  { const x0 = align === 'left' ? x : align === 'right' ? x - maxLW : x - maxLW / 2; TEXT_RECT = {x0: x0 / S, y0: yTop / S, x1: (x0 + maxLW) / S, y1: y / S}; }
   ctx.restore();
 }
 
@@ -2562,6 +2573,12 @@ function layout(W, H){
   }
   L.boxes = B;
   L.keep = ['title', 'lyrics', 'progress', 'sync', 'time', 'eq'].map(k => B[k]).filter(Boolean).map(b => ({x0: b.x0 - 20 * u, y0: b.y0 - 14 * u, x1: b.x1 + 20 * u, y1: b.y1 + 14 * u}));
+  if (B.title) L.keep.push({x0: B.title.x0 - 20 * u, y0: B.title.y0 - 50 * u, x1: B.title.x1 + 20 * u, y1: B.title.y0});
+  if (FXo.hud){ const g = 56 * u, gw = 420 * u;
+    L.keep.push({x0: g - 20 * u, y0: g - 30 * u, x1: g + gw, y1: g + 16 * u});
+    const bx = L.frame ? L.frame + 50 * u : g, by = L.blY || (H - g + 6 * u); L.keep.push({x0: bx - 20 * u, y0: by - 26 * u, x1: bx + gw + 120 * u, y1: by + 14 * u});
+    if (L.capOk){ const cy = FXo.ring ? L.cover.y + L.cover.s * .54 + 104 * u : L.cover.y + L.cover.s / 2 + 34 * u; L.keep.push({x0: L.cover.x - L.cover.s / 2 - 20 * u, y0: cy - 26 * u, x1: L.cover.x + L.cover.s / 2 + 20 * u, y1: cy + 14 * u}); }
+  }
   return L;
 }
 
@@ -3243,7 +3260,7 @@ function paintText(str, x, y, font, color, strokeW){
   ctx.fillStyle = color; ctx.fillText(str, x, y); ctx.restore();
 }
 function draw(preview = true){
-  const C = tb.colors, O = tb.o, on = tb.on; boxes = {};
+  const C = tb.colors, O = tb.o, on = tb.on; const prevBoxes = boxes; boxes = {};
   ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.shadowBlur = 0; ctx.filter = 'none';
   // background
   ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H);
@@ -3259,9 +3276,10 @@ function draw(preview = true){
     g.addColorStop(0, col(C.bg, .78)); g.addColorStop(1, col(C.bg, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
   }
   if (on.dust){
-    const r = rng(7 + titleText().length);
-    for (let i = 0; i < 70; i++){ ctx.fillStyle = col(C.line, .15 + r() * .45); ctx.beginPath(); ctx.arc(r() * W, r() * H, (.8 + r() * 1.8) * u, 0, Math.PI * 2); ctx.fill(); }
-    for (let i = 0; i < 6; i++){ ctx.fillStyle = i % 2 ? col(C.line, .7) : col(C.accent, .85); star4(r() * W, r() * H, (6 + r() * 8) * u); ctx.fill(); }
+    const r = rng(7 + titleText().length), keep = ['title', 'sub', 'badge'].map(k => prevBoxes[k]).filter(Boolean);
+    const clear = (x, y) => !keep.some(b => x > b.x0 - 18 && x < b.x1 + 18 && y > b.y0 - 18 && y < b.y1 + 18);
+    for (let i = 0; i < 70; i++){ const x = r() * W, y = r() * H, rad = (.8 + r() * 1.8) * u, a = .15 + r() * .45; if (!clear(x, y)) continue; ctx.fillStyle = col(C.line, a); ctx.beginPath(); ctx.arc(x, y, rad, 0, Math.PI * 2); ctx.fill(); }
+    for (let i = 0; i < 6; i++){ const x = r() * W, y = r() * H, rad = (6 + r() * 8) * u; if (!clear(x, y)) continue; ctx.fillStyle = i % 2 ? col(C.line, .7) : col(C.accent, .85); star4(x, y, rad); ctx.fill(); }
   }
   // glow + ring (free objects, drawn behind the cover)
   if (on.glow){
