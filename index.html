@@ -61,7 +61,11 @@ button{cursor:pointer}
 .nav-item:hover{background:var(--surface-2);color:var(--text)}
 .nav-item.active{background:var(--surface-2);color:var(--text);font-weight:600}
 .soon{margin-left:auto;font-size:10px;font-weight:600;border:1px solid var(--line-2);color:var(--muted);padding:1px 7px;border-radius:99px}
-.nav-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;padding:12px 8px 0;border-top:1px solid var(--line);font-size:11px;color:var(--faint)}
+.save-state{margin-top:auto;display:flex;align-items:center;gap:6px;padding:8px 10px;font-size:10.5px;color:var(--faint)}
+.save-state i{width:6px;height:6px;border-radius:50%;background:#3fbf7f;flex:none}
+.save-state.busy i{background:var(--faint)}
+.save-state .link{margin-left:auto;font-size:10.5px}
+.nav-foot{display:flex;align-items:center;justify-content:space-between;padding:12px 8px 0;border-top:1px solid var(--line);font-size:11px;color:var(--faint)}
 .icon-btn{border:1px solid var(--line);background:var(--surface);width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:var(--muted)}
 .icon-btn:hover{color:var(--text);border-color:var(--line-2)}
 
@@ -89,6 +93,9 @@ select.sm{height:30px;border:1px solid var(--line);background:var(--surface);bor
 .lock svg{display:block;flex:none}
 .lock span{display:block;line-height:1;padding-top:1px}
 .lock.tgl.on{background:var(--surface-2);color:var(--text);box-shadow:inset 0 0 0 1px var(--line-2)}
+.algrp{display:inline-flex;gap:1px}
+.lock.al{padding:0 6px}
+.lock.al:disabled{opacity:.35;cursor:default}
 .lsep{width:1px;align-self:stretch;margin:4px 2px;background:var(--line)}
 .lockbar{align-items:center;flex-wrap:wrap;justify-content:center;max-width:100%}
 .lock:hover{color:var(--text)}
@@ -102,7 +109,7 @@ select.sm{height:30px;border:1px solid var(--line);background:var(--surface);bor
 .canvas-wrap.grabbing canvas{cursor:grabbing}
 .canvas-wrap.move canvas{cursor:move}
 
-.player{display:grid;grid-template-columns:auto minmax(0,200px) 1fr auto;align-items:center;gap:14px;padding:12px 20px;border-top:1px solid var(--line);background:var(--surface)}
+.player{display:grid;grid-template-columns:auto minmax(0,200px) 1fr auto auto;align-items:center;gap:14px;padding:12px 20px;border-top:1px solid var(--line);background:var(--surface)}
 .play{width:34px;height:34px;border-radius:50%;border:0;background:var(--on);color:var(--on-ink);display:grid;place-items:center}
 .play:disabled{opacity:.3;cursor:default}
 .pl-meta{min-width:0}
@@ -233,7 +240,14 @@ input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;bac
 .vwrap canvas{display:block;width:100%;height:100%;touch-action:none}
 .vwrap.move canvas{cursor:move}
 .vwrap.grabbing canvas{cursor:grabbing}
-.vplayer{grid-template-columns:auto 1fr auto}
+.vplayer{grid-template-columns:auto 1fr auto auto}
+.vol{display:flex;align-items:center;gap:6px;width:118px}
+.vol input[type=range]{flex:1;min-width:0}
+.vol-btn{border:0;background:none;padding:4px;border-radius:7px;color:var(--muted);display:grid;place-items:center;flex:none}
+.vol-btn:hover{color:var(--text);background:var(--surface-2)}
+.vol-btn .mx{display:none}
+.vol.muted .vol-btn .mx{display:block}
+.vol.muted .vol-btn .w1,.vol.muted .vol-btn .w2,.vol.low .vol-btn .w2{display:none}
 .vplayer input[type=range]{width:100%}
 .seg.txt button{height:30px;font-size:11.5px;font-weight:500}
 .tpls{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
@@ -268,6 +282,7 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
   .nav-item{width:auto;padding:7px 9px;white-space:nowrap}
   .nav-item svg{display:none}
   .nav-foot{margin:0 0 0 auto;border:0;padding:0}
+  .save-state{display:none}
   .nav-foot span{display:none}
   .topbar{padding:10px 16px}
   .workspace{grid-template-columns:1fr}
@@ -275,6 +290,10 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
   .canvas-wrap{width:100%}
   .player{grid-template-columns:auto 1fr auto;padding:10px 16px}
   .pl-meta{display:none}
+  .player{grid-template-columns:auto 1fr auto auto}
+  .vplayer{grid-template-columns:auto 1fr auto}
+  .vplayer .pl-time{display:none}
+  .vol{width:92px}
   .panel{border-left:0;border-top:1px solid var(--line)}
   .panel-body{overflow:visible;padding:4px 16px 28px}
 }
@@ -298,6 +317,7 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.5" y="3" width="13" height="10" rx="2"/><path d="M4 10.5l2.5-2.5 2 2 1.5-1.5 2 2"/><circle cx="10.8" cy="6" r="1"/></svg>
       썸네일
     </button>
+    <div class="save-state" id="saveState" title="작업은 이 브라우저에 자동 저장돼요"><i></i><span>자동 저장됨</span><button class="link" id="btnNewWork">새로 시작</button></div>
     <div class="nav-foot"><span>테마</span>
       <button class="icon-btn" id="themeBtn" title="테마 전환" aria-label="테마 전환">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6"/><path d="M8 2a6 6 0 0 0 0 12z" fill="currentColor"/></svg>
@@ -336,7 +356,7 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
               <button class="lock" id="lockDeco" aria-pressed="false"><svg class="i-lock" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="10" height="7.5" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg><svg class="i-open" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="10" height="7.5" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5-.5"/></svg><span>꾸밈 잠금</span></button>
               <i class="lsep"></i>
               <button class="lock tgl" id="cGrid"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="2" width="12" height="12" rx="1.5"/><path d="M6 2v12M10 2v12M2 6h12M2 10h12"/></svg><span>그리드</span></button>
-              <button class="lock tgl on" id="cSnap"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 2.5v5a5 5 0 0 0 10 0v-5"/><path d="M3 5h3M10 5h3"/></svg><span>자석 맞춤</span></button>
+              <button class="lock tgl on" id="cSnap"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 2.5v5a5 5 0 0 0 10 0v-5"/><path d="M3 5h3M10 5h3"/></svg><span>자석 맞춤</span></button><i class="lsep"></i><span class="algrp" title="선택한 오브젝트 정렬"><button class="lock al" data-calign="left" title="왼쪽 정렬" aria-label="왼쪽 정렬"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M2.5 2v12"/><rect x="4.5" y="4" width="8" height="3" rx=".8"/><rect x="4.5" y="9" width="5" height="3" rx=".8"/></svg></button><button class="lock al" data-calign="hcenter" title="가로 가운데" aria-label="가로 가운데"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M8 2v12"/><rect x="3" y="4" width="10" height="3" rx=".8"/><rect x="5" y="9" width="6" height="3" rx=".8"/></svg></button><button class="lock al" data-calign="right" title="오른쪽 정렬" aria-label="오른쪽 정렬"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M13.5 2v12"/><rect x="3.5" y="4" width="8" height="3" rx=".8"/><rect x="6.5" y="9" width="5" height="3" rx=".8"/></svg></button><button class="lock al" data-calign="top" title="위쪽 정렬" aria-label="위쪽 정렬"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M2 2.5h12"/><rect x="4" y="4.5" width="3" height="8" rx=".8"/><rect x="9" y="4.5" width="3" height="5" rx=".8"/></svg></button><button class="lock al" data-calign="vcenter" title="세로 가운데" aria-label="세로 가운데"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M2 8h12"/><rect x="4" y="3" width="3" height="10" rx=".8"/><rect x="9" y="5" width="3" height="6" rx=".8"/></svg></button><button class="lock al" data-calign="bottom" title="아래쪽 정렬" aria-label="아래쪽 정렬"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M2 13.5h12"/><rect x="4" y="3.5" width="3" height="8" rx=".8"/><rect x="9" y="6.5" width="3" height="5" rx=".8"/></svg></button></span>
             </div>
             <div class="canvas-wrap" id="canvasWrap"><canvas id="preview" width="1200" height="1200" aria-label="앨범 커버 미리보기"></canvas></div>
           </div>
@@ -348,6 +368,7 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
             <div class="pl-meta"><b id="plTitle">재생할 곡이 없어요</b><span id="plArtist">트랙 탭에서 MP3를 불러오세요</span></div>
             <canvas class="pl-wave" id="plWave" aria-label="파형 · 클릭해서 이동"></canvas>
             <div class="pl-time" id="plTime">0:00 / 0:00</div>
+            <div class="vol" id="cVol"><button class="vol-btn" id="cVolBtn" aria-label="음소거" title="음소거"><svg class="ic-vol" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6h2.5l3.5-3v10L5 10H2.5z" fill="currentColor"/><path class="w1" d="M10.8 5.8a3 3 0 0 1 0 4.4"/><path class="w2" d="M12.6 4a5.5 5.5 0 0 1 0 8"/><path class="mx" d="m11 6 4 4m0-4-4 4"/></svg></button><input type="range" id="cVolRange" min="0" max="100" step="1" value="80" aria-label="볼륨"></div>
           </div>
         </div>
 
@@ -544,7 +565,7 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
               <button class="lock" id="vLockObj"><svg class="i-lock" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="10" height="7.5" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg><svg class="i-open" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="10" height="7.5" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5-.5"/></svg><span>오브젝트 잠금</span></button>
               <i class="lsep"></i>
               <button class="lock tgl" id="vGrid"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="2" width="12" height="12" rx="1.5"/><path d="M6 2v12M10 2v12M2 6h12M2 10h12"/></svg><span>그리드</span></button>
-              <button class="lock tgl" id="vSnap"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 2.5v5a5 5 0 0 0 10 0v-5"/><path d="M3 5h3M10 5h3"/></svg><span>자석 맞춤</span></button>
+              <button class="lock tgl" id="vSnap"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 2.5v5a5 5 0 0 0 10 0v-5"/><path d="M3 5h3M10 5h3"/></svg><span>자석 맞춤</span></button><i class="lsep"></i><span class="algrp" title="선택한 오브젝트 정렬"><button class="lock al" data-valign="left" title="왼쪽 정렬" aria-label="왼쪽 정렬"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M2.5 2v12"/><rect x="4.5" y="4" width="8" height="3" rx=".8"/><rect x="4.5" y="9" width="5" height="3" rx=".8"/></svg></button><button class="lock al" data-valign="hcenter" title="가로 가운데" aria-label="가로 가운데"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M8 2v12"/><rect x="3" y="4" width="10" height="3" rx=".8"/><rect x="5" y="9" width="6" height="3" rx=".8"/></svg></button><button class="lock al" data-valign="right" title="오른쪽 정렬" aria-label="오른쪽 정렬"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M13.5 2v12"/><rect x="3.5" y="4" width="8" height="3" rx=".8"/><rect x="6.5" y="9" width="5" height="3" rx=".8"/></svg></button><button class="lock al" data-valign="top" title="위쪽 정렬" aria-label="위쪽 정렬"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M2 2.5h12"/><rect x="4" y="4.5" width="3" height="8" rx=".8"/><rect x="9" y="4.5" width="3" height="5" rx=".8"/></svg></button><button class="lock al" data-valign="vcenter" title="세로 가운데" aria-label="세로 가운데"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M2 8h12"/><rect x="4" y="3" width="3" height="10" rx=".8"/><rect x="9" y="5" width="3" height="6" rx=".8"/></svg></button><button class="lock al" data-valign="bottom" title="아래쪽 정렬" aria-label="아래쪽 정렬"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M2 13.5h12"/><rect x="4" y="3.5" width="3" height="8" rx=".8"/><rect x="9" y="6.5" width="3" height="5" rx=".8"/></svg></button></span>
             </div>
             <div class="vwrap" id="vWrap"><canvas id="vCanvas" width="960" height="540" aria-label="영상 미리보기"></canvas></div>
           </div>
@@ -555,6 +576,7 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
             </button>
             <input type="range" id="vSeek" min="0" max="1000" value="0" step="1" aria-label="재생 위치">
             <div class="pl-time" id="vTime">0:00 / 0:00</div>
+            <div class="vol" id="vVol"><button class="vol-btn" id="vVolBtn" aria-label="음소거" title="음소거"><svg class="ic-vol" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6h2.5l3.5-3v10L5 10H2.5z" fill="currentColor"/><path class="w1" d="M10.8 5.8a3 3 0 0 1 0 4.4"/><path class="w2" d="M12.6 4a5.5 5.5 0 0 1 0 8"/><path class="mx" d="m11 6 4 4m0-4-4 4"/></svg></button><input type="range" id="vVolRange" min="0" max="100" step="1" value="80" aria-label="볼륨"></div>
           </div>
         </div>
 
@@ -748,7 +770,7 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
               <i class="lsep"></i>
               <button class="lock tgl" id="tGrid"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="2" width="12" height="12" rx="1.5"/><path d="M6 2v12M10 2v12M2 6h12M2 10h12"/></svg><span>그리드</span></button>
               <button class="lock tgl on" id="tSnap"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 2.5v5a5 5 0 0 0 10 0v-5"/><path d="M3 5h3M10 5h3"/></svg><span>자석 맞춤</span></button>
-              <button class="lock tgl on" id="tSafe"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1.5" y="3" width="13" height="10" rx="1.5"/><rect x="8.5" y="9" width="4.5" height="2.5" rx=".5" fill="currentColor" stroke="none"/></svg><span>시간 표시 영역</span></button>
+              <button class="lock tgl on" id="tSafe"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1.5" y="3" width="13" height="10" rx="1.5"/><rect x="8.5" y="9" width="4.5" height="2.5" rx=".5" fill="currentColor" stroke="none"/></svg><span>시간 표시 영역</span></button><i class="lsep"></i><span class="algrp" title="선택한 오브젝트 정렬"><button class="lock al" data-talign="left" title="왼쪽 정렬" aria-label="왼쪽 정렬"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M2.5 2v12"/><rect x="4.5" y="4" width="8" height="3" rx=".8"/><rect x="4.5" y="9" width="5" height="3" rx=".8"/></svg></button><button class="lock al" data-talign="hcenter" title="가로 가운데" aria-label="가로 가운데"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M8 2v12"/><rect x="3" y="4" width="10" height="3" rx=".8"/><rect x="5" y="9" width="6" height="3" rx=".8"/></svg></button><button class="lock al" data-talign="right" title="오른쪽 정렬" aria-label="오른쪽 정렬"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M13.5 2v12"/><rect x="3.5" y="4" width="8" height="3" rx=".8"/><rect x="6.5" y="9" width="5" height="3" rx=".8"/></svg></button><button class="lock al" data-talign="top" title="위쪽 정렬" aria-label="위쪽 정렬"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M2 2.5h12"/><rect x="4" y="4.5" width="3" height="8" rx=".8"/><rect x="9" y="4.5" width="3" height="5" rx=".8"/></svg></button><button class="lock al" data-talign="vcenter" title="세로 가운데" aria-label="세로 가운데"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M2 8h12"/><rect x="4" y="3" width="3" height="10" rx=".8"/><rect x="9" y="5" width="3" height="6" rx=".8"/></svg></button><button class="lock al" data-talign="bottom" title="아래쪽 정렬" aria-label="아래쪽 정렬"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M2 13.5h12"/><rect x="4" y="3.5" width="3" height="8" rx=".8"/><rect x="9" y="6.5" width="3" height="5" rx=".8"/></svg></button></span>
             </div>
             <div class="vwrap" id="tWrap" style="--ar:1.7778"><canvas id="tCanvas" width="1280" height="720" aria-label="썸네일 미리보기"></canvas></div>
           </div>
@@ -960,7 +982,7 @@ const HIT = {
   bignum:[-400,0,0,270], barcode:[-135,-56,4,6], explicit:[-92,-28,2,2]
 };
 let HL = null; // decoration under the pointer (preview only)
-const GRID = {show:false, snap:true}; let GUIDE = [];
+const GRID = {show:false, snap:true}; let GUIDE = [], SEL = null;
 const NO_ROT = new Set(['percent','tags','bignum','barcode','explicit','progress','waveform','target','circle','glow']);
 
 function defaultDesign(){
@@ -1263,6 +1285,10 @@ function render(ctx, S, preview){
     if (p.r && !NO_ROT.has(key)) ctx.rotate(p.r * Math.PI / 180);
     const sc = u * p.s / 100; ctx.scale(sc, sc);
     ctx.save(); fn(); ctx.restore();
+    if (preview && SEL === key && HIT[key] && HL !== key){
+      const [x0, y0, x1, y1] = HIT[key];
+      ctx.lineWidth = 2 / sc; ctx.strokeStyle = col(C.accent, 1); ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
+    }
     if (preview && HL === key && HIT[key]){
       const [x0, y0, x1, y1] = HIT[key];
       ctx.setLineDash([4 / sc, 4 / sc]); ctx.lineWidth = 1.2 / sc; ctx.strokeStyle = col(C.accent, .95);
@@ -1758,7 +1784,7 @@ function loadImageBlob(blob, name){
     im.src = url;
   });
 }
-const loadImageFile = f => loadImageBlob(f, f.name).then(ok => ok && toast('이미지를 커버에 적용했어요'));
+const loadImageFile = f => loadImageBlob(f, f.name).then(ok => { if (ok){ toast('이미지를 커버에 적용했어요'); STORE.put('cover-img', f, f.name); } });
 const IMG_ICON = '<svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><circle cx="5.5" cy="6.5" r="1.3"/><path d="m2 12 4-4 3 3 2-2 3.5 3.5"/></svg>';
 function updateImgUI(){
   $('#imgThumb').innerHTML = IMG.el ? `<img src="${IMG.url}" alt="">` : IMG_ICON;
@@ -1767,16 +1793,15 @@ function updateImgUI(){
   $('#btnUseEmbedded').hidden = !AU.pic;
   $('#canvasWrap').classList.toggle('grab', !!IMG.el && !LOCK.img);
 }
-$('#btnRemoveImg').onclick = () => { if (IMG.url) URL.revokeObjectURL(IMG.url); IMG.el = null; IMG.url = null; updateImgUI(); scheduleRender(); };
-$('#btnUseEmbedded').onclick = () => { if (AU.pic) loadImageBlob(new Blob([AU.pic.data], {type: AU.pic.mime}), '내장 커버'); };
+$('#btnRemoveImg').onclick = () => { if (IMG.url) URL.revokeObjectURL(IMG.url); IMG.el = null; IMG.url = null; updateImgUI(); scheduleRender(); STORE.del('cover-img'); };
+$('#btnUseEmbedded').onclick = () => { if (AU.pic){ const bl = new Blob([AU.pic.data], {type: AU.pic.mime}); loadImageBlob(bl, '내장 커버'); STORE.put('cover-img', bl, '내장 커버'); } };
 
 let fontCount = 0;
 async function loadFont(f){
   try {
-    const name = 'Custom ' + (++fontCount) + ' ' + f.name.replace(/\.[^.]+$/, '');
-    const ff = new FontFace(name, await f.arrayBuffer());
-    await ff.load(); document.fonts.add(ff);
-    FONTS.push([name, 'sans-serif', '내 폰트 · ' + f.name.replace(/\.[^.]+$/, '')]); buildFonts();
+    const name = await addFontBlob(f, f.name);
+    const id = 'font-' + Date.now(); FONT_IDS[name] = id;
+    STORE.put(id, f, f.name).then(ok => { if (ok){ const list = STORE.read('mmc-fonts') || []; list.push({key: id, name: id}); STORE.write('mmc-fonts', list); } });
     state.text.titleFont = name; syncUI(); scheduleRender();
     toast('폰트를 추가하고 제목에 적용했어요');
   } catch(e){ toast('폰트 파일을 읽을 수 없어요'); }
@@ -1784,7 +1809,22 @@ async function loadFont(f){
 
 /* ================= audio ================= */
 const audio = new Audio(); audio.preload = 'auto';
-async function loadMp3(f){
+/* volume — shared setting, remembered in this browser */
+const VOL = (() => { let v = 80, m = false; try { const r = JSON.parse(localStorage.getItem('mmc-vol') || 'null'); if (r){ v = +r.v; m = !!r.m; } } catch(e){} return {v: isFinite(v) ? v : 80, m, subs: []}; })();
+function setVol(v, m){
+  VOL.v = Math.max(0, Math.min(100, v)); VOL.m = m;
+  try { localStorage.setItem('mmc-vol', JSON.stringify({v: VOL.v, m: VOL.m})); } catch(e){}
+  VOL.subs.forEach(fn => fn());
+}
+function bindVol(pfx, apply){
+  const box = document.getElementById(pfx + 'Vol'), rg = document.getElementById(pfx + 'VolRange'), bt = document.getElementById(pfx + 'VolBtn');
+  const ui = () => { rg.value = VOL.v; box.classList.toggle('muted', VOL.m || VOL.v === 0); box.classList.toggle('low', VOL.v > 0 && VOL.v < 45); bt.setAttribute('aria-label', VOL.m ? '소리 켜기' : '음소거'); bt.title = VOL.m ? '소리 켜기' : '음소거'; rg.style.setProperty('--fill', VOL.v + '%'); apply(VOL.m ? 0 : VOL.v / 100); };
+  rg.addEventListener('input', () => setVol(+rg.value, false));
+  bt.addEventListener('click', () => setVol(VOL.v === 0 ? 60 : VOL.v, !(VOL.m || VOL.v === 0) ? true : false));
+  VOL.subs.push(ui); ui();
+}
+bindVol('c', g => { audio.volume = g; });
+async function loadMp3(f, opts = {}){
   try {
     const ab = await f.arrayBuffer();
     const tag = parseID3(ab);
@@ -1798,7 +1838,7 @@ async function loadMp3(f){
     $('#playBtn').disabled = false; $('#btnReloadMeta').disabled = false;
     if (tag.pic && !IMG.el) await loadImageBlob(new Blob([tag.pic.data], {type: tag.pic.mime}), '내장 커버');
     updateImgUI(); syncUI(); scheduleRender(); renderStats();
-    toast(tag.ver ? `ID3v2.${tag.ver} 태그를 불러왔어요` : '태그가 없는 파일이라 기본값으로 채웠어요');
+    if (!opts.restore){ toast(tag.ver ? `ID3v2.${tag.ver} 태그를 불러왔어요` : '태그가 없는 파일이라 기본값으로 채웠어요'); STORE.put('cover-mp3', f, f.name); }
     try {
       const AC = window.AudioContext || window.webkitAudioContext;
       const ac = new AC(); const dec = await ac.decodeAudioData(ab.slice(0)); if (ac.close) ac.close();
@@ -1879,6 +1919,18 @@ function hitDeco(pt){
 }
 function setHL(k){ if (HL !== k){ HL = k; scheduleRender(); } wrapEl.classList.toggle('move', !!k); }
 const LOCK = {img:true, deco:true};
+function alignUI(){ $$('[data-calign]').forEach(b => b.disabled = !SEL || LOCK.deco); }
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-calign]'); if (!b) return;
+  if (!SEL || !state.design.on[SEL]){ toast('먼저 커버에서 정렬할 꾸밈을 클릭해 주세요'); return; }
+  if (state.design.pin && state.design.pin[SEL]){ toast('고정된 꾸밈이에요 · 고정을 풀면 정렬할 수 있어요'); return; }
+  const p = state.design.pos[SEL], h = HIT[SEL], k = p.s / 100 * .1;
+  const x0 = p.x + h[0] * k, x1 = p.x + h[2] * k, y0 = p.y + h[1] * k, y1 = p.y + h[3] * k, a = b.dataset.calign, m = 8;
+  if (a === 'left') p.x += m - x0; else if (a === 'right') p.x += (100 - m) - x1; else if (a === 'hcenter') p.x += 50 - (x0 + x1) / 2;
+  else if (a === 'top') p.y += m - y0; else if (a === 'bottom') p.y += (100 - m) - y1; else if (a === 'vcenter') p.y += 50 - (y0 + y1) / 2;
+  p.x = Math.round(Math.max(0, Math.min(100, p.x)) * 10) / 10; p.y = Math.round(Math.max(0, Math.min(100, p.y)) * 10) / 10;
+  syncUI(); scheduleRender();
+});
 $('#cGrid').onclick = () => { GRID.show = !GRID.show; $('#cGrid').classList.toggle('on', GRID.show); scheduleRender(); };
 $('#cSnap').onclick = () => { GRID.snap = !GRID.snap; $('#cSnap').classList.toggle('on', GRID.snap); toast(GRID.snap ? '자석 맞춤을 켰어요' : '자석 맞춤을 껐어요'); };
 function updateLocks(){
@@ -1888,12 +1940,14 @@ function updateLocks(){
   });
   wrapEl.classList.toggle('grab', !!IMG.el && !LOCK.img);
   if (LOCK.deco) setHL(null);
+  if (typeof alignUI === 'function') alignUI();
 }
 $('#lockImg').onclick = () => { LOCK.img = !LOCK.img; updateLocks(); toast(LOCK.img ? '이미지를 잠갔어요' : '이제 이미지를 끌어서 옮길 수 있어요'); };
 $('#lockDeco').onclick = () => { LOCK.deco = !LOCK.deco; updateLocks(); toast(LOCK.deco ? '꾸밈을 잠갔어요' : '이제 꾸밈을 끌어서 옮길 수 있어요'); };
 let drag = null;
 pv.addEventListener('pointerdown', e => {
   const pt = canvasPoint(e), k = LOCK.deco ? null : hitDeco(pt);
+  if (!LOCK.deco){ SEL = k; alignUI(); scheduleRender(); }
   if (k){
     drag = {kind:'deco', key:k, x:e.clientX, y:e.clientY, px:state.design.pos[k].x, py:state.design.pos[k].y};
     setHL(k); const it = $(`.ditem[data-key="${k}"]`); if (it) it.classList.add('open');
@@ -1974,12 +2028,89 @@ $('#btnExportMp3').onclick = async () => {
 $('#btnResetMeta').onclick = () => { state.meta = {...DEFAULT_META}; syncUI(); scheduleRender(); toast('곡 정보를 기본값으로 바꿨어요'); };
 $('#btnReloadMeta').onclick = () => { if (AU.origMeta){ state.meta = {...AU.origMeta}; syncUI(); scheduleRender(); toast('원래 태그로 되돌렸어요'); } };
 
+/* ================= autosave ================= */
+// settings → localStorage, files (mp3, images, fonts, video) → IndexedDB. Everything stays in this browser.
+const STORE = (() => {
+  let dbp = null;
+  const db = () => dbp || (dbp = new Promise((res, rej) => { try { const r = indexedDB.open('momo-music-cloud', 1); r.onupgradeneeded = () => r.result.createObjectStore('files'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); } catch(e){ rej(e); } }));
+  const tx = async (mode, fn) => { const d = await db(); return new Promise((res, rej) => { const t = d.transaction('files', mode); const q = fn(t.objectStore('files')); t.oncomplete = () => res(q ? q.result : undefined); t.onerror = t.onabort = () => rej(t.error); }); };
+  return {
+    put: (k, blob, name) => tx('readwrite', st => st.put({blob, name: name || '', type: blob.type || ''}, k)).then(() => true).catch(e => { console.warn('save failed', k, e); return false; }),
+    get: k => tx('readonly', st => st.get(k)).catch(() => null),
+    del: k => tx('readwrite', st => st.delete(k)).catch(() => null),
+    clear: () => tx('readwrite', st => st.clear()).catch(() => null),
+    read: k => { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch(e){ return null; } },
+    write: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch(e){ return false; } }
+  };
+})();
+let RESETTING = false;
+const saveDot = () => { const el = $('#saveState'); if (!el) return; el.classList.add('busy'); clearTimeout(saveDot.t); saveDot.t = setTimeout(() => el.classList.remove('busy'), 500); };
+function autosave(key, get){
+  let last = '';
+  const flush = () => { if (RESETTING) return; let v; try { v = JSON.stringify(get()); } catch(e){ return; } if (v !== last){ last = v; try { localStorage.setItem(key, v); saveDot(); } catch(e){} } };
+  setInterval(flush, 1200);
+  window.addEventListener('pagehide', flush);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });
+  return flush;
+}
+function deepAssign(t, src){
+  if (!src || typeof src !== 'object') return;
+  for (const k of Object.keys(src)){
+    const v = src[k];
+    if (v && typeof v === 'object' && !Array.isArray(v)){ if (t[k] && typeof t[k] === 'object') deepAssign(t[k], v); else if (!(k in t)) t[k] = v; }
+    else if (!(k in t) || t[k] === null || v === null || typeof t[k] === typeof v) t[k] = v;
+  }
+}
+const fileOf = r => new File([r.blob], r.name || 'file', {type: r.type || r.blob.type || ''});
+$('#btnNewWork').onclick = () => {
+  if (!$('#btnNewWork').dataset.armed){
+    $('#btnNewWork').dataset.armed = '1'; $('#btnNewWork').textContent = '정말 지울까요?';
+    toast('한 번 더 누르면 저장된 작업이 모두 지워지고 처음부터 시작해요 (꾸밈 세트는 남아요)');
+    setTimeout(() => { delete $('#btnNewWork').dataset.armed; $('#btnNewWork').textContent = '새로 시작'; }, 3500);
+    return;
+  }
+  RESETTING = true;
+  ['mmc-cover-state', 'mmc-video-state', 'mmc-thumb-state', 'mmc-fonts'].forEach(k => { try { localStorage.removeItem(k); } catch(e){} });
+  STORE.clear().then(() => location.reload());
+};
+async function addFontBlob(blob, fileName, silent){
+  const label = fileName.replace(/\.[^.]+$/, '');
+  const name = 'Custom ' + (++fontCount) + ' ' + label;
+  const ff = new FontFace(name, await blob.arrayBuffer());
+  await ff.load(); document.fonts.add(ff);
+  FONTS.push([name, 'sans-serif', '내 폰트 · ' + label]); buildFonts();
+  return name;
+}
+async function restoreCover(){
+  const saved = STORE.read('mmc-cover-state'), fonts = STORE.read('mmc-fonts') || [];
+  let any = !!saved;
+  const fontMap = {};
+  for (const f of fonts){ const r = await STORE.get(f.key); if (r){ try { fontMap[f.name] = await addFontBlob(r.blob, r.name, true); FONT_IDS[fontMap[f.name]] = f.key; any = true; } catch(e){} } }
+  const img = await STORE.get('cover-img'); if (img){ await loadImageBlob(img.blob, img.name); any = true; }
+  const mp3 = await STORE.get('cover-mp3'); if (mp3){ await loadMp3(fileOf(mp3), {restore: true}); any = true; }
+  if (saved){
+    if (saved.meta) Object.keys(state.meta).forEach(k => { if (typeof saved.meta[k] === 'string') state.meta[k] = saved.meta[k]; });
+    ['cover', 'text', 'show', 'design'].forEach(k => saved[k] && deepAssign(state[k], saved[k]));
+    // fonts were re-registered under new internal names
+    ['titleFont', 'infoFont'].forEach(k => { if (saved.fontNames && saved.fontNames[k] && fontMap[saved.fontNames[k]]) state.text[k] = fontMap[saved.fontNames[k]]; if (!FONTS.some(f => f[0] === state.text[k])) state.text[k] = DEFAULT_TEXT[k]; });
+    if (saved.hasImg === false && IMG.el){ if (IMG.url) URL.revokeObjectURL(IMG.url); IMG.el = null; IMG.url = null; }
+  }
+  syncUI(); updateImgUI(); scheduleRender();
+  if (any) toast('이전 작업을 불러왔어요');
+  autosave('mmc-cover-state', () => ({meta: state.meta, cover: state.cover, text: state.text, show: state.show, design: state.design, hasImg: !!IMG.el,
+    fontNames: {titleFont: fontKeyOf(state.text.titleFont), infoFont: fontKeyOf(state.text.infoFont)}}));
+}
+// custom fonts get a stable id so they can be matched again after reload
+const FONT_IDS = {};
+const fontKeyOf = name => FONT_IDS[name] || null;
+
 /* ================= init ================= */
 buildMeta(); buildFonts(); buildDecos(); renderSets(); syncUI(); updateImgUI(); updateLocks();
 render(pctx, pv.width);
 if (document.fonts) document.fonts.ready.then(scheduleRender);
 requestAnimationFrame(drawPlayer);
-window.MMC = {state, parseID3, buildMp3, render, AU, FONTS, toast, download};
+window.MMC = {state, parseID3, buildMp3, render, AU, FONTS, toast, download, bindVol, STORE, autosave, deepAssign, fileOf};
+window.MMC.ready = restoreCover().catch(e => { console.error(e); });
 })();
 </script>
 <script>
@@ -2035,13 +2166,14 @@ const setV = (p, v) => { const ks = p.split('.'); const l = ks.pop(); ks.reduce(
 
 /* ---------- audio ---------- */
 const audio = new Audio(); audio.preload = 'auto';
+let vGain = null, vVolLevel = .8;
 let actx = null, srcNode, analyser, dest, freqB, waveB, ownUrl = null, ownName = '', usingUrl = null;
 function graph(){
   if (actx) return;
   actx = new (window.AudioContext || window.webkitAudioContext)();
   srcNode = actx.createMediaElementSource(audio);
   analyser = actx.createAnalyser(); analyser.fftSize = 2048; analyser.smoothingTimeConstant = .78;
-  srcNode.connect(analyser); analyser.connect(actx.destination);
+  srcNode.connect(analyser); vGain = actx.createGain(); vGain.gain.value = vVolLevel; analyser.connect(vGain); vGain.connect(actx.destination);
   dest = actx.createMediaStreamDestination(); srcNode.connect(dest);
   freqB = new Uint8Array(analyser.frequencyBinCount); waveB = new Uint8Array(analyser.fftSize);
 }
@@ -2060,9 +2192,10 @@ function syncSource(){
 }
 function loadAudioFile(f){
   if (ownUrl) URL.revokeObjectURL(ownUrl);
-  ownUrl = URL.createObjectURL(f); ownName = f.name; syncSource(); toast('음악을 불러왔어요');
+  ownUrl = URL.createObjectURL(f); ownName = f.name; syncSource();
+  if (!loadAudioFile.quiet){ toast('음악을 불러왔어요'); M.STORE.put('video-audio', f, f.name); }
 }
-$('#vUseCoverAudio').onclick = () => { if (ownUrl) URL.revokeObjectURL(ownUrl); ownUrl = null; syncSource(); };
+$('#vUseCoverAudio').onclick = () => { if (ownUrl) URL.revokeObjectURL(ownUrl); ownUrl = null; syncSource(); M.STORE.del('video-audio'); };
 
 async function playPause(){
   if (!usingUrl){ toast('먼저 음악을 넣어 주세요'); return; }
@@ -2075,6 +2208,7 @@ audio.addEventListener('pause', () => { $('#vPlay .ic-play').style.display = '';
 audio.addEventListener('ended', () => { if (recording) stopRecord(false); if (tap.on) endTap(true); });
 const seek = $('#vSeek');
 seek.addEventListener('input', () => { if (audio.duration) audio.currentTime = seek.value / 1000 * audio.duration; });
+if (M.bindVol) M.bindVol('v', g => { vVolLevel = g; if (vGain) vGain.gain.value = g; });
 
 /* audio analysis buffers */
 const F = new Float32Array(1024), Wv = new Float32Array(2048);
@@ -2123,13 +2257,16 @@ bgv.addEventListener('loadeddata', () => { bgReady = true; bgv.play().catch(() =
 function loadBgVideo(f){
   if (bgUrl) URL.revokeObjectURL(bgUrl);
   bgReady = false; bgUrl = URL.createObjectURL(f); bgv.src = bgUrl;
-  $('#vBgName').textContent = f.name; vs.bgMode = 'video'; syncUI(); toast('배경 영상을 넣었어요');
+  $('#vBgName').textContent = f.name; vs.bgMode = 'video'; syncUI();
+  if (!loadBgVideo.quiet){ toast('배경 영상을 넣었어요'); M.STORE.put('video-bg', f, f.name).then(ok => { if (!ok) toast('배경 영상이 너무 커서 자동 저장은 안 돼요 · 다음에 다시 넣어 주세요'); }); }
 }
-function loadCoverFile(f){
+function loadCoverFile(f, quiet){
+  return new Promise(res => {
   const im = new Image(), url = URL.createObjectURL(f);
-  im.onload = () => { upImg = im; vs.coverSrc = 'upload'; $('#vCoverName').textContent = f.name; $('#vCoverThumb').innerHTML = `<img src="${url}" alt="">`; refreshCover(); syncUI(); };
-  im.onerror = () => toast('이미지를 열 수 없어요');
+  im.onload = () => { upImg = im; vs.coverSrc = 'upload'; $('#vCoverName').textContent = f.name; $('#vCoverThumb').innerHTML = `<img src="${url}" alt="">`; refreshCover(); syncUI(); if (!quiet) M.STORE.put('video-cover', f, f.name); res(); };
+  im.onerror = () => { toast('이미지를 열 수 없어요'); res(); };
   im.src = url;
+  });
 }
 function drawFit(src, W, H, zoom){
   const sw = src.videoWidth || src.naturalWidth || src.width, sh = src.videoHeight || src.naturalHeight || src.height;
@@ -2629,6 +2766,8 @@ function frame(){
       ctx.stroke();
       ctx.strokeStyle = 'rgba(255,255,255,.32)'; ctx.beginPath(); ctx.moveTo(W / 2 + .5, 0); ctx.lineTo(W / 2 + .5, H); ctx.moveTo(0, H / 2 + .5); ctx.lineTo(W, H / 2 + .5); ctx.stroke();
     }
+    const sb = sel && L.boxes[sel];
+    if (sb && !vs.lockObj){ ctx.strokeStyle = col(C.accent, 1); ctx.lineWidth = 2; ctx.strokeRect(sb.x0, sb.y0, sb.x1 - sb.x0, sb.y1 - sb.y0); }
     const hk = drag ? drag.key : hover, hb = hk && L.boxes[hk];
     if (hb){ ctx.setLineDash([5, 4]); ctx.strokeStyle = col(C.accent, .95); ctx.lineWidth = 1.2; ctx.strokeRect(hb.x0, hb.y0, hb.x1 - hb.x0, hb.y1 - hb.y0); ctx.setLineDash([]); }
     if (drag && guides.length){
@@ -2663,7 +2802,7 @@ function drawLyrics(B, u, C){
 }
 
 /* ---------- drag objects on the canvas ---------- */
-let drag = null, hover = null, guides = [], lastL = null;
+let drag = null, hover = null, guides = [], lastL = null, sel = null;
 function cpt(e){ const r = cv.getBoundingClientRect(); return {x: (e.clientX - r.left) / r.width * cv.width, y: (e.clientY - r.top) / r.height * cv.height, r}; }
 function hitObj(pt){
   if (!lastL) return null;
@@ -2672,7 +2811,7 @@ function hitObj(pt){
 }
 cv.addEventListener('pointerdown', e => {
   if (vs.lockObj || recording) return;
-  const pt = cpt(e), k = hitObj(pt); if (!k) return;
+  const pt = cpt(e), k = hitObj(pt); sel = k; vAlignUI(); if (!k) return;
   drag = {key: k, sx: pt.x, sy: pt.y, ox: vs.off[k].dx, oy: vs.off[k].dy, box: {...lastL.boxes[k]}};
   cv.setPointerCapture(e.pointerId); $('#vWrap').classList.add('grabbing');
 });
@@ -2695,10 +2834,27 @@ cv.addEventListener('pointermove', e => {
 const endObjDrag = () => { drag = null; guides = []; $('#vWrap').classList.remove('grabbing'); };
 cv.addEventListener('pointerup', endObjDrag); cv.addEventListener('pointercancel', endObjDrag);
 cv.addEventListener('pointerleave', () => { if (!drag){ hover = null; $('#vWrap').classList.remove('move'); } });
+function vAlignUI(){ $$('[data-valign]', view).forEach(b => b.disabled = !sel || vs.lockObj); }
+view.addEventListener('click', e => {
+  const b = e.target.closest('[data-valign]'); if (!b) return;
+  const bx = sel && lastL && lastL.boxes[sel];
+  if (!bx){ toast('먼저 영상에서 정렬할 오브젝트를 클릭해 주세요'); return; }
+  if (vs.pin[sel]){ toast('고정된 오브젝트예요 · 고정을 풀면 정렬할 수 있어요'); return; }
+  const W = cv.width, H = cv.height, a = b.dataset.valign; let dx = 0, dy = 0;
+  if (a === 'left') dx = W * .06 - bx.x0; else if (a === 'right') dx = W * .94 - bx.x1; else if (a === 'hcenter') dx = W / 2 - (bx.x0 + bx.x1) / 2;
+  else if (a === 'top') dy = H * .07 - bx.y0; else if (a === 'bottom') dy = H * .93 - bx.y1; else if (a === 'vcenter') dy = H / 2 - (bx.y0 + bx.y1) / 2;
+  vs.off[sel].dx += dx / W; vs.off[sel].dy += dy / H;
+});
+view.addEventListener('click', e => {
+  const n = e.target.closest('#vObjList .dname, #vFxList .dname'); if (!n || vs.lockObj) return;
+  const row = n.closest('[data-vobj],[data-vfx]'), k = row.dataset.vobj || row.dataset.vfx;
+  if (vs.off[k]){ sel = k; vAlignUI(); }
+});
 function lockUI(){
   const b = $('#vLockObj'); b.classList.toggle('unlocked', !vs.lockObj); b.querySelector('span').textContent = vs.lockObj ? '오브젝트 잠금' : '오브젝트 이동 중';
   $('#vGrid').classList.toggle('on', vs.grid); $('#vSnap').classList.toggle('on', vs.snap);
   if (vs.lockObj){ hover = null; $('#vWrap').classList.remove('move'); }
+  vAlignUI();
 }
 $('#vLockObj').onclick = () => { vs.lockObj = !vs.lockObj; lockUI(); toast(vs.lockObj ? '오브젝트를 잠갔어요' : '이제 오브젝트를 끌어서 옮길 수 있어요'); };
 $('#vGrid').onclick = () => { vs.grid = !vs.grid; lockUI(); };
@@ -2827,6 +2983,20 @@ view.addEventListener('drop', e => {
 });
 
 setSize(false); syncUI(); lockUI(); refreshCover(); frame();
+(async () => {
+  try { await M.ready; } catch(e){}
+  const S = M.STORE, saved = S.read('mmc-video-state');
+  const a = await S.get('video-audio'); if (a){ loadAudioFile.quiet = true; loadAudioFile(M.fileOf(a)); loadAudioFile.quiet = false; }
+  const c = await S.get('video-cover'); if (c) await loadCoverFile(M.fileOf(c), true);
+  const b = await S.get('video-bg'); if (b){ loadBgVideo.quiet = true; loadBgVideo(M.fileOf(b)); loadBgVideo.quiet = false; }
+  if (saved){
+    if (saved.vs) M.deepAssign(vs, saved.vs);
+    vs.lockObj = true;
+    if (typeof saved.lyrics === 'string'){ $('#vLyrics').value = saved.lyrics; lyr = parseLyrics(saved.lyrics); lyrStat(); }
+  }
+  setSize(false); syncUI(); lockUI(); refreshCover();
+  M.autosave('mmc-video-state', () => ({vs, lyrics: $('#vLyrics').value}));
+})();
 })();
 </script>
 <script>
@@ -2893,7 +3063,7 @@ function loadFonts(){
 }
 
 /* ---------- render ---------- */
-let boxes = {}, hover = null, drag = null, guides = [];
+let boxes = {}, hover = null, drag = null, guides = [], sel = null;
 function textBlockLines(t, px, maxW){
   ctx.font = fs(tb.weight, px);
   const lines = String(t).split('\n').map(x => x.trim()).filter(Boolean);
@@ -3027,6 +3197,8 @@ function draw(preview = true){
       ctx.fillStyle = 'rgba(0,0,0,.65)'; rr(x, y, bw, bh, 6); ctx.fill();
       ctx.fillStyle = '#fff'; ctx.font = '600 20px system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('3:45', x + bw / 2, y + bh / 2 + 1); ctx.textBaseline = 'alphabetic';
     }
+    const sb = sel && !tb.lock && boxes[sel];
+    if (sb){ ctx.strokeStyle = col(C.accent, 1); ctx.lineWidth = 2; ctx.strokeRect(sb.x0, sb.y0, sb.x1 - sb.x0, sb.y1 - sb.y0); }
     const hk = drag ? drag.key : hover, hb = hk && boxes[hk];
     if (hb){ ctx.setLineDash([6, 5]); ctx.strokeStyle = col(C.accent, .95); ctx.lineWidth = 1.5; ctx.strokeRect(hb.x0, hb.y0, hb.x1 - hb.x0, hb.y1 - hb.y0); ctx.setLineDash([]); }
     if (drag && guides.length){
@@ -3045,7 +3217,7 @@ let rq = 0; const sched = () => { if (rq) return; rq = requestAnimationFrame(() 
 function pt(e){ const r = cv.getBoundingClientRect(); return {x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H}; }
 function hit(p){ const ks = Object.keys(boxes).filter(k => !tb.pin[k]).sort((a, b) => (boxes[a].x1 - boxes[a].x0) * (boxes[a].y1 - boxes[a].y0) - (boxes[b].x1 - boxes[b].x0) * (boxes[b].y1 - boxes[b].y0)); return ks.find(k => p.x >= boxes[k].x0 && p.x <= boxes[k].x1 && p.y >= boxes[k].y0 && p.y <= boxes[k].y1) || null; }
 cv.addEventListener('pointerdown', e => {
-  if (tb.lock) return; const p = pt(e), k = hit(p); if (!k) return;
+  if (tb.lock) return; const p = pt(e), k = hit(p); sel = k; syncUI(); sched(); if (!k) return;
   drag = {key: k, sx: p.x, sy: p.y, ox: tb.o[k].x, oy: tb.o[k].y, box: {...boxes[k]}};
   cv.setPointerCapture(e.pointerId); $('#tWrap').classList.add('grabbing'); sched();
 });
@@ -3092,6 +3264,7 @@ function syncUI(){
   $('#tShadowBox').hidden = !tb.shadow;
   $('#tDropBg').hidden = tb.bgMode !== 'image'; $('#tDropCover').hidden = tb.coverSrc !== 'upload';
   $('#tLock').classList.toggle('unlocked', !tb.lock); $('#tLock span').textContent = tb.lock ? '오브젝트 잠금' : '오브젝트 이동 중';
+  $$('[data-talign]', view).forEach(b => b.disabled = !sel || tb.lock);
   $('#tGrid').classList.toggle('on', tb.grid); $('#tSnap').classList.toggle('on', tb.snap); $('#tSafe').classList.toggle('on', tb.safe);
 }
 view.addEventListener('input', e => {
@@ -3113,6 +3286,20 @@ view.addEventListener('click', e => {
   const pn = e.target.closest('[data-tpin]');
   if (pn){ const k = pn.dataset.tpin; tb.pin[k] = !tb.pin[k]; syncUI(); toast(OBJ.find(o => o[0] === k)[1] + (tb.pin[k] ? ' 고정했어요 · 끌어도 움직이지 않아요' : ' 고정을 풀었어요')); }
 });
+view.addEventListener('click', e => {
+  const b = e.target.closest('[data-talign]'); if (!b) return;
+  const bx = sel && boxes[sel];
+  if (!bx){ toast('먼저 썸네일에서 정렬할 오브젝트를 클릭해 주세요'); return; }
+  if (tb.pin[sel]){ toast('고정된 오브젝트예요 · 고정을 풀면 정렬할 수 있어요'); return; }
+  const a = b.dataset.talign; let dx = 0, dy = 0;
+  if (a === 'left') dx = W * .06 - bx.x0; else if (a === 'right') dx = W * .94 - bx.x1; else if (a === 'hcenter') dx = W / 2 - (bx.x0 + bx.x1) / 2;
+  else if (a === 'top') dy = H * .08 - bx.y0; else if (a === 'bottom') dy = H * .92 - bx.y1; else if (a === 'vcenter') dy = H / 2 - (bx.y0 + bx.y1) / 2;
+  tb.o[sel].x += dx / W * 100; tb.o[sel].y += dy / H * 100; syncUI(); sched();
+});
+view.addEventListener('click', e => {
+  const n = e.target.closest('#tObjList .dname'); if (!n || tb.lock) return;
+  sel = n.closest('[data-tkey]').dataset.tkey; syncUI(); sched();
+});
 $('#tResetAll').onclick = () => { tb.o = JSON.parse(JSON.stringify(PRESETS[tb.preset].o)); syncUI(); sched(); toast('모든 위치를 처음으로 되돌렸어요'); };
 $('#tFromMeta').onclick = () => { tb.title = null; tb.sub = null; syncUI(); loadFonts(); sched(); };
 $('#tLock').onclick = () => { tb.lock = !tb.lock; if (tb.lock) hover = null; syncUI(); sched(); toast(tb.lock ? '오브젝트를 잠갔어요' : '이제 오브젝트를 끌어서 옮길 수 있어요'); };
@@ -3121,9 +3308,9 @@ $('#tSnap').onclick = () => { tb.snap = !tb.snap; syncUI(); toast(tb.snap ? '자
 $('#tSafe').onclick = () => { tb.safe = !tb.safe; syncUI(); sched(); };
 $('#tRefreshCover').onclick = () => { refreshCover(); toast('커버를 다시 가져왔어요'); };
 const fileIn = (el, fn) => { const i = el.querySelector('input[type=file]'); i.addEventListener('change', () => { const f = i.files[0]; i.value = ''; if (f && f.type.startsWith('image/')) fn(f); else if (f) toast('이미지 파일을 넣어 주세요'); }); };
-const setBg = f => loadImg(f, (im, url) => { bgImg = im; tb.bgMode = 'image'; $('#tBgName').textContent = f.name; $('#tBgThumb').innerHTML = `<img src="${url}" alt="">`; syncUI(); sched(); });
-const setCover = f => loadImg(f, (im, url) => { upCover = im; tb.coverSrc = 'upload'; $('#tCoverName').textContent = f.name; $('#tCoverThumb').innerHTML = `<img src="${url}" alt="">`; syncUI(); refreshCover(); });
-fileIn($('#tDropBg'), setBg); fileIn($('#tDropCover'), setCover);
+const setBg = (f, quiet) => new Promise(res => loadImg(f, (im, url) => { bgImg = im; tb.bgMode = 'image'; $('#tBgName').textContent = f.name; $('#tBgThumb').innerHTML = `<img src="${url}" alt="">`; syncUI(); sched(); if (!quiet) M.STORE.put('thumb-bg', f, f.name); res(); }));
+const setCover = (f, quiet) => new Promise(res => loadImg(f, (im, url) => { upCover = im; tb.coverSrc = 'upload'; $('#tCoverName').textContent = f.name; $('#tCoverThumb').innerHTML = `<img src="${url}" alt="">`; syncUI(); refreshCover(); if (!quiet) M.STORE.put('thumb-cover', f, f.name); res(); }));
+fileIn($('#tDropBg'), f => setBg(f)); fileIn($('#tDropCover'), f => setCover(f));
 view.addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); });
 view.addEventListener('drop', e => { e.preventDefault(); e.stopPropagation(); const f = e.dataTransfer && e.dataTransfer.files[0]; if (!f) return; if (f.type.startsWith('image/')) setBg(f); else toast('이미지 파일을 넣어 주세요'); });
 $('#tSave').onclick = async () => {
@@ -3135,6 +3322,15 @@ $('#tSave').onclick = async () => {
 };
 $$('.nav-item').forEach(n => n.addEventListener('click', () => { if (n.dataset.view === 'thumb'){ const f = tb.font; $('#tFont').innerHTML = (M.FONTS || []).map(([ff,, lab]) => `<option value="${ff}">${lab || ff}</option>`).join(''); tb.font = f; refreshCover(); loadFonts(); syncUI(); } }));
 syncUI(); refreshCover();
+(async () => {
+  try { await M.ready; } catch(e){}
+  const S = M.STORE, saved = S.read('mmc-thumb-state');
+  const b = await S.get('thumb-bg'); if (b) await setBg(M.fileOf(b), true);
+  const c = await S.get('thumb-cover'); if (c) await setCover(M.fileOf(c), true);
+  if (saved){ M.deepAssign(tb, saved); tb.lock = true; }
+  syncUI(); refreshCover(); loadFonts();
+  M.autosave('mmc-thumb-state', () => tb);
+})();
 })();
 </script>
 </body>
