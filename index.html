@@ -203,6 +203,11 @@ input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;bac
 .pin.pinned{background:var(--on);border-color:var(--on);color:var(--on-ink)}
 .dsub .color{height:28px}
 .range > .color:last-child{grid-column:2 / -1;height:30px}
+.selbox{border:1px solid var(--line);background:var(--surface-2);border-radius:10px;padding:10px 12px 4px;margin-bottom:12px}
+.selbox[hidden]{display:none}
+.selbox-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px;font-size:12px}
+.selbox-h small{font-size:10.5px;color:var(--faint)}
+.kbd-hint{font-size:10.5px;color:var(--faint);margin:-4px 0 12px}
 .rv{visibility:hidden;border:0;background:none;padding:0;width:16px;height:16px;display:grid;place-items:center;color:var(--faint);border-radius:5px;cursor:pointer;flex:none}
 .rv.show{visibility:visible}
 .rv:hover{color:var(--text);background:var(--surface-2)}
@@ -479,6 +484,7 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                 <div class="range"><span class="lbl">자간</span><input type="range" min="-10" max="40" step="1" data-bind="text.titleTrack"><output data-out="text.titleTrack" data-fmt="int"></output></div>
                 <div class="range"><span class="lbl">아티스트</span><input type="range" min="15" max="80" step="1" data-bind="text.artistScale"><output data-out="text.artistScale" data-fmt="pct"></output></div>
                 <div class="range"><span class="lbl">위아래 간격</span><input type="range" min="0" max="250" step="5" data-bind="text.lineGap"><output data-out="text.lineGap" data-fmt="pct"></output></div>
+                <div class="range"><span class="lbl">기울기</span><input type="range" min="-45" max="45" step="0.5" data-bind="text.rot"><output data-out="text.rot" data-fmt="deg"></output></div>
               </div>
               <div class="sec">
                 <div class="sec-h"><h3>곡 정보</h3></div>
@@ -536,6 +542,7 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                   <div style="display:flex;gap:10px"><button class="link" id="allPosReset">위치 초기화</button><button class="link" id="allOn">모두 켜기</button><button class="link" id="allOff">모두 끄기</button></div>
                 </div>
                 <p class="note">커버 위 "꾸밈 잠금"을 풀면 꾸밈을 마우스로 끌어 옮기고 휠로 크기를 바꿀 수 있어요.</p>
+                <p class="kbd-hint">꾸밈을 클릭해 선택한 뒤 방향키로 조금씩 이동 (Shift = 크게) · [ ] 로 회전 · Delete 로 지우기 · Ctrl+Z 되돌리기 · Ctrl+Shift+Z 다시 실행</p>
                 <div id="decoList"></div>
                 <div class="range" style="margin-top:4px"><span class="lbl">전체 농도</span><input type="range" min="10" max="100" step="1" data-bind="design.intensity"><output data-out="design.intensity" data-fmt="pct"></output></div>
               </div>
@@ -687,6 +694,10 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
               <div class="sec">
                 <div class="sec-h"><h3>배치</h3><button class="link" id="vResetAll">전체 위치 초기화</button></div>
                 <p class="note">영상 위 "오브젝트 잠금"을 풀면 커버 · 제목 · 가사 등을 끌어서 옮길 수 있어요. ↺ 를 누르면 그 오브젝트만 원래 자리로 돌아가요.</p>
+<div class="selbox" id="vSelBox" hidden>
+                  <div class="selbox-h"><span>선택: <b id="vSelName"></b></span><small>방향키 이동 · [ ] 회전 · Delete 지우기</small></div>
+                  <div class="range"><span class="lbl">회전</span><input type="range" id="vRot" min="-180" max="180" step="1" aria-label="회전"><output id="vRotOut"></output><button class="rv show" id="vRotReset" title="회전 처음 값으로" aria-label="회전 처음 값으로"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2.5 8a5.5 5.5 0 1 0 1.8-4.1"/><path d="M2.5 2.5v3h3"/></svg></button></div>
+                </div>
                 <div id="vObjList"></div>
               </div>
               <div class="sec">
@@ -875,6 +886,10 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
               <div class="sec">
                 <div class="sec-h"><h3>오브젝트</h3><button class="link" id="tResetAll">전체 위치 초기화</button></div>
                 <p class="note">썸네일 위 "오브젝트 잠금"을 풀면 끌어서 옮기고 휠로 크기를 바꿀 수 있어요.</p>
+<div class="selbox" id="tSelBox" hidden>
+                  <div class="selbox-h"><span>선택: <b id="tSelName"></b></span><small>방향키 이동 · [ ] 회전 · Delete 지우기</small></div>
+                  <div class="range"><span class="lbl">회전</span><input type="range" id="tRot" min="-180" max="180" step="1" aria-label="회전"><output id="tRotOut"></output><button class="rv show" id="tRotReset" title="회전 처음 값으로" aria-label="회전 처음 값으로"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2.5 8a5.5 5.5 0 1 0 1.8-4.1"/><path d="M2.5 2.5v3h3"/></svg></button></div>
+                </div>
                 <div id="tObjList"></div>
               </div>
               <div class="sec">
@@ -969,7 +984,7 @@ const DECOS = [
   ['progress','재생 바','진행 바와 재생 버튼','데이터',{x:50,y:52,s:100,r:0},[['prog','진행도','range',0,100,1]]],
   ['tags','태그','알약 모양 라벨','데이터',{x:8,y:29,s:100,r:0},[['tagText','내용 ( · 로 구분)','text']]],
   ['waveform','웨이브폼','곡에서 추출한 실제 파형','데이터',{x:50,y:16,s:100,r:0}],
-  ['bignum','트랙 넘버','배경에 깔리는 큰 숫자','데이터',{x:93,y:11,s:100,r:0}],
+  ['bignum','트랙 넘버','배경에 깔리는 큰 숫자','데이터',{x:93,y:11,s:100,r:0},[['bignumText','숫자 · 문구 (비우면 트랙 번호)','text']]],
   ['barcode','바코드','카탈로그 번호 바코드','데이터',{x:92,y:92,s:100,r:0}],
   ['explicit','Explicit','청취 등급 표시','데이터',{x:92,y:84,s:100,r:0}],
   ['header','상단 라인','레이블과 연도를 담은 한 줄','구조',null],
@@ -990,17 +1005,17 @@ const HIT = {
 };
 let HL = null; // decoration under the pointer (preview only)
 const GRID = {show:false, snap:true}; let GUIDE = [], SEL = null;
-const NO_ROT = new Set(['percent','tags','bignum','barcode','explicit','progress','waveform','target','circle','glow']);
+const NO_ROT = new Set();
 
 function defaultDesign(){
   const on = {}, pos = {};
   DECOS.forEach(d => { on[d[0]] = false; if (d[4]) pos[d[0]] = {...d[4]}; });
   ['header','globe','sparkle','target','dust','fade','grain','brackets','percent'].forEach(k => on[k] = true);
-  return {intensity:100, on, pos, pin:{}, pct:87, pctLabel:'Sync', prog:36, tagText:'REC · Hi-Fi · Lossless', fadeColor:'#2b2b31', fadeAmt:82, fadeReach:62, fadeVig:40};
+  return {intensity:100, on, pos, pin:{}, pct:87, pctLabel:'Sync', prog:36, tagText:'REC · Hi-Fi · Lossless', bignumText:'', fadeColor:'#2b2b31', fadeAmt:82, fadeReach:62, fadeVig:40};
 }
 const DEFAULT_COVER = {bg:'#2b2b31', text:'#f7f5f2', deco:'#ffffff', accent:'#f4a3c6', zoom:1, ox:0, oy:0, adjustOn:false,
   bright:100, contrast:100, sat:100, gray:0, blur:0, opacity:100, tintOn:false, tint:'#f4a3c6', tintAmt:30, tintMode:'soft-light'};
-const DEFAULT_TEXT = {layout:'bl', titleFont:'Paperlogy', titleWeight:'700', titleCase:'none', titleSize:96, titleTrack:-3, artistScale:28, lineGap:100,
+const DEFAULT_TEXT = {layout:'bl', titleFont:'Paperlogy', titleWeight:'700', titleCase:'none', titleSize:96, titleTrack:-3, artistScale:28, lineGap:100, rot:0,
   infoFont:'Paperlogy', infoWeight:'500', infoCase:'upper', infoSize:13, infoTrack:6, shadow:false, shadowColor:'#000000', shadowAmt:45, shadowBlur:24, shadowDist:4};
 const DEFAULT_SHOW = {track:false, genre:false, artist:true, feat:true, album:true, year:true, label:false, catalog:false, bpm:false, key:false, duration:false, copyright:false};
 const clone = o => JSON.parse(JSON.stringify(o));
@@ -1409,7 +1424,7 @@ function render(ctx, S, preview){
   });
 
   deco('bignum', () => {
-    const t = pad2(M.track || '1'), sz = 360;
+    const t = (D.bignumText || '').trim() || pad2(M.track || '1'), sz = 360;
     setFont(ctx, T.titleWeight, sz, T.titleFont); need(T.titleFont, T.titleWeight, t);
     ctx.fillStyle = LN(.1); drawT(ctx, t, 0, sz * .74, -8, 'right');
   });
@@ -1570,6 +1585,7 @@ function drawTextBlock(ctx, S){
   const H = items.reduce((a, it) => a + it.gap + it.lh, 0);
   let y = L[0] === 't' ? (D.on.header ? 140 : 88) * u : L === 'center' ? (S - H) / 2 : S - 80*u - H;
   ctx.save();
+  if (T.rot){ const py = y + H / 2; ctx.translate(x, py); ctx.rotate(T.rot * Math.PI / 180); ctx.translate(-x, -py); }
   if (T.shadow){ ctx.shadowColor = col(T.shadowColor || '#000000', (T.shadowAmt ?? 45) / 100); ctx.shadowBlur = (T.shadowBlur ?? 24) * u; ctx.shadowOffsetY = (T.shadowDist ?? 4) * u; }
   for (const it of items){
     y += it.gap;
@@ -1955,9 +1971,11 @@ $('#lockImg').onclick = () => { LOCK.img = !LOCK.img; updateLocks(); toast(LOCK.
 $('#lockDeco').onclick = () => { LOCK.deco = !LOCK.deco; updateLocks(); toast(LOCK.deco ? '꾸밈을 잠갔어요' : '이제 꾸밈을 끌어서 옮길 수 있어요'); };
 let drag = null;
 pv.addEventListener('pointerdown', e => {
+  if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
   const pt = canvasPoint(e), k = LOCK.deco ? null : hitDeco(pt);
   if (!LOCK.deco){ SEL = k; alignUI(); scheduleRender(); }
   if (k){
+    if (EDITORS.cover && EDITORS.cover.checkpoint) EDITORS.cover.checkpoint();
     drag = {kind:'deco', key:k, x:e.clientX, y:e.clientY, px:state.design.pos[k].x, py:state.design.pos[k].y};
     setHL(k); const it = $(`.ditem[data-key="${k}"]`); if (it) it.classList.add('open');
   } else if (IMG.el && !LOCK.img){
@@ -2037,6 +2055,44 @@ $('#btnExportMp3').onclick = async () => {
 $('#btnResetMeta').onclick = () => { state.meta = {...DEFAULT_META}; syncUI(); scheduleRender(); toast('곡 정보를 기본값으로 바꿨어요'); };
 $('#btnReloadMeta').onclick = () => { if (AU.origMeta){ state.meta = {...AU.origMeta}; syncUI(); scheduleRender(); toast('원래 태그로 되돌렸어요'); } };
 
+/* ================= undo / redo + keyboard ================= */
+function makeHistory(get, apply, busy){
+  const H = {undo: [], redo: [], committed: JSON.stringify(get()), pending: null};
+  setInterval(() => {
+    if (busy && busy()) return;
+    const cur = JSON.stringify(get());
+    if (cur === H.committed){ H.pending = null; return; }
+    if (cur === H.pending){ H.undo.push(H.committed); if (H.undo.length > 120) H.undo.shift(); H.redo = []; H.committed = cur; H.pending = null; }
+    else H.pending = cur;
+  }, 300);
+  const flush = () => { const cur = JSON.stringify(get()); if (cur !== H.committed){ H.undo.push(H.committed); H.redo = []; H.committed = cur; } H.pending = null; };
+  return {
+    checkpoint: flush,
+    undo(){ flush(); if (!H.undo.length) return false; H.redo.push(H.committed); H.committed = H.undo.pop(); apply(JSON.parse(H.committed)); return true; },
+    redo(){ flush(); if (!H.redo.length) return false; H.undo.push(H.committed); H.committed = H.redo.pop(); apply(JSON.parse(H.committed)); return true; }
+  };
+}
+const EDITORS = {};
+document.addEventListener('keydown', e => {
+  const tg = e.target, tag = tg && tg.tagName;
+  const typing = tg && (tg.isContentEditable || tag === 'TEXTAREA' || tag === 'SELECT' || (tag === 'INPUT' && !['range', 'checkbox', 'color', 'button', 'file'].includes(tg.type)));
+  if (typing) return;
+  const viewEl = document.querySelector('main > .view:not([hidden])'); if (!viewEl) return;
+  const ed = EDITORS[viewEl.id.replace('view-', '')]; if (!ed) return;
+  const mod = e.ctrlKey || e.metaKey, key = e.key.toLowerCase();
+  if (mod && key === 'z'){ e.preventDefault(); const redo = e.shiftKey, ok = redo ? ed.redo && ed.redo() : ed.undo && ed.undo(); toast(ok ? (redo ? '다시 실행했어요' : '되돌렸어요') : (redo ? '다시 실행할 게 없어요' : '되돌릴 게 없어요')); return; }
+  if (mod && key === 'y'){ e.preventDefault(); toast(ed.redo && ed.redo() ? '다시 실행했어요' : '다시 실행할 게 없어요'); return; }
+  if (mod || e.altKey) return;
+  const dir = {arrowleft: [-1, 0], arrowright: [1, 0], arrowup: [0, -1], arrowdown: [0, 1]}[key];
+  if (dir){ if (tg && tg.type === 'range') return; const st = e.shiftKey ? 10 : 1; if (ed.nudge && ed.nudge(dir[0] * st, dir[1] * st)) e.preventDefault(); return; }
+  if ((key === 'delete' || key === 'backspace') && ed.remove){ if (ed.checkpoint) ed.checkpoint(); const name = ed.remove(); if (name && ed.checkpoint) ed.checkpoint(); if (name){ e.preventDefault(); toast(name + ' 지웠어요 · Ctrl+Z로 되돌릴 수 있어요'); } return; }
+  if ((e.key === '[' || e.key === ']' || e.code === 'BracketLeft' || e.code === 'BracketRight') && ed.rotate){
+    const sign = (e.key === ']' || e.code === 'BracketRight') ? 1 : -1;
+    if (ed.rotate(sign * (e.shiftKey ? 15 : 1))) e.preventDefault();
+  }
+});
+const normDeg = d => { d = ((d + 180) % 360 + 360) % 360 - 180; return Math.round(d * 10) / 10; };
+
 /* ================= reset-to-default buttons ================= */
 const RV_SVG = '<svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2.5 8a5.5 5.5 0 1 0 1.8-4.1"/><path d="M2.5 2.5v3h3"/></svg>';
 function attachResets(root, attr, defOf, set, after){
@@ -2052,7 +2108,7 @@ function attachResets(root, attr, defOf, set, after){
   });
 }
 function refreshResets(root, defOf, get){
-  root.querySelectorAll('.rv').forEach(b => {
+  root.querySelectorAll('.rv[data-rv-path]').forEach(b => {
     const p = b.dataset.rvPath, d = defOf(p), v = get(p);
     const same = d === undefined || (typeof d === 'number' ? Math.abs(d - v) < 1e-6 : String(d).toLowerCase() === String(v).toLowerCase());
     b.classList.toggle('show', !same);
@@ -2131,6 +2187,14 @@ async function restoreCover(){
   }
   syncUI(); updateImgUI(); scheduleRender();
   if (any) toast('이전 작업을 불러왔어요');
+  const coverHist = makeHistory(() => ({meta: state.meta, cover: state.cover, text: state.text, show: state.show, design: state.design}),
+    d => { ['meta', 'cover', 'text', 'show', 'design'].forEach(k => { state[k] = d[k]; }); syncUI(); scheduleRender(); }, () => !!drag);
+  EDITORS.cover = {
+    undo: coverHist.undo, redo: coverHist.redo, checkpoint: coverHist.checkpoint,
+    nudge(dx, dy){ if (LOCK.deco || !SEL || !state.design.on[SEL] || (state.design.pin && state.design.pin[SEL])) return false; const p = state.design.pos[SEL]; p.x = Math.max(0, Math.min(100, Math.round((p.x + dx * .2) * 10) / 10)); p.y = Math.max(0, Math.min(100, Math.round((p.y + dy * .2) * 10) / 10)); syncUI(); scheduleRender(); return true; },
+    rotate(deg){ if (LOCK.deco || !SEL || !state.design.on[SEL] || (state.design.pin && state.design.pin[SEL])) return false; const p = state.design.pos[SEL]; p.r = normDeg((p.r || 0) + deg); syncUI(); scheduleRender(); return true; }
+    , remove(){ if (LOCK.deco || !SEL || !state.design.on[SEL] || (state.design.pin && state.design.pin[SEL])) return null; const d = DECOS.find(x => x[0] === SEL); state.design.on[SEL] = false; SEL = null; alignUI(); syncUI(); scheduleRender(); return d ? d[1] : '꾸밈'; }
+  };
   autosave('mmc-cover-state', () => ({meta: state.meta, cover: state.cover, text: state.text, show: state.show, design: state.design, hasImg: !!IMG.el,
     fontNames: {titleFont: fontKeyOf(state.text.titleFont), infoFont: fontKeyOf(state.text.infoFont)}}));
 }
@@ -2145,7 +2209,7 @@ syncUI(); updateImgUI(); updateLocks();
 render(pctx, pv.width);
 if (document.fonts) document.fonts.ready.then(scheduleRender);
 requestAnimationFrame(drawPlayer);
-window.MMC = {state, parseID3, buildMp3, render, AU, FONTS, toast, download, bindVol, STORE, autosave, deepAssign, fileOf, attachResets, refreshResets};
+window.MMC = {state, parseID3, buildMp3, render, AU, FONTS, toast, download, bindVol, STORE, autosave, deepAssign, fileOf, attachResets, refreshResets, makeHistory, EDITORS, normDeg};
 window.MMC.ready = restoreCover().catch(e => { console.error(e); });
 })();
 </script>
@@ -2195,7 +2259,7 @@ const vs = {
   labels:{tl:'Now Playing', tr:'Sync Rate', bl:'Audio Online · MMC-001', cap:'Artwork // MMC-001'}, font:'Paperlogy', titleSize:100, showTitle:true, sens:100, speed:100, lyricSize:100, lyricOffset:0,
   fx:{spectrum:true, ring:true, eq:true, sync:false, particles:true, sparkle:true, orbit:false, reticle:false, globe:false, hud:true, spin:true, beat:true, glow:true, progress:true, brackets:false, vignette:true, grain:true, lyrics:true},
   off:Object.fromEntries(OBJ.map(([k]) => [k, {dx:0, dy:0}])),
-  lockObj:true, grid:false, snap:true, pin:{}
+  lockObj:true, grid:false, snap:true, pin:{}, rot:Object.fromEntries(OBJ.map(([k]) => [k, 0]))
 };
 const getV = p => p.split('.').reduce((o, k) => o == null ? o : o[k], vs);
 const VDEF = JSON.parse(JSON.stringify(vs));
@@ -2530,11 +2594,20 @@ function wrap2(t, maxW){
   return [a, fit(b, maxW)];
 }
 
+const RSTK = [];
+function rb(key, pivot){
+  const a = (vs.rot[key] || 0) * Math.PI / 180, b = lastFrameL && lastFrameL.boxes[key];
+  const pv = pivot || (b && {x: (b.x0 + b.x1) / 2, y: (b.y0 + b.y1) / 2});
+  if (!a || !pv){ RSTK.push(false); return; }
+  ctx.save(); ctx.translate(pv.x, pv.y); ctx.rotate(a); ctx.translate(-pv.x, -pv.y); RSTK.push(true);
+}
+function re(){ if (RSTK.pop()) ctx.restore(); }
+let lastFrameL = null;
 function frame(){
   const W = cv.width, H = cv.height, now = performance.now() / 1000;
   const dt = Math.min(.1, now - lastT); lastT = now; clock += dt * vs.speed / 100;
   const t = clock; sample(now);
-  const L = layout(W, H), u = L.u, C = vs.colors, FXo = vs.fx, k = vs.sens / 100;
+  const L = layout(W, H), u = L.u, C = vs.colors, FXo = vs.fx, k = vs.sens / 100; lastFrameL = L;
   const m = CS.meta, dur = audio.duration || (M.AU && M.AU.duration) || 0, cur = audio.currentTime || 0, prog = dur ? cur / dur : 0;
   ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none'; ctx.textBaseline = 'alphabetic'; ctx.shadowBlur = 0;
 
@@ -2553,6 +2626,7 @@ function frame(){
   }
 
   if (FXo.orbit){
+    rb('orbit', L.orbitC);
     const maxR = L.colX ? (L.colX - L.orbitC.x - 40 * u) : cs * 1.1;
     ctx.save(); ctx.translate(L.orbitC.x, L.orbitC.y);
     [[.95, .3, .18, .5, 0], [1.08, .38, -.12, .28, 1], [.8, .22, .25, .38, 0]].forEach(([rx, ry, sp, a, dash], i) => {
@@ -2566,6 +2640,7 @@ function frame(){
       ctx.restore();
     });
     ctx.setLineDash([]); ctx.restore();
+    re();
   }
 
   if (FXo.particles){
@@ -2598,6 +2673,7 @@ function frame(){
   }
   // spectrum strip
   if (FXo.spectrum && L.spectrum){
+    rb('spectrum');
     const S = L.spectrum, v = bars(S.n), bw = S.w / S.n;
     for (let i = 0; i < S.n; i++){
       const val = S.mirror ? v[Math.abs(Math.floor(S.n / 2) - i) * 2 % S.n] : v[i];
@@ -2605,6 +2681,7 @@ function frame(){
       ctx.fillStyle = col(i % 7 === 0 ? C.accent : C.line, (S.alpha || .6) * (.5 + val * .6));
       rr(S.x + i * bw + bw * .2, S.y - h, Math.max(1, bw * (S.thin ? .35 : .6)), h, bw * .2); ctx.fill();
     }
+    re();
   }
 
   // ring spectrum around cover
@@ -2643,6 +2720,7 @@ function frame(){
   }
 
   // cover
+  rb('cover', cvr);
   ctx.save();
   ctx.shadowColor = 'rgba(0,0,0,.55)'; ctx.shadowBlur = 50 * u; ctx.shadowOffsetY = 14 * u;
   if (circle){
@@ -2665,6 +2743,7 @@ function frame(){
     }
   }
   ctx.restore();
+  re();
 
   // reticle drifting over the cover (no label, stays inside)
   if (FXo.reticle){
@@ -2681,6 +2760,7 @@ function frame(){
 
   // globe
   if (FXo.globe && L.globe){
+    rb('globe', L.globe);
     const G = L.globe, R = G.r;
     ctx.save(); ctx.translate(G.x, G.y);
     const g = ctx.createRadialGradient(-R * .35, -R * .4, R * .1, 0, 0, R);
@@ -2695,12 +2775,14 @@ function frame(){
     ctx.save(); ctx.rotate(-.35); ctx.strokeStyle = col(C.line, .7); ctx.lineWidth = 1 * u; ctx.beginPath(); ctx.ellipse(0, 0, R * 1.65, R * .38, 0, 0, Math.PI * 2); ctx.stroke();
     const a = t * 1.1; ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(Math.cos(a) * R * 1.65, Math.sin(a) * R * .38, 4 * u, 0, Math.PI * 2); ctx.fill(); ctx.restore();
     ctx.restore();
+    re();
   }
 
   // titles / lyrics / data
   const ts = vs.titleSize / 100, LB = vs.labels;
   const T = L.title;
   if (vs.showTitle){
+    rb('title');
     if (L.tlAboveTitle && FXo.hud && LB.tl){
       ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(T.x + 4 * u, T.y - T.size * ts - 18 * u, 3.5 * u * (.75 + .25 * Math.sin(t * 4)), 0, Math.PI * 2); ctx.fill();
       text(LB.tl.toUpperCase(), T.x + 16 * u, T.y - T.size * ts - 14 * u, fontStr(600, 12 * u), col(C.text, .8), 'left', 2 * u);
@@ -2710,12 +2792,16 @@ function frame(){
     text(fit(m.title || 'Untitled', maxW), T.x, T.y, ctx.font, col(C.text, 1), T.align);
     ctx.font = fontStr(400, T.size * ts * .42);
     text(fit([m.artist, T.align === 'left' ? m.album : m.year].filter(Boolean).join('  ·  '), maxW), T.x, T.y + T.size * ts * .78, ctx.font, col(C.text, .7), T.align);
+    re();
   }
   if (L.time){
+    rb('time');
     text(fmtTime(cur), L.time.x, L.time.y, fontStr(300, 44 * u), col(C.text, .95), 'right', 1 * u);
     text('/ ' + fmtTime(dur), L.time.x, L.time.y + 26 * u, fontStr(500, 12 * u), col(C.text, .5), 'right', 1.5 * u);
+    re();
   }
   if (FXo.sync && L.sync){
+    rb('sync');
     const S = L.sync, r = 19 * u, right = S.align === 'right', cx = right ? S.x - r : S.x + r, tx = right ? S.x - r * 2 - 14 * u : S.x + r * 2 + 14 * u;
     ctx.lineCap = 'round';
     ctx.strokeStyle = col(C.line, .18); ctx.lineWidth = 3 * u; ctx.beginPath(); ctx.arc(cx, S.y, r, 0, Math.PI * 2); ctx.stroke();
@@ -2723,17 +2809,21 @@ function frame(){
     ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(cx, S.y, 3 * u, 0, Math.PI * 2); ctx.fill();
     if (LB.tr) text(LB.tr.toUpperCase(), tx, S.y - 6 * u, fontStr(600, 10.5 * u), col(C.text, .55), right ? 'right' : 'left', 2 * u);
     text(syncS.toFixed(1) + '%', tx, S.y + 17 * u, fontStr(600, 20 * u), col(C.text, .95), right ? 'right' : 'left');
+    re();
   }
   if (FXo.eq && L.eq){
+    rb('eq');
     const E = L.eq, n = 9, v = bars(14), pw = E.w / n * .46, x0 = E.align === 'center' ? E.x - E.w / 2 : E.align === 'right' ? E.x - E.w : E.x;
     for (let i = 0; i < n; i++){
       const val = v[[0, 2, 4, 6, 8, 10, 12, 5, 1][i]], h = Math.max(pw, E.h * (.18 + .82 * Math.min(1, val * 1.3 * k)));
       ctx.fillStyle = col(i % 4 === 0 ? C.line : C.accent, .9);
       rr(x0 + i * E.w / n + (E.w / n - pw) / 2, E.y - h / 2, pw, h, pw / 2); ctx.fill();
     }
+    re();
   }
-  if (FXo.lyrics) drawLyrics(L.lyrics, u, C);
+  if (FXo.lyrics){ rb('lyrics'); drawLyrics(L.lyrics, u, C); re(); }
   if (FXo.progress && L.progress){
+    rb('progress');
     const P = L.progress, x1 = P.x + P.w, xp = P.x + P.w * prog;
     if (P.ruler){
       ctx.fillStyle = col(C.line, .25); ctx.fillRect(P.x, P.y, P.w, Math.max(1, u));
@@ -2751,6 +2841,7 @@ function frame(){
       text(fmtTime(cur), P.x, P.y + 28 * u, fontStr(500, 12 * u), col(C.text, .6), 'left', 1 * u);
       text(fmtTime(dur), x1, P.y + 28 * u, fontStr(500, 12 * u), col(C.text, .6), 'right', 1 * u);
     }
+    re();
   }
   if (FXo.hud){
     const g = 56 * u;
@@ -2770,12 +2861,14 @@ function frame(){
 
   // sparkles — placed around the cover so they never sit on text
   if (FXo.sparkle){
+    rb('sparkle', L.sparkC);
     const pts = [[.62, -.56, 26], [.74, -.4, 10], [-.64, .5, 12], [-.6, -.6, 8], [.58, .62, 7]];
     pts.forEach(([dx, dy, r], i) => {
       const s = (.55 + .45 * Math.sin(t * 1.8 + i * 1.3)) * (1 + bassS * .3 * k);
       ctx.save(); ctx.shadowColor = col(C.accent, .9); ctx.shadowBlur = r * u;
       ctx.fillStyle = i % 2 ? col(C.accent, 1) : col(C.line, .95); star4(L.sparkC.x + dx * cvr.s, L.sparkC.y + dy * cvr.s, r * u * s); ctx.fill(); ctx.restore();
     });
+    re();
   }
 
   if (FXo.brackets){
@@ -2848,8 +2941,10 @@ function hitObj(pt){
   return keys.find(k => !vs.pin[k] && pt.x >= B[k].x0 && pt.x <= B[k].x1 && pt.y >= B[k].y0 && pt.y <= B[k].y1) || null;
 }
 cv.addEventListener('pointerdown', e => {
+  if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
   if (vs.lockObj || recording) return;
   const pt = cpt(e), k = hitObj(pt); sel = k; vAlignUI(); if (!k) return;
+  if (M.EDITORS.video) M.EDITORS.video.checkpoint();
   drag = {key: k, sx: pt.x, sy: pt.y, ox: vs.off[k].dx, oy: vs.off[k].dy, box: {...lastL.boxes[k]}};
   cv.setPointerCapture(e.pointerId); $('#vWrap').classList.add('grabbing');
 });
@@ -2872,7 +2967,13 @@ cv.addEventListener('pointermove', e => {
 const endObjDrag = () => { drag = null; guides = []; $('#vWrap').classList.remove('grabbing'); };
 cv.addEventListener('pointerup', endObjDrag); cv.addEventListener('pointercancel', endObjDrag);
 cv.addEventListener('pointerleave', () => { if (!drag){ hover = null; $('#vWrap').classList.remove('move'); } });
-function vAlignUI(){ $$('[data-valign]', view).forEach(b => b.disabled = !sel || vs.lockObj); }
+function vAlignUI(){
+  $$('[data-valign]', view).forEach(b => b.disabled = !sel || vs.lockObj);
+  const show = !!sel && !vs.lockObj && !!vs.off[sel]; $('#vSelBox').hidden = !show;
+  if (show){ $('#vSelName').textContent = OBJ.find(o => o[0] === sel)[1]; const r = vs.rot[sel] || 0; if (document.activeElement !== $('#vRot')) $('#vRot').value = r; $('#vRotOut').textContent = Math.round(r) + '°'; $('#vRotReset').classList.toggle('show', !!r); }
+}
+$('#vRot').addEventListener('input', () => { if (!sel) return; vs.rot[sel] = +$('#vRot').value; vAlignUI(); });
+$('#vRotReset').addEventListener('click', () => { if (sel){ vs.rot[sel] = 0; vAlignUI(); } });
 view.addEventListener('click', e => {
   const b = e.target.closest('[data-valign]'); if (!b) return;
   const bx = sel && lastL && lastL.boxes[sel];
@@ -2979,6 +3080,7 @@ function syncUI(){
   $('#vDropBg').hidden = vs.bgMode !== 'video';
   $('#vRes').value = vs.res; $('#vFps').value = String(vs.fps);
   if (M.refreshResets) M.refreshResets(view, vDef, getV);
+  if (typeof vAlignUI === 'function') vAlignUI();
 }
 view.addEventListener('input', e => {
   const el = e.target, p = el.dataset && el.dataset.vbind; if (!p) return;
@@ -3036,6 +3138,22 @@ setSize(false); syncUI(); lockUI(); refreshCover(); frame();
   }
   setSize(false); syncUI(); lockUI(); refreshCover();
   M.autosave('mmc-video-state', () => ({vs, lyrics: $('#vLyrics').value}));
+  const TRANS = ['lockObj', 'grid', 'snap', 'res', 'fps'];
+  const vh = M.makeHistory(() => { const o = {}; Object.keys(vs).forEach(k => { if (!TRANS.includes(k)) o[k] = vs[k]; }); return o; },
+    d => { Object.keys(d).forEach(k => { vs[k] = d[k]; }); syncUI(); }, () => !!drag || recording);
+  M.EDITORS.video = {
+    undo: vh.undo, redo: vh.redo, checkpoint: vh.checkpoint,
+    nudge(dx, dy){ if (vs.lockObj || !sel || !vs.off[sel] || vs.pin[sel] || tap.on) return false; vs.off[sel].dx += dx * .001; vs.off[sel].dy += dy * .001 * cv.width / cv.height; return true; },
+    rotate(deg){ if (vs.lockObj || !sel || !vs.off[sel] || vs.pin[sel] || tap.on) return false; vs.rot[sel] = M.normDeg((vs.rot[sel] || 0) + deg); vAlignUI(); return true; }
+    , remove(){
+      if (vs.lockObj || !sel || vs.pin[sel] || tap.on) return null;
+      const name = (OBJ.find(o => o[0] === sel) || [0, '오브젝트'])[1];
+      if (sel === 'title') vs.showTitle = false;
+      else if (vs.fx[sel] !== undefined) vs.fx[sel] = false;
+      else { toast(name + '는 지울 수 없어요 · 위치만 옮길 수 있어요'); return null; }
+      sel = null; hover = null; syncUI(); return name;
+    }
+  };
 })();
 })();
 </script>
@@ -3114,6 +3232,7 @@ function textBlockLines(t, px, maxW){
   while (widest() > maxW && size > px * .45){ size *= .95; ctx.font = fs(tb.weight, size); }
   return {lines, size};
 }
+function rotAt(cx, cy, deg, fn){ if (!deg){ fn(); return; } ctx.save(); ctx.translate(cx, cy); ctx.rotate(deg * Math.PI / 180); ctx.translate(-cx, -cy); fn(); ctx.restore(); }
 function anchorX(x, w){ return tb.align === 'center' ? x - w / 2 : tb.align === 'right' ? x - w : x; }
 function paintText(str, x, y, font, color, strokeW){
   ctx.font = font; ctx.textAlign = tb.align; ctx.textBaseline = 'alphabetic';
@@ -3153,9 +3272,11 @@ function draw(preview = true){
   }
   if (on.ring){
     const p = O.ring, cx = p.x / 100 * W, cy = p.y / 100 * H, cs = 560 * u * p.s / 100;
+    rotAt(cx, cy, p.r || 0, () => {
     ctx.strokeStyle = col(C.line, .3); ctx.lineWidth = 1.4 * u;
     [.78, .9].forEach((f, i) => { ctx.setLineDash(i ? [5 * u, 8 * u] : []); ctx.beginPath(); ctx.arc(cx, cy, cs * f, 0, Math.PI * 2); ctx.stroke(); });
     ctx.setLineDash([]); ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(cx + Math.cos(-.7) * cs * .78, cy + Math.sin(-.7) * cs * .78, 7 * u, 0, Math.PI * 2); ctx.fill();
+    });
     const r = cs * .9; boxes.ring = {x0: cx - r, y0: cy - r, x1: cx + r, y1: cy + r};
   }
   // cover
@@ -3171,7 +3292,7 @@ function draw(preview = true){
     boxes.cover = {x0: cx - cs / 2, y0: cy - cs / 2, x1: cx + cs / 2, y1: cy + cs / 2};
   }
   // symbols
-  const sym = (k, fn, box) => { if (!on[k]) return; const p = O[k], x = p.x / 100 * W, y = p.y / 100 * H, sc = u * p.s / 100; ctx.save(); ctx.translate(x, y); ctx.scale(sc, sc); fn(); ctx.restore(); boxes[k] = {x0: x + box[0] * sc, y0: y + box[1] * sc, x1: x + box[2] * sc, y1: y + box[3] * sc}; };
+  const sym = (k, fn, box) => { if (!on[k]) return; const p = O[k], x = p.x / 100 * W, y = p.y / 100 * H, sc = u * p.s / 100; ctx.save(); ctx.translate(x, y); if (p.r) ctx.rotate(p.r * Math.PI / 180); ctx.scale(sc, sc); fn(); ctx.restore(); boxes[k] = {x0: x + box[0] * sc, y0: y + box[1] * sc, x1: x + box[2] * sc, y1: y + box[3] * sc}; };
   sym('sparkle', () => {
     [[0, 0, 44, 'w'], [-64, 42, 18, 'a'], [50, -48, 13, 'a'], [70, 34, 9, 'w']].forEach(([x, y, r, c]) => { ctx.save(); ctx.shadowColor = col(C.accent, .9); ctx.shadowBlur = r; ctx.fillStyle = c === 'w' ? col(C.line, .95) : col(C.accent, 1); star4(x, y, r); ctx.fill(); ctx.restore(); });
   }, [-85, -70, 85, 70]);
@@ -3203,23 +3324,25 @@ function draw(preview = true){
   if (on.badge && tb.badge.trim()){
     const p = O.badge, sc = p.s / 100, t = tb.badge.trim().toUpperCase(); ctx.font = fs(700, 30 * u * sc);
     const tw = ctx.measureText(t).width, bw = tw + 40 * u * sc, bh = 54 * u * sc, x = anchorX(p.x / 100 * W, bw), y = p.y / 100 * H;
+    rotAt(x + bw / 2, y + bh / 2, p.r || 0, () => {
     rr(x, y, bw, bh, bh / 2); ctx.fillStyle = col(C.accent, 1); ctx.fill();
     const lum = (([r, g, b]) => (r * 299 + g * 587 + b * 114) / 1000)(hexRgb(C.accent));
     ctx.fillStyle = lum > 150 ? '#141414' : '#ffffff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, x + bw / 2, y + bh / 2 + 1.5 * u); ctx.textBaseline = 'alphabetic';
+    });
     boxes.badge = {x0: x, y0: y, x1: x + bw, y1: y + bh};
   }
   if (on.title){
     const p = O.title, {lines, size} = textBlockLines(titleText(), 150 * u * p.s / 100, maxW), lh = size * 1.06;
     const x = p.x / 100 * W; let y = p.y / 100 * H + size * .82, wmax = 0;
     ctx.font = fs(tb.weight, size); lines.forEach(l => wmax = Math.max(wmax, ctx.measureText(l).width));
-    lines.forEach((l, i) => paintText(l, x, y + i * lh, fs(tb.weight, size), tb.colors.text, tb.stroke * u * p.s / 100));
+    { const bx0 = anchorX(x, wmax), by0 = p.y / 100 * H; rotAt(bx0 + wmax / 2, by0 + lh * lines.length / 2, p.r || 0, () => lines.forEach((l, i) => paintText(l, x, y + i * lh, fs(tb.weight, size), tb.colors.text, tb.stroke * u * p.s / 100))); }
     const x0 = anchorX(x, wmax); boxes.title = {x0: x0 - 6, y0: p.y / 100 * H, x1: x0 + wmax + 6, y1: p.y / 100 * H + lh * lines.length};
   }
   if (on.sub && subText()){
     const p = O.sub, sz = 46 * u * p.s / 100; ctx.font = fs(500, sz);
     let t = subText(); while (ctx.measureText(t).width > maxW && t.length > 1) t = t.slice(0, -1);
     const x = p.x / 100 * W, y = p.y / 100 * H + sz * .85, w = ctx.measureText(t).width;
-    paintText(t, x, y, fs(500, sz), col(tb.colors.text, .88), tb.stroke * .6 * u * p.s / 100);
+    { const bx0 = anchorX(x, w); rotAt(bx0 + w / 2, p.y / 100 * H + sz * .58, p.r || 0, () => paintText(t, x, y, fs(500, sz), col(tb.colors.text, .88), tb.stroke * .6 * u * p.s / 100)); }
     const x0 = anchorX(x, w); boxes.sub = {x0: x0 - 6, y0: p.y / 100 * H, x1: x0 + w + 6, y1: p.y / 100 * H + sz * 1.15};
   }
   if (on.vignette){ const g = ctx.createRadialGradient(W / 2, H / 2, H * .45, W / 2, H / 2, W * .72); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.45)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
@@ -3259,7 +3382,9 @@ let rq = 0; const sched = () => { if (rq) return; rq = requestAnimationFrame(() 
 function pt(e){ const r = cv.getBoundingClientRect(); return {x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H}; }
 function hit(p){ const ks = Object.keys(boxes).filter(k => !tb.pin[k]).sort((a, b) => (boxes[a].x1 - boxes[a].x0) * (boxes[a].y1 - boxes[a].y0) - (boxes[b].x1 - boxes[b].x0) * (boxes[b].y1 - boxes[b].y0)); return ks.find(k => p.x >= boxes[k].x0 && p.x <= boxes[k].x1 && p.y >= boxes[k].y0 && p.y <= boxes[k].y1) || null; }
 cv.addEventListener('pointerdown', e => {
+  if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
   if (tb.lock) return; const p = pt(e), k = hit(p); sel = k; syncUI(); sched(); if (!k) return;
+  if (M.EDITORS.thumb) M.EDITORS.thumb.checkpoint();
   drag = {key: k, sx: p.x, sy: p.y, ox: tb.o[k].x, oy: tb.o[k].y, box: {...boxes[k]}};
   cv.setPointerCapture(e.pointerId); $('#tWrap').classList.add('grabbing'); sched();
 });
@@ -3307,6 +3432,8 @@ function syncUI(){
   $('#tDropBg').hidden = tb.bgMode !== 'image'; $('#tDropCover').hidden = tb.coverSrc !== 'upload';
   $('#tLock').classList.toggle('unlocked', !tb.lock); $('#tLock span').textContent = tb.lock ? '오브젝트 잠금' : '오브젝트 이동 중';
   $$('[data-talign]', view).forEach(b => b.disabled = !sel || tb.lock);
+  { const show = !!sel && !tb.lock && !!tb.o[sel]; $('#tSelBox').hidden = !show;
+    if (show){ $('#tSelName').textContent = OBJ.find(o => o[0] === sel)[1]; const r = sel === 'cover' ? tb.tilt : (tb.o[sel].r || 0); if (document.activeElement !== $('#tRot')) $('#tRot').value = r; $('#tRotOut').textContent = Math.round(r) + '°'; $('#tRotReset').classList.toggle('show', !!r); } }
   $('#tGrid').classList.toggle('on', tb.grid); $('#tSnap').classList.toggle('on', tb.snap); $('#tSafe').classList.toggle('on', tb.safe);
   if (M.refreshResets) M.refreshResets(view, tDef, getT);
 }
@@ -3343,6 +3470,9 @@ view.addEventListener('click', e => {
   const n = e.target.closest('#tObjList .dname'); if (!n || tb.lock) return;
   sel = n.closest('[data-tkey]').dataset.tkey; syncUI(); sched();
 });
+const setTRot = v => { if (!sel || !tb.o[sel]) return; if (sel === 'cover') tb.tilt = v; else tb.o[sel].r = v; syncUI(); sched(); };
+$('#tRot').addEventListener('input', () => setTRot(+$('#tRot').value));
+$('#tRotReset').addEventListener('click', () => setTRot(0));
 $('#tResetAll').onclick = () => { tb.o = JSON.parse(JSON.stringify(PRESETS[tb.preset].o)); syncUI(); sched(); toast('모든 위치를 처음으로 되돌렸어요'); };
 $('#tFromMeta').onclick = () => { tb.title = null; tb.sub = null; syncUI(); loadFonts(); sched(); };
 $('#tLock').onclick = () => { tb.lock = !tb.lock; if (tb.lock) hover = null; syncUI(); sched(); toast(tb.lock ? '오브젝트를 잠갔어요' : '이제 오브젝트를 끌어서 옮길 수 있어요'); };
@@ -3374,6 +3504,15 @@ syncUI(); refreshCover();
   if (saved){ M.deepAssign(tb, saved); tb.lock = true; }
   syncUI(); refreshCover(); loadFonts();
   M.autosave('mmc-thumb-state', () => tb);
+  const TT = ['lock', 'grid', 'snap', 'safe'];
+  const th = M.makeHistory(() => { const o = {}; Object.keys(tb).forEach(k => { if (!TT.includes(k)) o[k] = tb[k]; }); return o; },
+    d => { Object.keys(d).forEach(k => { tb[k] = d[k]; }); syncUI(); sched(); }, () => !!drag);
+  M.EDITORS.thumb = {
+    undo: th.undo, redo: th.redo, checkpoint: th.checkpoint,
+    nudge(dx, dy){ if (tb.lock || !sel || !tb.o[sel] || tb.pin[sel]) return false; tb.o[sel].x += dx / W * 100; tb.o[sel].y += dy / H * 100; syncUI(); sched(); return true; },
+    rotate(deg){ if (tb.lock || !sel || !tb.o[sel] || tb.pin[sel]) return false; setTRot(M.normDeg((sel === 'cover' ? tb.tilt : (tb.o[sel].r || 0)) + deg)); return true; }
+    , remove(){ if (tb.lock || !sel || !tb.o[sel] || tb.pin[sel]) return null; const name = (OBJ.find(o => o[0] === sel) || [0, '오브젝트'])[1]; tb.on[sel] = false; sel = null; hover = null; syncUI(); sched(); return name; }
+  };
 })();
 })();
 </script>
