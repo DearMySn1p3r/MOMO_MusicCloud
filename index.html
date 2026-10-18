@@ -152,7 +152,7 @@ select.sm{height:30px;border:1px solid var(--line);background:var(--surface);bor
 .file-stats span{font-size:10px;color:var(--muted);background:var(--surface-2);border:1px solid var(--line);padding:2px 9px;border-radius:99px}
 .inline-btns{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
 
-.range{display:grid;grid-template-columns:60px 1fr 38px;align-items:center;gap:8px;margin-bottom:6px}
+.range{display:grid;grid-template-columns:60px 1fr 38px 16px;align-items:center;gap:8px;margin-bottom:6px}
 .range output{font-size:10.5px;color:var(--muted);text-align:right}
 input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:20px;background:transparent;margin:0}
 input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--line-2);border-radius:2px}
@@ -202,7 +202,14 @@ input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;bac
 .ditem.is-on .pin{display:grid}
 .pin.pinned{background:var(--on);border-color:var(--on);color:var(--on-ink)}
 .dsub .color{height:28px}
-.range > .color:last-child{grid-column:2 / span 2;height:30px}
+.range > .color:last-child{grid-column:2 / -1;height:30px}
+.rv{visibility:hidden;border:0;background:none;padding:0;width:16px;height:16px;display:grid;place-items:center;color:var(--faint);border-radius:5px;cursor:pointer;flex:none}
+.rv.show{visibility:visible}
+.rv:hover{color:var(--text);background:var(--surface-2)}
+.color .rv{margin-left:auto}
+.field > label{display:flex;align-items:center;gap:4px}
+.field > label .rv{margin-left:auto}
+.range output{cursor:default}
 .dsub .range .link{justify-self:end}
 .adj svg{transition:transform .15s}
 .ditem.open .adj svg{transform:rotate(180deg)}
@@ -1633,6 +1640,7 @@ function syncUI(){
   $$('.ditem[data-key]').forEach(d => d.classList.toggle('is-on', !!state.design.on[d.dataset.key]));
   $$('[data-dpin]').forEach(b => { const on = !!(state.design.pin || {})[b.dataset.dpin]; b.classList.toggle('pinned', on); b.title = on ? '고정 풀기' : '고정'; });
   updatePlayerMeta();
+  if (typeof refreshRV === 'function') refreshRV();
 }
 
 document.addEventListener('input', e => {
@@ -1640,7 +1648,7 @@ document.addEventListener('input', e => {
   const v = el.type === 'checkbox' ? el.checked : el.type === 'range' ? parseFloat(el.value) : el.value;
   if (p === 'cover.bg' && state.design.fadeColor === state.cover.bg) state.design.fadeColor = v;
   setPath(p, v);
-  if (el.type === 'color' || el.type === 'checkbox') syncUI(); else updateOut(p);
+  if (el.type === 'color' || el.type === 'checkbox') syncUI(); else { updateOut(p); refreshRV(); }
   if (p.startsWith('meta.')) updatePlayerMeta();
   scheduleRender();
 });
@@ -1690,7 +1698,7 @@ function loadSets(){ try { const a = JSON.parse(lsGet(SET_KEY) || '[]'); return 
 function storeSets(a){ if (!lsSet(SET_KEY, JSON.stringify(a))) toast('이 브라우저에서는 저장이 막혀 있어요 · 파일로 내보내기를 써 주세요'); }
 function snapshot(){
   const c = state.cover;
-  return {design: clone(state.design), text: clone(state.text), show: clone(state.show),
+  return {meta: clone(state.meta), design: clone(state.design), text: clone(state.text), show: clone(state.show),
     cover: {bg:c.bg, text:c.text, deco:c.deco, accent:c.accent, tintOn:c.tintOn, tint:c.tint, tintAmt:c.tintAmt, tintMode:c.tintMode}};
 }
 function applySnapshot(d){
@@ -1702,6 +1710,7 @@ function applySnapshot(d){
     if (!FONTS.some(f => f[0] === state.text.infoFont)) state.text.infoFont = DEFAULT_TEXT.infoFont;
   }
   if (d.show) mergeInto(state.show, d.show);
+  if (d.meta) Object.keys(state.meta).forEach(k => { if (typeof d.meta[k] === 'string') state.meta[k] = d.meta[k]; });
   if (d.cover) mergeInto(state.cover, d.cover);
   syncUI(); scheduleRender();
 }
@@ -1939,7 +1948,7 @@ function updateLocks(){
     b.setAttribute('aria-pressed', String(!LOCK[k])); b.querySelector('span').textContent = n + (LOCK[k] ? ' 잠금' : ' 이동 중');
   });
   wrapEl.classList.toggle('grab', !!IMG.el && !LOCK.img);
-  if (LOCK.deco) setHL(null);
+  if (LOCK.deco){ setHL(null); SEL = null; scheduleRender(); }
   if (typeof alignUI === 'function') alignUI();
 }
 $('#lockImg').onclick = () => { LOCK.img = !LOCK.img; updateLocks(); toast(LOCK.img ? '이미지를 잠갔어요' : '이제 이미지를 끌어서 옮길 수 있어요'); };
@@ -2028,6 +2037,31 @@ $('#btnExportMp3').onclick = async () => {
 $('#btnResetMeta').onclick = () => { state.meta = {...DEFAULT_META}; syncUI(); scheduleRender(); toast('곡 정보를 기본값으로 바꿨어요'); };
 $('#btnReloadMeta').onclick = () => { if (AU.origMeta){ state.meta = {...AU.origMeta}; syncUI(); scheduleRender(); toast('원래 태그로 되돌렸어요'); } };
 
+/* ================= reset-to-default buttons ================= */
+const RV_SVG = '<svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2.5 8a5.5 5.5 0 1 0 1.8-4.1"/><path d="M2.5 2.5v3h3"/></svg>';
+function attachResets(root, attr, defOf, set, after){
+  root.querySelectorAll(`input[type=range][${attr}], input[type=color][${attr}], select[${attr}]`).forEach(inp => {
+    if (inp.dataset.rv) return;
+    const path = inp.getAttribute(attr); if (defOf(path) === undefined) return;
+    inp.dataset.rv = '1';
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'rv'; b.title = '처음 값으로'; b.setAttribute('aria-label', '처음 값으로'); b.dataset.rvPath = path; b.innerHTML = RV_SVG;
+    b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); set(path, defOf(path)); after(path); });
+    if (inp.type === 'range'){ const row = inp.closest('.range'); if (!row) return; row.appendChild(b); const out = row.querySelector('output'); if (out){ out.title = '두 번 누르면 처음 값'; out.addEventListener('dblclick', () => b.click()); } }
+    else if (inp.type === 'color'){ const box = inp.closest('.color'); if (box) box.appendChild(b); }
+    else { const lab = inp.closest('.field') && inp.closest('.field').querySelector(':scope > label'); if (lab) lab.appendChild(b); }
+  });
+}
+function refreshResets(root, defOf, get){
+  root.querySelectorAll('.rv').forEach(b => {
+    const p = b.dataset.rvPath, d = defOf(p), v = get(p);
+    const same = d === undefined || (typeof d === 'number' ? Math.abs(d - v) < 1e-6 : String(d).toLowerCase() === String(v).toLowerCase());
+    b.classList.toggle('show', !same);
+  });
+}
+const COVER_DEF = JSON.parse(JSON.stringify({cover: state.cover, text: state.text, design: state.design, show: state.show}));
+const coverDef = p => { const v = p.split('.').reduce((o, k) => o == null ? o : o[k], COVER_DEF); return (v !== null && typeof v === 'object') ? undefined : v; };
+const refreshRV = () => refreshResets($('#view-cover'), coverDef, getPath);
+
 /* ================= autosave ================= */
 // settings → localStorage, files (mp3, images, fonts, video) → IndexedDB. Everything stays in this browser.
 const STORE = (() => {
@@ -2105,11 +2139,13 @@ const FONT_IDS = {};
 const fontKeyOf = name => FONT_IDS[name] || null;
 
 /* ================= init ================= */
-buildMeta(); buildFonts(); buildDecos(); renderSets(); syncUI(); updateImgUI(); updateLocks();
+buildMeta(); buildFonts(); buildDecos(); renderSets();
+attachResets($('#view-cover'), 'data-bind', coverDef, (p, v) => setPath(p, v), () => { syncUI(); scheduleRender(); });
+syncUI(); updateImgUI(); updateLocks();
 render(pctx, pv.width);
 if (document.fonts) document.fonts.ready.then(scheduleRender);
 requestAnimationFrame(drawPlayer);
-window.MMC = {state, parseID3, buildMp3, render, AU, FONTS, toast, download, bindVol, STORE, autosave, deepAssign, fileOf};
+window.MMC = {state, parseID3, buildMp3, render, AU, FONTS, toast, download, bindVol, STORE, autosave, deepAssign, fileOf, attachResets, refreshResets};
 window.MMC.ready = restoreCover().catch(e => { console.error(e); });
 })();
 </script>
@@ -2162,6 +2198,8 @@ const vs = {
   lockObj:true, grid:false, snap:true, pin:{}
 };
 const getV = p => p.split('.').reduce((o, k) => o == null ? o : o[k], vs);
+const VDEF = JSON.parse(JSON.stringify(vs));
+const vDef = p => { const v = p.split('.').reduce((o, k) => o == null ? o : o[k], VDEF); return (v !== null && typeof v === 'object') ? undefined : v; };
 const setV = (p, v) => { const ks = p.split('.'); const l = ks.pop(); ks.reduce((o, k) => o[k], vs)[l] = v; };
 
 /* ---------- audio ---------- */
@@ -2940,6 +2978,7 @@ function syncUI(){
   $('#vDropCover').hidden = vs.coverSrc !== 'upload';
   $('#vDropBg').hidden = vs.bgMode !== 'video';
   $('#vRes').value = vs.res; $('#vFps').value = String(vs.fps);
+  if (M.refreshResets) M.refreshResets(view, vDef, getV);
 }
 view.addEventListener('input', e => {
   const el = e.target, p = el.dataset && el.dataset.vbind; if (!p) return;
@@ -2982,6 +3021,7 @@ view.addEventListener('drop', e => {
   else toast('음악, 영상, 이미지, 가사 파일만 넣을 수 있어요');
 });
 
+if (M.attachResets) M.attachResets(view, 'data-vbind', vDef, (p, v) => setV(p, v), p => { syncUI(); if (p === 'font') loadFonts(); });
 setSize(false); syncUI(); lockUI(); refreshCover(); frame();
 (async () => {
   try { await M.ready; } catch(e){}
@@ -3032,6 +3072,8 @@ const tb = {
 };
 const getT = p => p.split('.').reduce((o, k) => o == null ? o : o[k], tb);
 const setT = (p, v) => { const ks = p.split('.'); const l = ks.pop(); ks.reduce((o, k) => o[k], tb)[l] = v; };
+const TDEF = JSON.parse(JSON.stringify(tb));
+const tDef = p => { const src = p.startsWith('o.') ? {o: PRESETS[tb.preset].o} : TDEF; const v = p.split('.').reduce((o, k) => o == null ? o : o[k], src); return (v !== null && typeof v === 'object') ? undefined : v; };
 const titleText = () => (tb.title ?? CS.meta.title) || 'Untitled';
 const subText = () => (tb.sub ?? CS.meta.artist) || '';
 
@@ -3266,6 +3308,7 @@ function syncUI(){
   $('#tLock').classList.toggle('unlocked', !tb.lock); $('#tLock span').textContent = tb.lock ? '오브젝트 잠금' : '오브젝트 이동 중';
   $$('[data-talign]', view).forEach(b => b.disabled = !sel || tb.lock);
   $('#tGrid').classList.toggle('on', tb.grid); $('#tSnap').classList.toggle('on', tb.snap); $('#tSafe').classList.toggle('on', tb.safe);
+  if (M.refreshResets) M.refreshResets(view, tDef, getT);
 }
 view.addEventListener('input', e => {
   const el = e.target;
@@ -3321,6 +3364,7 @@ $('#tSave').onclick = async () => {
   cv.toBlob(b => { draw(true); if (!b) return toast('이미지를 만들지 못했어요'); download(b, name); toast(fmt === 'jpeg' ? `JPG로 저장했어요 · ${(b.size / 1048576).toFixed(2)}MB` : 'PNG로 저장했어요'); }, 'image/' + fmt, .92);
 };
 $$('.nav-item').forEach(n => n.addEventListener('click', () => { if (n.dataset.view === 'thumb'){ const f = tb.font; $('#tFont').innerHTML = (M.FONTS || []).map(([ff,, lab]) => `<option value="${ff}">${lab || ff}</option>`).join(''); tb.font = f; refreshCover(); loadFonts(); syncUI(); } }));
+if (M.attachResets) M.attachResets(view, 'data-tbind', tDef, (p, v) => { setT(p, v); if (p === 'o.cover.s') tb.o.ring.s = v; }, p => { syncUI(); sched(); if (p === 'font' || p === 'weight') loadFonts(); });
 syncUI(); refreshCover();
 (async () => {
   try { await M.ready; } catch(e){}
