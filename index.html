@@ -83,7 +83,12 @@ select.sm{height:30px;border:1px solid var(--line);background:var(--surface);bor
 .stage{min-width:0;min-height:0;display:flex;flex-direction:column;background:var(--stage);background-image:radial-gradient(var(--dot) 1px,transparent 1px);background-size:18px 18px}
 .canvas-area{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px 28px 24px}
 .lockbar{display:flex;gap:4px;padding:3px;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
-.lock{display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 10px;border:0;border-radius:7px;background:none;color:var(--muted);font-size:11px;font-weight:500}
+.lock{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:26px;padding:0 10px;border:0;border-radius:7px;background:none;color:var(--muted);font-size:11px;font-weight:500;line-height:1}
+.lock svg{display:block;flex:none}
+.lock span{display:block;line-height:1;padding-top:1px}
+.lock.tgl.on{background:var(--surface-2);color:var(--text);box-shadow:inset 0 0 0 1px var(--line-2)}
+.lsep{width:1px;align-self:stretch;margin:4px 2px;background:var(--line)}
+.lockbar{align-items:center;flex-wrap:wrap;justify-content:center;max-width:100%}
 .lock:hover{color:var(--text)}
 .lock .i-open{display:none}
 .lock.unlocked{background:var(--on);color:var(--on-ink)}
@@ -119,7 +124,8 @@ select.sm{height:30px;border:1px solid var(--line);background:var(--surface);bor
 .field{display:flex;flex-direction:column;gap:5px;min-width:0}
 .field.full{grid-column:1/-1}
 .field label,.lbl{font-size:11px;color:var(--muted);font-weight:500}
-.inp,.field input[type=text],.field select,.field textarea{width:100%;height:32px;border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:0 10px;font-size:12px;outline:none;min-width:0}
+.inp,.field input[type=text],.field select,.field textarea{width:100%;height:34px;border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:0 10px;font-size:12px;line-height:1.4;outline:none;min-width:0}
+.inp,.field input[type=text]{padding-top:2px}
 .field textarea{height:auto;min-height:72px;padding:9px 11px;resize:vertical;line-height:1.5}
 .inp:focus,.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--text);background:var(--surface)}
 .link{border:0;background:none;padding:0;font-size:11px;font-weight:500;color:var(--muted);text-decoration:underline;text-decoration-color:var(--line-2);text-underline-offset:3px}
@@ -179,6 +185,15 @@ input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;bac
 .adj{border:1px solid var(--line);background:var(--surface);border-radius:7px;height:22px;padding:0 7px;font-size:10.5px;font-weight:500;color:var(--muted);display:none;align-items:center;gap:4px;flex:none}
 .adj:hover{color:var(--text);border-color:var(--line-2)}
 .ditem.is-on .adj{display:inline-flex}
+.rst{display:none;width:22px;height:22px;border:1px solid var(--line);background:var(--surface);border-radius:7px;color:var(--muted);place-items:center;padding:0;flex:none}
+.rst:hover{color:var(--text);border-color:var(--line-2)}
+.ditem.is-on .rst{display:grid}
+.pin{display:none;width:22px;height:22px;border:1px solid var(--line);background:var(--surface);border-radius:7px;color:var(--faint);place-items:center;padding:0;flex:none}
+.pin:hover{color:var(--text);border-color:var(--line-2)}
+.ditem.is-on .pin{display:grid}
+.pin.pinned{background:var(--on);border-color:var(--on);color:var(--on-ink)}
+.dsub .color{height:28px}
+.dsub .range .link{justify-self:end}
 .adj svg{transition:transform .15s}
 .ditem.open .adj svg{transform:rotate(180deg)}
 .dsub{display:none;padding:2px 10px 8px 43px}
@@ -210,6 +225,35 @@ input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;bac
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--on);color:var(--on-ink);padding:8px 16px;border-radius:99px;font-weight:500;font-size:11.5px;opacity:0;pointer-events:none;transition:all .2s;z-index:50;max-width:calc(100vw - 32px)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
+/* ---------- video maker ---------- */
+.vwrap{position:relative;width:min(100%, calc((100dvh - 190px) * var(--ar, 1.7778)));aspect-ratio:var(--ar, 1.7778);box-shadow:var(--shadow);border-radius:6px;overflow:hidden;background:#000}
+.vwrap canvas{display:block;width:100%;height:100%;touch-action:none}
+.vwrap.move canvas{cursor:move}
+.vwrap.grabbing canvas{cursor:grabbing}
+.vplayer{grid-template-columns:auto 1fr auto}
+.vplayer input[type=range]{width:100%}
+.seg.txt button{height:30px;font-size:11.5px;font-weight:500}
+.tpls{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
+.tpl{border:1px solid var(--line);background:var(--surface-2);border-radius:9px;padding:8px 6px 6px;display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--muted);font-size:11px;font-weight:600}
+.tpl svg{width:100%;height:auto;max-width:76px}
+.tpl.on{border-color:var(--text);color:var(--text);background:var(--surface)}
+.lyr-stat{font-size:11px;color:var(--muted);margin:-2px 0 10px}
+.tapbox{background:var(--surface-2);margin:10px -6px 0;padding:14px 12px 10px;border-radius:12px;border:1px solid var(--line)}
+.tap-now{font-size:14px;font-weight:600;margin:0 0 4px;min-height:21px}
+.tap-next{font-size:11.5px;color:var(--muted);margin:0 0 12px;min-height:17px}
+.tapbtn{width:100%;justify-content:center;height:40px;font-size:12.5px}
+kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;padding:0 4px;opacity:.6;margin-left:4px}
+.rec-ov{position:fixed;inset:0;background:rgba(10,10,12,.45);display:grid;place-items:center;z-index:40;backdrop-filter:blur(2px)}
+.rec-ov[hidden]{display:none}
+.rec-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 22px;width:min(340px, calc(100vw - 32px));display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;box-shadow:var(--shadow)}
+.rec-card b{font-size:13.5px}
+.rec-card p{margin:0;font-size:12px;color:var(--muted)}
+.rec-card small{font-size:10.5px;color:var(--faint);line-height:1.5}
+.rec-dot{width:10px;height:10px;border-radius:50%;background:#e5484d;animation:recblink 1s infinite}
+@keyframes recblink{50%{opacity:.25}}
+.rec-bar{width:100%;height:4px;background:var(--line);border-radius:4px;overflow:hidden}
+.rec-bar i{display:block;height:100%;width:0;background:var(--on)}
+
 @media (max-width: 1100px){ .workspace{grid-template-columns:1fr 320px} }
 @media (max-width: 900px){
   body{overflow:auto}
@@ -218,7 +262,8 @@ input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;bac
   .brand{padding:0 8px 0 0}
   .brand b{font-size:15px}
   .brand span{font-size:12px}
-  .nav-item{width:auto;padding:7px 10px;white-space:nowrap}
+  .nav-item{width:auto;padding:7px 9px;white-space:nowrap}
+  .nav-item svg{display:none}
   .nav-foot{margin:0 0 0 auto;border:0;padding:0}
   .nav-foot span{display:none}
   .topbar{padding:10px 16px}
@@ -244,7 +289,11 @@ input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;bac
     </button>
     <button class="nav-item" data-view="video">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.5" y="3" width="13" height="10" rx="2"/><path d="M6.5 6v4l3.5-2z" fill="currentColor" stroke="none"/></svg>
-      영상<span class="soon">준비 중</span>
+      영상
+    </button>
+    <button class="nav-item" data-view="thumb">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.5" y="3" width="13" height="10" rx="2"/><path d="M4 10.5l2.5-2.5 2 2 1.5-1.5 2 2"/><circle cx="10.8" cy="6" r="1"/></svg>
+      썸네일
     </button>
     <div class="nav-foot"><span>테마</span>
       <button class="icon-btn" id="themeBtn" title="테마 전환" aria-label="테마 전환">
@@ -282,6 +331,9 @@ input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;bac
             <div class="lockbar" role="group" aria-label="이동 잠금">
               <button class="lock" id="lockImg" aria-pressed="false"><svg class="i-lock" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="10" height="7.5" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg><svg class="i-open" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="10" height="7.5" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5-.5"/></svg><span>이미지 잠금</span></button>
               <button class="lock" id="lockDeco" aria-pressed="false"><svg class="i-lock" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="10" height="7.5" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg><svg class="i-open" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="10" height="7.5" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5-.5"/></svg><span>꾸밈 잠금</span></button>
+              <i class="lsep"></i>
+              <button class="lock tgl" id="cGrid"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="2" width="12" height="12" rx="1.5"/><path d="M6 2v12M10 2v12M2 6h12M2 10h12"/></svg><span>그리드</span></button>
+              <button class="lock tgl on" id="cSnap"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 2.5v5a5 5 0 0 0 10 0v-5"/><path d="M3 5h3M10 5h3"/></svg><span>자석 맞춤</span></button>
             </div>
             <div class="canvas-wrap" id="canvasWrap"><canvas id="preview" width="1200" height="1200" aria-label="앨범 커버 미리보기"></canvas></div>
           </div>
@@ -444,7 +496,7 @@ input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;bac
               </div>
               <div class="sec">
                 <div class="sec-h"><h3>꾸밈 요소</h3>
-                  <div style="display:flex;gap:12px"><button class="link" id="allOn">모두 켜기</button><button class="link" id="allOff">모두 끄기</button></div>
+                  <div style="display:flex;gap:10px"><button class="link" id="allPosReset">위치 초기화</button><button class="link" id="allOn">모두 켜기</button><button class="link" id="allOff">모두 끄기</button></div>
                 </div>
                 <p class="note">커버 위 "꾸밈 잠금"을 풀면 꾸밈을 마우스로 끌어 옮기고 휠로 크기를 바꿀 수 있어요.</p>
                 <div id="decoList"></div>
@@ -458,18 +510,339 @@ input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;bac
     </section>
 
     <section class="view" id="view-video" hidden>
-      <header class="topbar"><h1>영상</h1></header>
-      <div class="empty">
-        <div class="empty-card">
-          <svg viewBox="0 0 84 84" fill="none" stroke="currentColor">
-            <circle cx="42" cy="42" r="26" stroke-width="1.2"/>
-            <ellipse cx="42" cy="42" rx="40" ry="11" transform="rotate(-20 42 42)" stroke-width="1"/>
-            <path d="M38 34v16l12-8z" fill="currentColor" stroke="none"/>
-            <circle cx="76" cy="30" r="3" fill="#ef7fae" stroke="none"/>
-          </svg>
-          <h2>영상 만들기는 준비 중이에요</h2>
-          <p>곡과 커버로 영상을 만드는 기능이 이곳에 들어올 예정이에요.</p>
+      <header class="topbar">
+        <h1>영상</h1>
+        <span class="chip" id="vChip">음악 없음</span>
+        <div class="spacer"></div>
+        <div class="tb-group">
+          <select class="sm" id="vRes" aria-label="영상 크기">
+            <option value="1920x1080">1920×1080 가로</option>
+            <option value="1080x1920">1080×1920 세로</option>
+            <option value="1080x1080">1080×1080 정사각</option>
+          </select>
+          <select class="sm" id="vFps" aria-label="프레임">
+            <option value="30">30fps</option>
+            <option value="60">60fps</option>
+          </select>
+          <button class="btn primary" id="vRecord">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="3.5" width="9.5" height="9" rx="2"/><path d="m11 7 3.5-2v6L11 9"/></svg>영상 저장</button>
         </div>
+      </header>
+      <div class="workspace">
+        <div class="stage">
+          <div class="canvas-area">
+            <div class="lockbar" role="group" aria-label="배치 도구">
+              <button class="lock" id="vLockObj"><svg class="i-lock" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="10" height="7.5" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg><svg class="i-open" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="10" height="7.5" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5-.5"/></svg><span>오브젝트 잠금</span></button>
+              <i class="lsep"></i>
+              <button class="lock tgl" id="vGrid"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="2" width="12" height="12" rx="1.5"/><path d="M6 2v12M10 2v12M2 6h12M2 10h12"/></svg><span>그리드</span></button>
+              <button class="lock tgl" id="vSnap"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 2.5v5a5 5 0 0 0 10 0v-5"/><path d="M3 5h3M10 5h3"/></svg><span>자석 맞춤</span></button>
+            </div>
+            <div class="vwrap" id="vWrap"><canvas id="vCanvas" width="960" height="540" aria-label="영상 미리보기"></canvas></div>
+          </div>
+          <div class="player vplayer">
+            <button class="play" id="vPlay" aria-label="재생" disabled>
+              <svg class="ic-play" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.5v11l9.5-5.5z"/></svg>
+              <svg class="ic-pause" width="14" height="14" viewBox="0 0 16 16" fill="currentColor" style="display:none"><rect x="3.5" y="2.5" width="3" height="11" rx=".5"/><rect x="9.5" y="2.5" width="3" height="11" rx=".5"/></svg>
+            </button>
+            <input type="range" id="vSeek" min="0" max="1000" value="0" step="1" aria-label="재생 위치">
+            <div class="pl-time" id="vTime">0:00 / 0:00</div>
+          </div>
+        </div>
+
+        <aside class="panel">
+          <div class="tabs" role="tablist">
+            <button class="tab active" data-tab="vsrc">소스</button>
+            <button class="tab" data-tab="vstyle">스타일</button>
+            <button class="tab" data-tab="vfx">효과</button>
+            <button class="tab" data-tab="vlyr">가사</button>
+          </div>
+          <div class="panel-body">
+
+            <!-- SOURCE -->
+            <div class="pane" data-pane="vsrc">
+              <div class="sec">
+                <div class="sec-h"><h3>음악</h3></div>
+                <label class="drop" id="vDropAudio">
+                  <div class="di"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6 12.5V3.5l7-1.5v9"/><circle cx="4.5" cy="12.5" r="1.8"/><circle cx="11.5" cy="11" r="1.8"/></svg></div>
+                  <div><b id="vAudioName">음악 파일 불러오기</b><span id="vAudioSub">MP3 · M4A · WAV · 없으면 앨범 커버 탭의 곡을 써요</span></div>
+                  <input type="file" accept="audio/*,.mp3,.m4a,.wav,.ogg,.flac">
+                </label>
+                <div class="inline-btns"><button class="btn sm" id="vUseCoverAudio" hidden>앨범 커버 탭의 곡으로 돌아가기</button></div>
+                <p class="note">곡 제목과 아티스트는 앨범 커버 → 트랙 탭의 정보를 그대로 써요.</p>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>앨범 커버</h3></div>
+                <div class="seg txt">
+                  <button data-vset="coverSrc" data-val="cover">만든 커버 사용</button>
+                  <button data-vset="coverSrc" data-val="upload">이미지 올리기</button>
+                </div>
+                <label class="drop" id="vDropCover" hidden>
+                  <div class="di" id="vCoverThumb"></div>
+                  <div><b id="vCoverName">커버 이미지 불러오기</b><span>정사각형으로 맞춰져요</span></div>
+                  <input type="file" accept="image/*">
+                </label>
+                <div class="inline-btns"><button class="btn sm" id="vRefreshCover">커버 다시 가져오기</button></div>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>배경</h3></div>
+                <div class="seg txt">
+                  <button data-vset="bgMode" data-val="color">단색</button>
+                  <button data-vset="bgMode" data-val="cover">흐린 커버</button>
+                  <button data-vset="bgMode" data-val="video">영상</button>
+                </div>
+                <label class="drop" id="vDropBg" hidden>
+                  <div class="di"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.5" y="3" width="13" height="10" rx="2"/><path d="M6.5 6v4l3.5-2z" fill="currentColor" stroke="none"/></svg></div>
+                  <div><b id="vBgName">배경 영상 불러오기</b><span>MP4 · WEBM · MOV — 소리 없이 반복 재생돼요</span></div>
+                  <input type="file" accept="video/*">
+                </label>
+                <div class="range"><span class="lbl">어둡게</span><input type="range" min="0" max="95" step="1" data-vbind="bgDim"><output data-vout="bgDim" data-fmt="pct"></output></div>
+              </div>
+            </div>
+
+            <!-- STYLE -->
+            <div class="pane" data-pane="vstyle" hidden>
+              <div class="sec">
+                <div class="sec-h"><h3>템플릿</h3></div>
+                <div class="tpls">
+                  <button class="tpl" data-vset="template" data-val="minimal">
+                    <svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><rect x="8" y="8" width="20" height="20" rx="1"/><path d="M35 12h18M35 17h12M35 24h20"/></svg><span>미니멀</span></button>
+                  <button class="tpl" data-vset="template" data-val="center">
+                    <svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><circle cx="32" cy="14" r="8"/><circle cx="32" cy="14" r="11" stroke-dasharray="1.5 1.5"/><path d="M24 29h16"/></svg><span>센터</span></button>
+                  <button class="tpl" data-vset="template" data-val="hud">
+                    <svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><path d="M6 3h52l3 3v24l-3 3H6l-3-3V6z"/><rect x="27" y="10" width="10" height="10"/><circle cx="32" cy="15" r="8.5" stroke-dasharray="1 1.5"/><path d="M8 8h10M47 8h9M10 29h44"/></svg><span>HUD</span></button>
+                </div>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>커버 모양</h3></div>
+                <div class="seg txt">
+                  <button data-vset="coverShape" data-val="square">사각형</button>
+                  <button data-vset="coverShape" data-val="circle">원형</button>
+                </div>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>색상</h3><button class="link" id="vColorsFromCover">커버 색 가져오기</button></div>
+                <div class="colors4">
+                  <div class="field"><label>배경</label><div class="color"><input type="color" data-vbind="colors.bg"><span data-vout="colors.bg" data-fmt="hex"></span></div></div>
+                  <div class="field"><label>텍스트</label><div class="color"><input type="color" data-vbind="colors.text"><span data-vout="colors.text" data-fmt="hex"></span></div></div>
+                  <div class="field"><label>라인</label><div class="color"><input type="color" data-vbind="colors.line"><span data-vout="colors.line" data-fmt="hex"></span></div></div>
+                  <div class="field"><label>포인트</label><div class="color"><input type="color" data-vbind="colors.accent"><span data-vout="colors.accent" data-fmt="hex"></span></div></div>
+                </div>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>글자</h3></div>
+                <div class="grid2">
+                  <div class="field full"><label>폰트</label><select data-vbind="font" id="vFont"></select></div>
+                </div>
+                <div class="range"><span class="lbl">제목 크기</span><input type="range" min="50" max="160" step="1" data-vbind="titleSize"><output data-vout="titleSize" data-fmt="pct"></output></div>
+                <div class="sec-h" style="margin:4px 0 10px"><span>곡 제목 · 아티스트 표시</span><label class="sw"><input type="checkbox" data-vbind="showTitle"><span></span></label></div>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>화면 문구</h3></div>
+                <p class="note">비워 두면 그 문구는 사라져요. (효과 탭의 "HUD 문구"를 켜야 보여요)</p>
+                <div class="grid2">
+                  <div class="field full"><label>왼쪽 위</label><input type="text" data-vbind="labels.tl" maxlength="40"></div>
+                  <div class="field full"><label>싱크율 라벨</label><input type="text" data-vbind="labels.tr" maxlength="30"></div>
+                  <div class="field full"><label>왼쪽 아래</label><input type="text" data-vbind="labels.bl" maxlength="60"></div>
+                  <div class="field full"><label>커버 아래 (미니멀 템플릿)</label><input type="text" data-vbind="labels.cap" maxlength="60"></div>
+                </div>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>배치</h3><button class="link" id="vResetAll">전체 위치 초기화</button></div>
+                <p class="note">영상 위 "오브젝트 잠금"을 풀면 커버 · 제목 · 가사 등을 끌어서 옮길 수 있어요. ↺ 를 누르면 그 오브젝트만 원래 자리로 돌아가요.</p>
+                <div id="vObjList"></div>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>움직임</h3></div>
+                <div class="range"><span class="lbl">반응 강도</span><input type="range" min="0" max="200" step="5" data-vbind="sens"><output data-vout="sens" data-fmt="pct"></output></div>
+                <div class="range"><span class="lbl">속도</span><input type="range" min="20" max="200" step="5" data-vbind="speed"><output data-vout="speed" data-fmt="pct"></output></div>
+              </div>
+            </div>
+
+            <!-- FX -->
+            <div class="pane" data-pane="vfx" hidden>
+              <div class="sec">
+                <div class="sec-h"><h3>효과</h3><div style="display:flex;gap:10px"><button class="link" id="vFxOn">모두 켜기</button><button class="link" id="vFxOff">모두 끄기</button></div></div>
+                <div id="vFxList"></div>
+              </div>
+            </div>
+
+            <!-- LYRICS -->
+            <div class="pane" data-pane="vlyr" hidden>
+              <div class="sec">
+                <div class="sec-h"><h3>가사</h3><label class="sw"><input type="checkbox" data-vbind="fx.lyrics" aria-label="가사 표시"><span></span></label></div>
+                <div class="field" style="margin-bottom:10px">
+                  <textarea id="vLyrics" rows="12" placeholder="한 줄에 한 소절씩 적어 주세요.&#10;&#10;시간이 있는 LRC 형식도 돼요&#10;[00:12.50] 첫 번째 줄&#10;[00:17.20] 두 번째 줄"></textarea>
+                </div>
+                <div class="lyr-stat" id="vLyrStat"></div>
+                <div class="inline-btns">
+                  <button class="btn primary sm" id="vTapStart">탭 싱크 시작</button>
+                  <button class="btn sm" id="vEven">균등하게 나누기</button>
+                  <button class="btn sm" id="vClearTimes">시간 지우기</button>
+                </div>
+                <div class="inline-btns">
+                  <label class="btn sm">LRC 불러오기<input type="file" accept=".lrc,.txt,text/plain" id="vLrcIn" hidden></label>
+                  <button class="btn sm" id="vLrcOut">LRC 저장</button>
+                </div>
+              </div>
+              <div class="sec tapbox" id="vTapBox" hidden>
+                <div class="sec-h"><h3>탭 싱크 중</h3><small id="vTapCount"></small></div>
+                <p class="tap-now" id="vTapNowLine"></p>
+                <p class="tap-next" id="vTapNextLine"></p>
+                <button class="btn primary tapbtn" id="vTapNext">다음 줄 시작 <kbd>Space</kbd></button>
+                <div class="inline-btns" style="margin-top:8px">
+                  <button class="btn sm" id="vTapBack">한 줄 되돌리기 <kbd>←</kbd></button>
+                  <button class="btn sm" id="vTapEnd">끝내기 <kbd>Esc</kbd></button>
+                </div>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>보기</h3></div>
+                <div class="range"><span class="lbl">가사 크기</span><input type="range" min="50" max="180" step="1" data-vbind="lyricSize"><output data-vout="lyricSize" data-fmt="pct"></output></div>
+                <div class="range"><span class="lbl">싱크 보정</span><input type="range" min="-3" max="3" step="0.1" data-vbind="lyricOffset"><output data-vout="lyricOffset" data-fmt="sec"></output></div>
+                <p class="note">탭 싱크: 곡이 처음부터 재생되면, 각 줄을 부르기 시작할 때 스페이스바를 누르세요. 끝까지 가면 시간이 저장돼요.<br>음악을 분석해서 가사 시간을 자동으로 맞추는 기능은 브라우저만으로는 정확하게 만들 수 없어서 넣지 않았어요.</p>
+              </div>
+            </div>
+
+          </div>
+        </aside>
+      </div>
+      <div class="rec-ov" id="vRecOv" hidden>
+        <div class="rec-card">
+          <div class="rec-dot"></div>
+          <b>영상 녹화 중</b>
+          <p id="vRecTime">0:00 / 0:00</p>
+          <div class="rec-bar"><i id="vRecBar"></i></div>
+          <small>곡 길이만큼 걸려요. 이 탭을 닫거나 다른 탭으로 옮기면 영상이 끊길 수 있어요.</small>
+          <button class="btn sm" id="vRecCancel">취소</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-thumb" hidden>
+      <header class="topbar">
+        <h1>유튜브 썸네일</h1>
+        <span class="chip">1280 × 720</span>
+        <div class="spacer"></div>
+        <div class="tb-group">
+          <select class="sm" id="tFmt" aria-label="이미지 형식">
+            <option value="jpeg">JPG (2MB 이하)</option>
+            <option value="png">PNG</option>
+          </select>
+          <button class="btn primary" id="tSave">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v8m0 0 3-3m-3 3L5 7M2.5 11v2.5h11V11"/></svg>썸네일 저장</button>
+        </div>
+      </header>
+      <div class="workspace">
+        <div class="stage">
+          <div class="canvas-area">
+            <div class="lockbar" role="group" aria-label="배치 도구">
+              <button class="lock" id="tLock"><svg class="i-lock" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="10" height="7.5" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg><svg class="i-open" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="10" height="7.5" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5-.5"/></svg><span>오브젝트 잠금</span></button>
+              <i class="lsep"></i>
+              <button class="lock tgl" id="tGrid"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="2" width="12" height="12" rx="1.5"/><path d="M6 2v12M10 2v12M2 6h12M2 10h12"/></svg><span>그리드</span></button>
+              <button class="lock tgl on" id="tSnap"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 2.5v5a5 5 0 0 0 10 0v-5"/><path d="M3 5h3M10 5h3"/></svg><span>자석 맞춤</span></button>
+              <button class="lock tgl on" id="tSafe"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1.5" y="3" width="13" height="10" rx="1.5"/><rect x="8.5" y="9" width="4.5" height="2.5" rx=".5" fill="currentColor" stroke="none"/></svg><span>시간 표시 영역</span></button>
+            </div>
+            <div class="vwrap" id="tWrap" style="--ar:1.7778"><canvas id="tCanvas" width="1280" height="720" aria-label="썸네일 미리보기"></canvas></div>
+          </div>
+        </div>
+        <aside class="panel">
+          <div class="tabs" role="tablist" style="grid-template-columns:repeat(3,1fr)">
+            <button class="tab active" data-tab="ttext">텍스트</button>
+            <button class="tab" data-tab="timg">이미지</button>
+            <button class="tab" data-tab="tdeco">꾸밈</button>
+          </div>
+          <div class="panel-body">
+            <div class="pane" data-pane="ttext">
+              <div class="sec">
+                <div class="sec-h"><h3>배치</h3></div>
+                <div class="tpls" style="grid-template-columns:repeat(4,1fr)">
+                  <button class="tpl" data-tpreset="left"><svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><path d="M7 13h22M7 18h16M7 24h10"/><rect x="38" y="8" width="20" height="20" rx="1"/></svg><span>왼쪽 글자</span></button>
+                  <button class="tpl" data-tpreset="right"><svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><rect x="6" y="8" width="20" height="20" rx="1"/><path d="M35 13h22M35 18h16M35 24h10"/></svg><span>오른쪽 글자</span></button>
+                  <button class="tpl" data-tpreset="center"><svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><rect x="25" y="5" width="14" height="14" rx="1"/><path d="M16 25h32M22 30h20"/></svg><span>가운데</span></button>
+                  <button class="tpl" data-tpreset="big"><svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><path d="M8 14h48M8 22h34" stroke-width="3"/></svg><span>큰 글자</span></button>
+                </div>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>문구</h3><button class="link" id="tFromMeta">곡 정보로 되돌리기</button></div>
+                <div class="field" style="margin-bottom:10px"><label>제목 (줄바꿈 가능)</label><textarea id="tTitle" rows="2"></textarea></div>
+                <div class="grid2">
+                  <div class="field full"><label>부제</label><input type="text" id="tSub"></div>
+                  <div class="field full"><label>배지</label><input type="text" data-tbind="badge" maxlength="24" placeholder="예: NEW · MV · LYRICS"></div>
+                </div>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>글자 모양</h3></div>
+                <div class="grid2">
+                  <div class="field full"><label>폰트</label><select data-tbind="font" id="tFont"></select></div>
+                  <div class="field"><label>굵기</label><select data-tbind="weight"><option value="500">Medium</option><option value="600">SemiBold</option><option value="700">Bold</option><option value="800">ExtraBold</option><option value="900">Black</option></select></div>
+                  <div class="field"><label>정렬</label><select data-tbind="align"><option value="left">왼쪽</option><option value="center">가운데</option><option value="right">오른쪽</option></select></div>
+                </div>
+                <div class="range"><span class="lbl">제목 크기</span><input type="range" min="40" max="220" step="1" data-tbind="o.title.s"><output data-tout="o.title.s" data-fmt="pct"></output></div>
+                <div class="range"><span class="lbl">부제 크기</span><input type="range" min="40" max="220" step="1" data-tbind="o.sub.s"><output data-tout="o.sub.s" data-fmt="pct"></output></div>
+                <div class="range"><span class="lbl">외곽선</span><input type="range" min="0" max="14" step="0.5" data-tbind="stroke"><output data-tout="stroke" data-fmt="int"></output></div>
+                <div class="colors4">
+                  <div class="field"><label>글자</label><div class="color"><input type="color" data-tbind="colors.text"><span data-tout="colors.text" data-fmt="hex"></span></div></div>
+                  <div class="field"><label>외곽선</label><div class="color"><input type="color" data-tbind="strokeColor"><span data-tout="strokeColor" data-fmt="hex"></span></div></div>
+                </div>
+                <div class="sec-h" style="margin:4px 0 8px"><span>그림자</span><label class="sw"><input type="checkbox" data-tbind="shadow"><span></span></label></div>
+                <div class="sec-h" style="margin:0 0 10px"><span>포인트 글로우</span><label class="sw"><input type="checkbox" data-tbind="glow"><span></span></label></div>
+              </div>
+            </div>
+
+            <div class="pane" data-pane="timg" hidden>
+              <div class="sec">
+                <div class="sec-h"><h3>배경</h3></div>
+                <div class="seg txt">
+                  <button data-tset="bgMode" data-val="cover">흐린 커버</button>
+                  <button data-tset="bgMode" data-val="image">이미지</button>
+                  <button data-tset="bgMode" data-val="color">단색</button>
+                </div>
+                <label class="drop" id="tDropBg" hidden>
+                  <div class="di" id="tBgThumb"></div>
+                  <div><b id="tBgName">배경 이미지 불러오기</b><span>16:9에 꽉 차게 맞춰져요</span></div>
+                  <input type="file" accept="image/*">
+                </label>
+                <div class="range"><span class="lbl">어둡게</span><input type="range" min="0" max="90" step="1" data-tbind="bgDim"><output data-tout="bgDim" data-fmt="pct"></output></div>
+                <div class="colors4">
+                  <div class="field"><label>배경색</label><div class="color"><input type="color" data-tbind="colors.bg"><span data-tout="colors.bg" data-fmt="hex"></span></div></div>
+                  <div class="field"><label>포인트</label><div class="color"><input type="color" data-tbind="colors.accent"><span data-tout="colors.accent" data-fmt="hex"></span></div></div>
+                </div>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>앨범 커버</h3><button class="link" id="tRefreshCover">다시 가져오기</button></div>
+                <div class="seg txt">
+                  <button data-tset="coverSrc" data-val="cover">만든 커버 사용</button>
+                  <button data-tset="coverSrc" data-val="upload">이미지 올리기</button>
+                </div>
+                <label class="drop" id="tDropCover" hidden>
+                  <div class="di" id="tCoverThumb"></div>
+                  <div><b id="tCoverName">커버 이미지 불러오기</b><span>정사각형으로 맞춰져요</span></div>
+                  <input type="file" accept="image/*">
+                </label>
+                <div class="seg txt">
+                  <button data-tset="coverShape" data-val="square">사각형</button>
+                  <button data-tset="coverShape" data-val="circle">원형</button>
+                </div>
+                <div class="range"><span class="lbl">커버 크기</span><input type="range" min="30" max="200" step="1" data-tbind="o.cover.s"><output data-tout="o.cover.s" data-fmt="pct"></output></div>
+                <div class="range"><span class="lbl">기울기</span><input type="range" min="-20" max="20" step="0.5" data-tbind="tilt"><output data-tout="tilt" data-fmt="deg"></output></div>
+              </div>
+            </div>
+
+            <div class="pane" data-pane="tdeco" hidden>
+              <div class="sec">
+                <div class="sec-h"><h3>오브젝트</h3><button class="link" id="tResetAll">전체 위치 초기화</button></div>
+                <p class="note">썸네일 위 "오브젝트 잠금"을 풀면 끌어서 옮기고 휠로 크기를 바꿀 수 있어요.</p>
+                <div id="tObjList"></div>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>배경 꾸밈</h3></div>
+                <div id="tFixList"></div>
+                <div class="colors4" style="margin-top:10px">
+                  <div class="field"><label>라인</label><div class="color"><input type="color" data-tbind="colors.line"><span data-tout="colors.line" data-fmt="hex"></span></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
       </div>
     </section>
   </main>
@@ -561,7 +934,7 @@ const DECOS = [
   ['side','세로 텍스트','가장자리를 따라 흐르는 곡 정보','구조',null],
   ['grid','그리드','아주 옅은 격자','구조',null],
   ['dust','별가루','흩뿌려진 점과 작은 별','질감',null],
-  ['fade','그라데이션','글자가 잘 보이도록 깔리는 음영','질감',null],
+  ['fade','그라데이션','글자가 잘 보이도록 깔리는 음영','질감',null,[['fadeColor','색','color'],['fadeAmt','강도','range',0,100,1],['fadeReach','범위','range',15,100,1],['fadeVig','가장자리','range',0,100,1]]],
   ['grain','그레인','부드러운 필름 질감','질감',null]
 ];
 // hit boxes in local units [x0, y0, x1, y1] — used for dragging on the canvas
@@ -572,13 +945,14 @@ const HIT = {
   bignum:[-400,0,0,270], barcode:[-135,-56,4,6], explicit:[-92,-28,2,2]
 };
 let HL = null; // decoration under the pointer (preview only)
+const GRID = {show:false, snap:true}; let GUIDE = [];
 const NO_ROT = new Set(['percent','tags','bignum','barcode','explicit','progress','waveform','target','circle','glow']);
 
 function defaultDesign(){
   const on = {}, pos = {};
   DECOS.forEach(d => { on[d[0]] = false; if (d[4]) pos[d[0]] = {...d[4]}; });
   ['header','globe','sparkle','target','dust','fade','grain','brackets','percent'].forEach(k => on[k] = true);
-  return {intensity:100, on, pos, pct:87, pctLabel:'Sync', prog:36, tagText:'REC · Hi-Fi · Lossless'};
+  return {intensity:100, on, pos, pin:{}, pct:87, pctLabel:'Sync', prog:36, tagText:'REC · Hi-Fi · Lossless', fadeColor:'#2b2b31', fadeAmt:82, fadeReach:62, fadeVig:40};
 }
 const DEFAULT_COVER = {bg:'#2b2b31', text:'#f7f5f2', deco:'#ffffff', accent:'#f4a3c6', zoom:1, ox:0, oy:0, adjustOn:false,
   bright:100, contrast:100, sat:100, gray:0, blur:0, opacity:100, tintOn:false, tint:'#f4a3c6', tintAmt:30, tintMode:'soft-light'};
@@ -841,13 +1215,16 @@ function render(ctx, S, preview){
   }
 
   if (O.fade){
+    const fc = D.fadeColor || C.bg, fa = D.fadeAmt / 100, reach = D.fadeReach / 100;
     let g;
-    if (top){ g = ctx.createLinearGradient(0, 0, 0, S * .62); g.addColorStop(0, col(C.bg, .8 * k)); g.addColorStop(1, col(C.bg, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, S, S); }
-    else if (bottom){ g = ctx.createLinearGradient(0, S, 0, S * .38); g.addColorStop(0, col(C.bg, .82 * k)); g.addColorStop(1, col(C.bg, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, S, S); }
-    else { ctx.fillStyle = col(C.bg, .28 * k); ctx.fillRect(0, 0, S, S); }
-    g = ctx.createRadialGradient(S/2, S/2, S*.35, S/2, S/2, S*.75);
-    g.addColorStop(0, col(C.bg, 0)); g.addColorStop(1, col(C.bg, .4 * k));
-    ctx.fillStyle = g; ctx.fillRect(0, 0, S, S);
+    if (top){ g = ctx.createLinearGradient(0, 0, 0, S * reach); g.addColorStop(0, col(fc, fa * k)); g.addColorStop(1, col(fc, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, S, S); }
+    else if (bottom){ g = ctx.createLinearGradient(0, S, 0, S * (1 - reach)); g.addColorStop(0, col(fc, fa * k)); g.addColorStop(1, col(fc, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, S, S); }
+    else { g = ctx.createRadialGradient(S/2, S/2, 0, S/2, S/2, S * .5 * (.6 + reach)); g.addColorStop(0, col(fc, fa * .5 * k)); g.addColorStop(1, col(fc, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, S, S); }
+    if (D.fadeVig > 0){
+      g = ctx.createRadialGradient(S/2, S/2, S*.35, S/2, S/2, S*.75);
+      g.addColorStop(0, col(fc, 0)); g.addColorStop(1, col(fc, D.fadeVig / 100 * k));
+      ctx.fillStyle = g; ctx.fillRect(0, 0, S, S);
+    }
   }
 
   if (O.grid){
@@ -1093,6 +1470,19 @@ function render(ctx, S, preview){
       ctx.save(); ctx.globalCompositeOperation = 'overlay'; ctx.globalAlpha = .1 * k; ctx.fillStyle = p; ctx.fillRect(0, 0, S, S); ctx.restore();
     }
   }
+  if (preview){
+    if (GRID.show){
+      ctx.strokeStyle = 'rgba(255,255,255,.16)'; ctx.lineWidth = 1; ctx.beginPath();
+      for (let i = 1; i < 12; i++){ const q = Math.round(S * i / 12) + .5; ctx.moveTo(q, 0); ctx.lineTo(q, S); ctx.moveTo(0, q); ctx.lineTo(S, q); }
+      ctx.stroke();
+      ctx.strokeStyle = 'rgba(255,255,255,.34)'; ctx.beginPath(); ctx.moveTo(S / 2 + .5, 0); ctx.lineTo(S / 2 + .5, S); ctx.moveTo(0, S / 2 + .5); ctx.lineTo(S, S / 2 + .5); ctx.stroke();
+    }
+    if (GUIDE.length){
+      ctx.strokeStyle = '#ff4fa3'; ctx.lineWidth = 1; ctx.beginPath();
+      GUIDE.forEach(gd => { if (gd.x != null){ const q = Math.round(gd.x / 100 * S) + .5; ctx.moveTo(q, 0); ctx.lineTo(q, S); } else { const q = Math.round(gd.y / 100 * S) + .5; ctx.moveTo(0, q); ctx.lineTo(S, q); } });
+      ctx.stroke();
+    }
+  }
   ctx.restore();
 }
 
@@ -1170,11 +1560,15 @@ function buildDecos(){
         <div class="drow">
           <span class="dico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">${IC[k] || ''}</svg></span>
           <span class="dname"><b>${n}</b><small>${desc}</small></span>
+          ${pos ? `<button class="pin" data-dpin="${k}" title="고정" aria-label="${n} 고정"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5 13.5 6l-2.5 1-2.5 3.5.5 2.5L3 7.5l2.5.5L9 5.5z"/><path d="M5.5 10.5 2.5 13.5"/></svg></button>` : ''}
+          ${pos ? `<button class="rst" data-posreset="${k}" title="위치 초기화" aria-label="${n} 위치 초기화"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 8a5.5 5.5 0 1 0 1.8-4.1"/><path d="M2.5 2.5v3h3"/></svg></button>` : ''}
           ${pos || extra ? `<button class="adj" data-adj="${k}">조정 <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m2 3.5 3 3 3-3"/></svg></button>` : ''}
           <label class="sw"><input type="checkbox" data-bind="design.on.${k}" aria-label="${n}"><span></span></label>
         </div>
         ${pos || extra ? `<div class="dsub">
-          ${(extra || []).map(([f, lab, type, a, b, st]) => type === 'range' ? rg(`design.${f}`, lab, a, b, st, 'int') : `<input class="inp" type="text" data-bind="design.${f}" placeholder="${lab}" aria-label="${lab}">`).join('')}
+          ${(extra || []).map(([f, lab, type, a, b, st]) => type === 'range' ? rg(`design.${f}`, lab, a, b, st, k === 'fade' ? 'pct' : 'int')
+            : type === 'color' ? `<div class="range"><span class="lbl">${lab}</span><div class="color"><input type="color" data-bind="design.${f}" aria-label="${lab}"><span data-out="design.${f}" data-fmt="hex"></span></div><button class="link" data-fadebg title="배경색과 똑같이">배경색</button></div>`
+            : `<input class="inp" type="text" data-bind="design.${f}" placeholder="${lab}" aria-label="${lab}">`).join('')}
           ${pos ? rg(`design.pos.${k}.x`, '가로', 0, 100, .5, 'int') + rg(`design.pos.${k}.y`, '세로', 0, 100, .5, 'int') + rg(`design.pos.${k}.s`, '크기', 30, 260, 1, 'pct') + (NO_ROT.has(k) ? '' : rg(`design.pos.${k}.r`, '회전', -180, 180, 1, 'deg')) : ''}
           ${pos ? `<button class="link" data-posreset="${k}" style="margin-bottom:4px">위치 초기화</button>` : ''}
         </div>` : ''}
@@ -1195,13 +1589,15 @@ function syncUI(){
   $$('[data-out]').forEach(o => updateOut(o.dataset.out));
   $$('[data-set]').forEach(b => b.classList.toggle('on', String(getPath(b.dataset.set)) === b.dataset.val));
   $$('[data-fold]').forEach(b => b.hidden = !getPath(b.dataset.fold));
-  $$('.ditem').forEach(d => d.classList.toggle('is-on', !!state.design.on[d.dataset.key]));
+  $$('.ditem[data-key]').forEach(d => d.classList.toggle('is-on', !!state.design.on[d.dataset.key]));
+  $$('[data-dpin]').forEach(b => { const on = !!(state.design.pin || {})[b.dataset.dpin]; b.classList.toggle('pinned', on); b.title = on ? '고정 풀기' : '고정'; });
   updatePlayerMeta();
 }
 
 document.addEventListener('input', e => {
   const el = e.target, p = el.dataset && el.dataset.bind; if (!p) return;
   const v = el.type === 'checkbox' ? el.checked : el.type === 'range' ? parseFloat(el.value) : el.value;
+  if (p === 'cover.bg' && state.design.fadeColor === state.cover.bg) state.design.fadeColor = v;
   setPath(p, v);
   if (el.type === 'color' || el.type === 'checkbox') syncUI(); else updateOut(p);
   if (p.startsWith('meta.')) updatePlayerMeta();
@@ -1212,8 +1608,12 @@ document.addEventListener('click', e => {
   if (s){ setPath(s.dataset.set, s.dataset.val); syncUI(); scheduleRender(); return; }
   const adj = e.target.closest('[data-adj]');
   if (adj){ adj.closest('.ditem').classList.toggle('open'); return; }
+  const dp = e.target.closest('[data-dpin]');
+  if (dp){ const k = dp.dataset.dpin, d = DECOS.find(x => x[0] === k); state.design.pin = state.design.pin || {}; state.design.pin[k] = !state.design.pin[k]; syncUI(); toast(d[1] + (state.design.pin[k] ? ' 고정했어요 · 끌어도 움직이지 않아요' : ' 고정을 풀었어요')); return; }
   const pr = e.target.closest('[data-posreset]');
-  if (pr){ const k = pr.dataset.posreset; state.design.pos[k] = {...DECOS.find(d => d[0] === k)[4]}; syncUI(); scheduleRender(); return; }
+  if (pr){ const k = pr.dataset.posreset, d = DECOS.find(x => x[0] === k); state.design.pos[k] = {...d[4]}; syncUI(); scheduleRender(); toast(`${d[1]} 위치를 처음으로 되돌렸어요`); return; }
+  if (e.target.closest('[data-fadebg]')){ state.design.fadeColor = state.cover.bg; syncUI(); scheduleRender(); return; }
+  if (e.target.closest('#allPosReset')){ DECOS.forEach(d => { if (d[4]) state.design.pos[d[0]] = {...d[4]}; }); syncUI(); scheduleRender(); toast('모든 꾸밈 위치를 처음으로 되돌렸어요'); return; }
   const rs = e.target.closest('[data-reset]');
   if (rs){
     if (rs.dataset.reset === 'transform') Object.assign(state.cover, {zoom:1, ox:0, oy:0});
@@ -1225,13 +1625,13 @@ $('#allOn').onclick = () => { DECOS.forEach(([k]) => state.design.on[k] = true);
 $('#allOff').onclick = () => { DECOS.forEach(([k]) => state.design.on[k] = false); syncUI(); scheduleRender(); };
 
 $$('.tab').forEach(t => t.onclick = () => {
-  $$('.tab').forEach(x => x.classList.toggle('active', x === t));
-  $$('.pane').forEach(p => p.hidden = p.dataset.pane !== t.dataset.tab);
+  const panel = t.closest('.panel');
+  $$('.tab', panel).forEach(x => x.classList.toggle('active', x === t));
+  $$('.pane', panel).forEach(p => p.hidden = p.dataset.pane !== t.dataset.tab);
 });
 $$('.nav-item').forEach(n => n.onclick = () => {
   $$('.nav-item').forEach(x => x.classList.toggle('active', x === n));
-  $('#view-cover').hidden = n.dataset.view !== 'cover';
-  $('#view-video').hidden = n.dataset.view !== 'video';
+  $$('main > .view').forEach(v => v.hidden = v.id !== 'view-' + n.dataset.view);
   if (n.dataset.view === 'cover') requestAnimationFrame(drawPlayer);
 });
 (function(){
@@ -1448,7 +1848,7 @@ const wrapEl = $('#canvasWrap');
 function canvasPoint(e){ const r = pv.getBoundingClientRect(); return {x: (e.clientX - r.left) / r.width * 1000, y: (e.clientY - r.top) / r.height * 1000, r}; }
 function hitDeco(pt){
   const D = state.design;
-  const keys = Object.keys(HIT).filter(k => D.on[k]).sort((a, b) => {
+  const keys = Object.keys(HIT).filter(k => D.on[k] && !(D.pin && D.pin[k])).sort((a, b) => {
     const A = HIT[a], B = HIT[b];
     return (A[2]-A[0]) * (A[3]-A[1]) * D.pos[a].s * D.pos[a].s - (B[2]-B[0]) * (B[3]-B[1]) * D.pos[b].s * D.pos[b].s;
   });
@@ -1464,6 +1864,8 @@ function hitDeco(pt){
 }
 function setHL(k){ if (HL !== k){ HL = k; scheduleRender(); } wrapEl.classList.toggle('move', !!k); }
 const LOCK = {img:true, deco:true};
+$('#cGrid').onclick = () => { GRID.show = !GRID.show; $('#cGrid').classList.toggle('on', GRID.show); scheduleRender(); };
+$('#cSnap').onclick = () => { GRID.snap = !GRID.snap; $('#cSnap').classList.toggle('on', GRID.snap); toast(GRID.snap ? '자석 맞춤을 켰어요' : '자석 맞춤을 껐어요'); };
 function updateLocks(){
   [['lockImg','img','이미지'],['lockDeco','deco','꾸밈']].forEach(([id, k, n]) => {
     const b = $('#' + id); b.classList.toggle('unlocked', !LOCK[k]);
@@ -1491,8 +1893,20 @@ pv.addEventListener('pointermove', e => {
   const r = pv.getBoundingClientRect();
   if (drag.kind === 'deco'){
     const p = state.design.pos[drag.key];
-    p.x = Math.round(Math.max(0, Math.min(100, drag.px + (e.clientX - drag.x) / r.width * 100)) * 2) / 2;
-    p.y = Math.round(Math.max(0, Math.min(100, drag.py + (e.clientY - drag.y) / r.height * 100)) * 2) / 2;
+    let nx = Math.max(0, Math.min(100, drag.px + (e.clientX - drag.x) / r.width * 100));
+    let ny = Math.max(0, Math.min(100, drag.py + (e.clientY - drag.y) / r.height * 100));
+    GUIDE = [];
+    if (GRID.snap){
+      const tg = [50, 100 / 3, 200 / 3, 8, 92];
+      if (GRID.show) for (let i = 1; i < 12; i++) tg.push(100 * i / 12);
+      const tx = tg.slice(), ty = tg.slice();
+      Object.keys(state.design.pos).forEach(kk => { if (kk !== drag.key && state.design.on[kk]){ tx.push(state.design.pos[kk].x); ty.push(state.design.pos[kk].y); } });
+      const near = (v, arr) => arr.reduce((m, t) => Math.abs(t - v) < 1.2 && (m == null || Math.abs(t - v) < Math.abs(m - v)) ? t : m, null);
+      const sx = near(nx, tx), sy = near(ny, ty);
+      if (sx != null){ nx = sx; GUIDE.push({x: sx}); }
+      if (sy != null){ ny = sy; GUIDE.push({y: sy}); }
+    }
+    p.x = Math.round(nx * 10) / 10; p.y = Math.round(ny * 10) / 10;
   } else {
     const im = IMG.el, z = state.cover.zoom;
     const sc = Math.max(1 / im.naturalWidth, 1 / im.naturalHeight) * z;
@@ -1502,7 +1916,7 @@ pv.addEventListener('pointermove', e => {
   }
   syncUI(); scheduleRender();
 });
-const endDrag = () => { drag = null; wrapEl.classList.remove('grabbing'); };
+const endDrag = () => { drag = null; GUIDE = []; wrapEl.classList.remove('grabbing'); scheduleRender(); };
 pv.addEventListener('pointerup', endDrag); pv.addEventListener('pointercancel', endDrag);
 pv.addEventListener('pointerleave', () => { if (!drag) setHL(null); });
 pv.addEventListener('wheel', e => {
@@ -1550,7 +1964,1161 @@ buildMeta(); buildFonts(); buildDecos(); renderSets(); syncUI(); updateImgUI(); 
 render(pctx, pv.width);
 if (document.fonts) document.fonts.ready.then(scheduleRender);
 requestAnimationFrame(drawPlayer);
-window.MMC = {state, parseID3, buildMp3, render};
+window.MMC = {state, parseID3, buildMp3, render, AU, FONTS, toast, download};
+})();
+</script>
+<script>
+/* ===================== VIDEO MAKER ===================== */
+(() => {
+'use strict';
+const M = window.MMC; if (!M) return;
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const view = $('#view-video'), cv = $('#vCanvas'), ctx = cv.getContext('2d');
+const CS = M.state;
+
+/* ---------- helpers ---------- */
+function hexRgb(h){ h = String(h).replace('#',''); if (h.length === 3) h = h.split('').map(c => c + c).join(''); const n = parseInt(h, 16) || 0; return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+function col(h, a){ const [r,g,b] = hexRgb(h); return `rgba(${r},${g},${b},${Math.max(0, Math.min(1, a))})`; }
+const fmtTime = s => { if (!isFinite(s) || s < 0) s = 0; const m = Math.floor(s / 60), r = Math.floor(s % 60); return m + ':' + String(r).padStart(2, '0'); };
+const lrcTime = s => { s = Math.max(0, s); const m = Math.floor(s / 60), r = s - m * 60; return `[${String(m).padStart(2,'0')}:${r.toFixed(2).padStart(5,'0')}]`; };
+function star4(x, y, r){ ctx.beginPath(); ctx.moveTo(x, y - r); ctx.quadraticCurveTo(x, y, x + r, y); ctx.quadraticCurveTo(x, y, x, y + r); ctx.quadraticCurveTo(x, y, x - r, y); ctx.quadraticCurveTo(x, y, x, y - r); ctx.closePath(); }
+function rr(x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+const toast = M.toast, download = M.download;
+
+/* ---------- state ---------- */
+const FX = [
+  ['spectrum','스펙트럼','음악에 맞춰 움직이는 막대 (HUD는 양옆 미터)'],
+  ['ring','원형 음파','커버를 둘러싼 음파'],
+  ['eq','미니 이퀄라이저','통통 튀는 작은 막대 9개'],
+  ['sync','싱크율','원형 게이지와 퍼센트'],
+  ['particles','떠다니는 입자','비트에 맞춰 빨라지는 별가루'],
+  ['sparkle','반짝이','커버 주변의 네 갈래 별'],
+  ['orbit','회전 궤도','커버 주위를 도는 타원'],
+  ['reticle','움직이는 조준점','커버 위를 떠다니는 레티클'],
+  ['globe','회전 지구본','와이어프레임 구체'],
+  ['hud','화면 문구','모서리 문구 (스타일 탭에서 수정)'],
+  ['spin','레코드 회전','원형 커버일 때 천천히 회전'],
+  ['beat','비트 줌','저음에 맞춰 커버가 커짐'],
+  ['glow','비트 글로우','커버 뒤에 번지는 빛'],
+  ['progress','재생 바','진행 바와 시간'],
+  ['brackets','코너 브래킷','화면 네 귀퉁이 꺾쇠'],
+  ['vignette','비네트','가장자리 음영'],
+  ['grain','그레인','필름 질감']
+];
+const OBJ = [['cover','커버'],['title','제목 · 아티스트'],['lyrics','가사'],['progress','재생 바'],['eq','미니 이퀄라이저'],['sync','싱크율'],['time','시간 (HUD)'],['spectrum','스펙트럼'],['sparkle','반짝이'],['glow','비트 글로우'],['orbit','회전 궤도'],['reticle','조준점'],['globe','지구본']];
+const FX_MOVE = new Set(['spectrum','sparkle','glow','orbit','reticle','globe','eq','sync']);
+const vs = {
+  res:'1920x1080', fps:30, template:'minimal', coverSrc:'cover', coverShape:'square', bgMode:'cover', bgDim:62,
+  colors:{bg:CS.cover.bg, text:CS.cover.text, line:CS.cover.deco, accent:CS.cover.accent},
+  labels:{tl:'Now Playing', tr:'Sync Rate', bl:'Audio Online · MMC-001', cap:'Artwork // MMC-001'}, font:'Paperlogy', titleSize:100, showTitle:true, sens:100, speed:100, lyricSize:100, lyricOffset:0,
+  fx:{spectrum:true, ring:true, eq:true, sync:false, particles:true, sparkle:true, orbit:false, reticle:false, globe:false, hud:true, spin:true, beat:true, glow:true, progress:true, brackets:false, vignette:true, grain:true, lyrics:true},
+  off:Object.fromEntries(OBJ.map(([k]) => [k, {dx:0, dy:0}])),
+  lockObj:true, grid:false, snap:true, pin:{}
+};
+const getV = p => p.split('.').reduce((o, k) => o == null ? o : o[k], vs);
+const setV = (p, v) => { const ks = p.split('.'); const l = ks.pop(); ks.reduce((o, k) => o[k], vs)[l] = v; };
+
+/* ---------- audio ---------- */
+const audio = new Audio(); audio.preload = 'auto';
+let actx = null, srcNode, analyser, dest, freqB, waveB, ownUrl = null, ownName = '', usingUrl = null;
+function graph(){
+  if (actx) return;
+  actx = new (window.AudioContext || window.webkitAudioContext)();
+  srcNode = actx.createMediaElementSource(audio);
+  analyser = actx.createAnalyser(); analyser.fftSize = 2048; analyser.smoothingTimeConstant = .78;
+  srcNode.connect(analyser); analyser.connect(actx.destination);
+  dest = actx.createMediaStreamDestination(); srcNode.connect(dest);
+  freqB = new Uint8Array(analyser.frequencyBinCount); waveB = new Uint8Array(analyser.fftSize);
+}
+function syncSource(){
+  const url = ownUrl || (M.AU && M.AU.url) || null;
+  if (url !== usingUrl){
+    usingUrl = url; audio.pause();
+    if (url) audio.src = url; else audio.removeAttribute('src');
+  }
+  const name = ownUrl ? ownName : (M.AU && M.AU.file ? M.AU.file.name : '');
+  $('#vChip').textContent = name || '음악 없음';
+  $('#vAudioName').textContent = ownUrl ? ownName : (name ? '앨범 커버 탭의 곡 사용 중' : '음악 파일 불러오기');
+  $('#vAudioSub').textContent = ownUrl ? '다른 파일을 넣으면 교체돼요' : (name ? name : 'MP3 · M4A · WAV · 없으면 앨범 커버 탭의 곡을 써요');
+  $('#vUseCoverAudio').hidden = !(ownUrl && M.AU && M.AU.url);
+  $('#vPlay').disabled = !usingUrl;
+}
+function loadAudioFile(f){
+  if (ownUrl) URL.revokeObjectURL(ownUrl);
+  ownUrl = URL.createObjectURL(f); ownName = f.name; syncSource(); toast('음악을 불러왔어요');
+}
+$('#vUseCoverAudio').onclick = () => { if (ownUrl) URL.revokeObjectURL(ownUrl); ownUrl = null; syncSource(); };
+
+async function playPause(){
+  if (!usingUrl){ toast('먼저 음악을 넣어 주세요'); return; }
+  graph(); if (actx.state === 'suspended') await actx.resume();
+  if (audio.paused){ try { await audio.play(); } catch(e){ toast('재생할 수 없는 파일이에요'); } } else audio.pause();
+}
+$('#vPlay').onclick = playPause;
+audio.addEventListener('play', () => { $('#vPlay .ic-play').style.display = 'none'; $('#vPlay .ic-pause').style.display = ''; if (bgReady) bgv.play().catch(() => {}); });
+audio.addEventListener('pause', () => { $('#vPlay .ic-play').style.display = ''; $('#vPlay .ic-pause').style.display = 'none'; });
+audio.addEventListener('ended', () => { if (recording) stopRecord(false); if (tap.on) endTap(true); });
+const seek = $('#vSeek');
+seek.addEventListener('input', () => { if (audio.duration) audio.currentTime = seek.value / 1000 * audio.duration; });
+
+/* audio analysis buffers */
+const F = new Float32Array(1024), Wv = new Float32Array(2048);
+let bass = 0, mid = 0, high = 0, level = 0, bassS = 0, levelS = 0, syncS = 80;
+function sample(t){
+  const live = analyser && !audio.paused;
+  if (live){
+    analyser.getByteFrequencyData(freqB); analyser.getByteTimeDomainData(waveB);
+    for (let i = 0; i < 1024; i++) F[i] = freqB[i] / 255;
+    for (let i = 0; i < 2048; i++) Wv[i] = (waveB[i] - 128) / 128;
+  } else {
+    for (let i = 0; i < 1024; i++) F[i] = Math.max(0, .5 * Math.exp(-i / 200) * (.62 + .38 * Math.sin(t * 1.6 + i * .09)) * (.7 + .3 * Math.sin(t * 2.9 + i * .31)));
+    for (let i = 0; i < 2048; i++) Wv[i] = .18 * Math.sin(i * .045 + t * 4) * Math.sin(i * .006 + t * .8);
+  }
+  const avg = (a, b) => { let s = 0; for (let i = a; i < b; i++) s += F[i]; return s / (b - a); };
+  bass = avg(1, 9); mid = avg(20, 140); high = avg(200, 520); level = (bass + mid + high) / 3;
+  bassS += (bass - bassS) * .35; levelS += (level - levelS) * .12;
+  syncS += ((62 + levelS * 60) - syncS) * .05;
+}
+function bars(n){
+  const out = new Array(n);
+  for (let i = 0; i < n; i++){
+    const a = Math.floor(2 + Math.pow(i / n, 1.7) * 430), b = Math.max(a + 1, Math.floor(2 + Math.pow((i + 1) / n, 1.7) * 430));
+    let s = 0; for (let j = a; j < b; j++) s += F[j];
+    out[i] = Math.min(1, (s / (b - a)) * (.75 + i / n * .9));
+  }
+  return out;
+}
+
+/* ---------- cover + backgrounds ---------- */
+const snap = document.createElement('canvas'); snap.width = snap.height = 1000;
+const blur = document.createElement('canvas'); blur.width = blur.height = 240;
+let upImg = null;
+function refreshCover(){
+  const s = snap.getContext('2d');
+  s.clearRect(0, 0, 1000, 1000);
+  if (vs.coverSrc === 'upload' && upImg){
+    const sc = Math.max(1000 / upImg.naturalWidth, 1000 / upImg.naturalHeight), w = upImg.naturalWidth * sc, h = upImg.naturalHeight * sc;
+    s.drawImage(upImg, (1000 - w) / 2, (1000 - h) / 2, w, h);
+  } else { try { M.render(s, 1000, false); } catch(e){ console.error(e); } }
+  const b = blur.getContext('2d'); b.clearRect(0, 0, 240, 240);
+  b.filter = 'blur(12px)'; b.drawImage(snap, -30, -30, 300, 300); b.filter = 'none';
+}
+const bgv = document.createElement('video'); bgv.muted = true; bgv.loop = true; bgv.playsInline = true; let bgReady = false, bgUrl = null;
+bgv.addEventListener('loadeddata', () => { bgReady = true; bgv.play().catch(() => {}); });
+function loadBgVideo(f){
+  if (bgUrl) URL.revokeObjectURL(bgUrl);
+  bgReady = false; bgUrl = URL.createObjectURL(f); bgv.src = bgUrl;
+  $('#vBgName').textContent = f.name; vs.bgMode = 'video'; syncUI(); toast('배경 영상을 넣었어요');
+}
+function loadCoverFile(f){
+  const im = new Image(), url = URL.createObjectURL(f);
+  im.onload = () => { upImg = im; vs.coverSrc = 'upload'; $('#vCoverName').textContent = f.name; $('#vCoverThumb').innerHTML = `<img src="${url}" alt="">`; refreshCover(); syncUI(); };
+  im.onerror = () => toast('이미지를 열 수 없어요');
+  im.src = url;
+}
+function drawFit(src, W, H, zoom){
+  const sw = src.videoWidth || src.naturalWidth || src.width, sh = src.videoHeight || src.naturalHeight || src.height;
+  if (!sw || !sh) return;
+  const sc = Math.max(W / sw, H / sh) * (zoom || 1), w = sw * sc, h = sh * sc;
+  ctx.drawImage(src, (W - w) / 2, (H - h) / 2, w, h);
+}
+
+/* ---------- lyrics ---------- */
+let lyr = []; // {t, text}
+const LRC_TAG = /\[(\d{1,3}):(\d{1,2})(?:[.:](\d{1,3}))?\]/g;
+function parseLyrics(src){
+  const out = [];
+  for (const raw of String(src).split(/\r?\n/)){
+    if (/^\s*\[(ar|ti|al|by|offset|length|re|ve):/i.test(raw)) continue;
+    const tags = [...raw.matchAll(LRC_TAG)], text = raw.replace(LRC_TAG, '').trim();
+    if (!text && !tags.length) continue;
+    if (tags.length) tags.forEach(m => out.push({t: +m[1] * 60 + +m[2] + (m[3] ? +('0.' + m[3].padEnd(3, '0')) : 0), text}));
+    else out.push({t: null, text});
+  }
+  if (out.some(l => l.t != null)) out.sort((a, b) => (a.t ?? 1e9) - (b.t ?? 1e9));
+  return out.filter(l => l.text);
+}
+function writeLyrics(){ $('#vLyrics').value = lyr.map(l => (l.t != null ? lrcTime(l.t) + ' ' : '') + l.text).join('\n'); lyrStat(); }
+function lyrStat(){
+  const timed = lyr.filter(l => l.t != null).length;
+  $('#vLyrStat').textContent = !lyr.length ? '' : timed === lyr.length ? `${lyr.length}줄 · 모든 줄에 시간이 있어요` : timed ? `${lyr.length}줄 중 ${timed}줄에 시간이 있어요` : `${lyr.length}줄 · 아직 시간이 없어요 (탭 싱크로 맞춰 주세요)`;
+}
+$('#vLyrics').addEventListener('input', () => { lyr = parseLyrics($('#vLyrics').value); lyrStat(); loadFonts(); });
+let lyrIdx = -1, lyrChanged = 0;
+function currentLyric(time){
+  const timed = lyr.filter(l => l.t != null);
+  if (!timed.length) return null;
+  const tt = time + vs.lyricOffset; let idx = -1;
+  for (let i = 0; i < timed.length; i++){ if (timed[i].t <= tt) idx = i; else break; }
+  if (idx !== lyrIdx){ lyrIdx = idx; lyrChanged = performance.now(); }
+  return {prev: idx > 0 ? timed[idx - 1].text : '', cur: idx >= 0 ? timed[idx].text : '', next: timed[idx + 1] ? timed[idx + 1].text : '', fade: Math.min(1, (performance.now() - lyrChanged) / 380)};
+}
+$('#vEven').onclick = () => {
+  if (!lyr.length) return toast('먼저 가사를 적어 주세요');
+  const d = audio.duration || (M.AU && M.AU.duration); if (!d) return toast('음악을 먼저 넣어 주세요');
+  const a = d * .06, b = d * .94; lyr.forEach((l, i) => l.t = a + (b - a) * i / lyr.length);
+  writeLyrics(); toast('곡 길이에 맞춰 균등하게 나눴어요 · 대략적인 시간이에요');
+};
+$('#vClearTimes').onclick = () => { lyr.forEach(l => l.t = null); writeLyrics(); };
+$('#vLrcIn').addEventListener('change', async e => { const f = e.target.files[0]; e.target.value = ''; if (!f) return; $('#vLyrics').value = await f.text(); lyr = parseLyrics($('#vLyrics').value); lyrStat(); loadFonts(); toast('가사를 불러왔어요'); });
+$('#vLrcOut').onclick = () => {
+  if (!lyr.length) return toast('저장할 가사가 없어요');
+  const m = CS.meta, head = `[ti:${m.title}]\n[ar:${m.artist}]\n[al:${m.album}]\n`;
+  download(new Blob([head + $('#vLyrics').value], {type:'text/plain'}), (m.artist ? m.artist + ' - ' : '') + (m.title || 'lyrics') + '.lrc');
+};
+
+/* tap sync */
+const tap = {on:false, i:0};
+function tapUI(){
+  $('#vTapBox').hidden = !tap.on;
+  if (!tap.on) return;
+  $('#vTapCount').textContent = `${Math.min(tap.i, lyr.length)} / ${lyr.length}`;
+  $('#vTapNowLine').textContent = tap.i > 0 ? '♪ ' + lyr[tap.i - 1].text : '곡이 시작됐어요 · 첫 줄을 부를 때 누르세요';
+  $('#vTapNextLine').textContent = lyr[tap.i] ? '다음: ' + lyr[tap.i].text : '마지막 줄이에요';
+}
+async function startTap(){
+  lyr = parseLyrics($('#vLyrics').value);
+  if (!lyr.length) return toast('먼저 가사를 한 줄씩 적어 주세요');
+  if (!usingUrl) return toast('먼저 음악을 넣어 주세요');
+  lyr.forEach(l => l.t = null); tap.on = true; tap.i = 0; document.activeElement && document.activeElement.blur();
+  graph(); if (actx.state === 'suspended') await actx.resume();
+  audio.currentTime = 0; await audio.play().catch(() => {}); tapUI();
+}
+function tapNext(){
+  if (!tap.on || tap.i >= lyr.length) return;
+  lyr[tap.i].t = audio.currentTime; tap.i++; writeLyrics(); tapUI();
+  if (tap.i >= lyr.length){ endTap(true); }
+}
+function tapBack(){
+  if (!tap.on || tap.i === 0) return;
+  tap.i--; const t = lyr[tap.i].t; lyr[tap.i].t = null; writeLyrics();
+  audio.currentTime = Math.max(0, (t ?? audio.currentTime) - 2.5); tapUI();
+}
+function endTap(done){ tap.on = false; tapUI(); writeLyrics(); toast(done ? '모든 줄에 시간을 기록했어요' : '탭 싱크를 끝냈어요'); }
+$('#vTapStart').onclick = startTap;
+$('#vTapNext').onclick = tapNext; $('#vTapBack').onclick = tapBack; $('#vTapEnd').onclick = () => { audio.pause(); endTap(false); };
+document.addEventListener('keydown', e => {
+  if (!tap.on || view.hidden) return;
+  if (e.code === 'Space'){ e.preventDefault(); tapNext(); }
+  else if (e.code === 'ArrowLeft'){ e.preventDefault(); tapBack(); }
+  else if (e.code === 'Escape'){ audio.pause(); endTap(false); }
+});
+
+/* ---------- fonts ---------- */
+function fontStr(w, px){ return `${w} ${px}px "${vs.font}", "Paperlogy", "Pretendard Variable", sans-serif`; }
+function loadFonts(){
+  if (!document.fonts) return;
+  const m = CS.meta, txt = [m.title, m.artist, m.album, m.year, ...lyr.map(l => l.text), ...Object.values(vs.labels), '0123456789%:./'].join(' ').toUpperCase() + ' ' + lyr.map(l => l.text).join(' ');
+  ['400','500','700'].forEach(w => document.fonts.load(`${w} 40px "${vs.font}"`, txt).catch(() => {}));
+}
+
+/* ---------- layout ---------- */
+// every template keeps text in its own area and effects around the cover, so they don't collide
+function layout(W, H){
+  const u = Math.min(W, H) / 1000, port = H / W > 1.15, T = vs.template, L = {u, port, T}, FXo = vs.fx;
+  const specBottom = (h, n, alpha) => ({x: 0, w: W, y: H, h: h * u, n, mirror:true, alpha});
+  if (T === 'center'){
+    const cs = port ? W * .58 : Math.min(H * .42, W * .4);
+    L.cover = {x: W / 2, y: port ? H * .32 : H * .4, s: cs};
+    const top = L.cover.y + cs / 2;
+    L.title = {x: W / 2, y: top + (port ? 120 : 86) * u, align:'center', size: (port ? 58 : 52) * u, w: W * .8};
+    L.lyrics = {x: W / 2, y: L.title.y + (port ? 110 : 82) * u, w: W * .84, align:'center', size: (port ? 44 : 36) * u};
+    L.progress = {x: W * (port ? .14 : .32), w: W * (port ? .72 : .36), y: H - (port ? 120 : 62) * u};
+    L.spectrum = specBottom(port ? 110 : 80, port ? 64 : 110, .35);
+    L.eq = {x: W / 2, y: port ? H * .075 : H * .08, w: 150 * u, h: 40 * u, align:'center'};
+    L.sync = {x: W - 64 * u, y: 70 * u, align:'right'};
+    L.globe = {x: W - 120 * u, y: (port ? 300 : 280) * u, r: 48 * u};
+    L.tl = true; L.bl = true;
+  } else if (T === 'minimal'){
+    if (port){
+      const cs = W * .6, x0 = W * .12, w = W * .76;
+      L.cover = {x: W / 2, y: H * .27, s: cs};
+      let y = L.cover.y + cs / 2 + 150 * u;
+      L.title = {x: x0, y, align:'left', size: 56 * u, w}; y += 104 * u;
+      if (FXo.sync){ L.sync = {x: x0, y: y + 30 * u, align:'left'}; y += 100 * u; }
+      L.lyrics = {x: x0, y: y + 10 * u, w, align:'left', size: 42 * u}; y += 230 * u;
+      L.progress = {x: x0, w, y: Math.min(H - 150 * u, y + 30 * u)};
+      L.globe = {x: W - 110 * u, y: 110 * u, r: 44 * u};
+    } else {
+      const cs = Math.min(H * .56, W * .36), x0 = W * .56, w = W * .36;
+      L.cover = {x: W * .29, y: H * .5, s: cs};
+      L.title = {x: x0, y: H * .3, align:'left', size: 54 * u, w};
+      if (FXo.sync) L.sync = {x: x0, y: H * .42, align:'left'};
+      L.lyrics = {x: x0, y: H * (FXo.sync ? .52 : .46), w, align:'left', size: 38 * u};
+      L.progress = {x: x0, w, y: H * .78};
+      L.globe = {x: W - 120 * u, y: 150 * u, r: 44 * u};
+      L.colX = x0;
+    }
+    L.eq = {x: L.title.x, y: L.title.y - L.title.size * 1.3, w: 120 * u, h: 30 * u, align:'left'};
+    L.spectrum = specBottom(70, 140, .4);
+    L.capOk = true; L.coverBrackets = true; L.tl = true; L.bl = true;
+  } else { // hud — framed interface: title & time on top, cover inside a progress dial, timeline ruler at the bottom
+    const g = 40 * u; L.frame = g;
+    if (port){
+      const cs = W * .58;
+      L.cover = {x: W / 2, y: H * .37, s: cs};
+      L.title = {x: g + 44 * u, y: g + 130 * u, align:'left', size: 50 * u, w: W * .56};
+      L.time = {x: W - g - 44 * u, y: g + 124 * u};
+      L.lyrics = {x: W / 2, y: L.cover.y + cs * .71 + 100 * u, w: W * .84, align:'center', size: 42 * u};
+      L.progress = {x: g + 60 * u, w: W - 2 * g - 120 * u, y: H - g - 80 * u, ruler:true};
+    } else {
+      const cs = H * .36;
+      L.cover = {x: W / 2, y: H * .42, s: cs};
+      L.title = {x: g + 50 * u, y: g + 100 * u, align:'left', size: 46 * u, w: W * .34};
+      L.time = {x: W - g - 50 * u, y: g + 94 * u};
+      L.lyrics = {x: W / 2, y: L.cover.y + cs * .71 + 86 * u, w: W * .6, align:'center', size: 34 * u};
+      L.progress = {x: g + 60 * u, w: W - 2 * g - 120 * u, y: H - g - 48 * u, ruler:true};
+      L.meters = {x0: g + 30 * u, x1: W - g - 30 * u, y0: H * .3, y1: H * .7};
+    }
+    L.eq = {x: L.title.x, y: L.title.y + L.title.size * 1.6, w: 110 * u, h: 26 * u, align:'left'};
+    L.sync = {x: L.time.x, y: L.time.y + 66 * u, align:'right'};
+    L.globe = {x: W - g - 130 * u, y: H - g - (port ? 260 : 190) * u, r: 40 * u};
+    L.bl = true; L.blY = L.progress.y - 44 * u; L.tlAboveTitle = true;
+  }
+  // per-object offsets (dragged on the canvas)
+  const O = vs.off, sh = (o, k) => { if (o && O[k]){ o.x += O[k].dx * W; o.y += O[k].dy * H; } };
+  sh(L.cover, 'cover'); sh(L.title, 'title'); sh(L.lyrics, 'lyrics'); sh(L.progress, 'progress');
+  sh(L.eq, 'eq'); sh(L.sync, 'sync'); sh(L.globe, 'globe'); sh(L.time, 'time');
+  // effects anchored to the cover, each with its own offset on top
+  const rel = k => ({x: L.cover.x + O[k].dx * W, y: L.cover.y + O[k].dy * H});
+  L.glowC = rel('glow'); L.orbitC = rel('orbit'); L.sparkC = rel('sparkle'); L.retC = rel('reticle');
+  if (L.spectrum){ L.spectrum.x += O.spectrum.dx * W; L.spectrum.y += O.spectrum.dy * H; }
+  if (L.meters){ const mx = O.spectrum.dx * W, my = O.spectrum.dy * H; L.meters.x0 += mx; L.meters.x1 -= mx; L.meters.y0 += my; L.meters.y1 += my; }
+  L.scaleR = L.cover.s * .5 * 1.42 + 22 * u;
+  // hit boxes (canvas px) for dragging + text areas particles avoid
+  const B = {}, ts = vs.titleSize / 100;
+  { const c = L.cover; const r = (T === 'hud' ? L.scaleR + 12 * u : c.s / 2); B.cover = {x0: c.x - r, y0: c.y - r, x1: c.x + r, y1: c.y + r}; }
+  if (vs.showTitle){
+    const Tt = L.title; ctx.font = fontStr(700, Tt.size * ts);
+    const w = Math.min(ctx.measureText(CS.meta.title || 'Untitled').width, Tt.w || W * .8) + 10 * u, x0 = Tt.align === 'center' ? Tt.x - w / 2 : Tt.x;
+    B.title = {x0, y0: Tt.y - Tt.size * ts * .95, x1: x0 + w, y1: Tt.y + Tt.size * ts * .95};
+  }
+  if (FXo.lyrics){ const Ly = L.lyrics, sz = Ly.size * vs.lyricSize / 100, x0 = Ly.align === 'center' ? Ly.x - Ly.w / 2 : Ly.x; B.lyrics = {x0, y0: Ly.y - 4 * u, x1: x0 + Ly.w, y1: Ly.y + sz * 3.2}; }
+  if (FXo.progress){ const P = L.progress; B.progress = {x0: P.x - 10 * u, y0: P.y - 20 * u, x1: P.x + P.w + 10 * u, y1: P.y + 40 * u}; }
+  if (FXo.eq && L.eq){ const E = L.eq, x0 = E.align === 'center' ? E.x - E.w / 2 : E.align === 'right' ? E.x - E.w : E.x; B.eq = {x0: x0 - 6 * u, y0: E.y - E.h / 2 - 6 * u, x1: x0 + E.w + 6 * u, y1: E.y + E.h / 2 + 6 * u}; }
+  if (FXo.sync && L.sync){ const S = L.sync, w = 190 * u, x0 = S.align === 'right' ? S.x - w : S.x; B.sync = {x0, y0: S.y - 28 * u, x1: x0 + w, y1: S.y + 28 * u}; }
+  if (FXo.globe && L.globe){ const G = L.globe; B.globe = {x0: G.x - G.r * 1.8, y0: G.y - G.r * 1.2, x1: G.x + G.r * 1.8, y1: G.y + G.r * 1.2}; }
+  if (L.time){ B.time = {x0: L.time.x - 230 * u, y0: L.time.y - 46 * u, x1: L.time.x, y1: L.time.y + 34 * u}; }
+  { const cs = L.cover.s;
+    if (FXo.glow){ const r = cs * .8; B.glow = {x0: L.glowC.x - r, y0: L.glowC.y - r, x1: L.glowC.x + r, y1: L.glowC.y + r}; }
+    if (FXo.orbit){ const rx = Math.min(cs * 1.08, L.colX ? L.colX - L.orbitC.x - 40 * u : cs * 1.1), ry = cs * .45; B.orbit = {x0: L.orbitC.x - rx, y0: L.orbitC.y - ry, x1: L.orbitC.x + rx, y1: L.orbitC.y + ry}; }
+    if (FXo.sparkle){ const x = L.sparkC.x + .62 * cs, y = L.sparkC.y - .56 * cs, r = 46 * u; B.sparkle = {x0: x - r, y0: y - r, x1: x + r, y1: y + r}; }
+    if (FXo.reticle){ const x = L.retC.x + Math.cos(clock * .37) * cs * .26, y = L.retC.y + Math.sin(clock * .53) * cs * .24, r = 52 * u; B.reticle = {x0: x - r, y0: y - r, x1: x + r, y1: y + r}; }
+    if (FXo.spectrum && L.spectrum){ const S = L.spectrum; B.spectrum = {x0: S.x + 4, y0: S.y - S.h, x1: S.x + S.w - 4, y1: S.y}; }
+  }
+  L.boxes = B;
+  L.keep = ['title', 'lyrics', 'progress', 'sync', 'time', 'eq'].map(k => B[k]).filter(Boolean).map(b => ({x0: b.x0 - 20 * u, y0: b.y0 - 14 * u, x1: b.x1 + 20 * u, y1: b.y1 + 14 * u}));
+  return L;
+}
+
+/* ---------- particles ---------- */
+let parts = [];
+function initParts(){ parts = Array.from({length: 150}, () => ({x: Math.random(), y: Math.random(), v: .01 + Math.random() * .035, r: .6 + Math.random() * 1.8, a: .15 + Math.random() * .6, k: Math.random() < .08 ? 2 : Math.random() < .1 ? 1 : 0, ph: Math.random() * 6})); }
+initParts();
+
+/* ---------- noise ---------- */
+const noise = document.createElement('canvas'); noise.width = noise.height = 200;
+(() => { const x = noise.getContext('2d'), d = x.createImageData(200, 200); for (let i = 0; i < d.data.length; i += 4){ const v = Math.random() * 255; d.data[i] = d.data[i+1] = d.data[i+2] = v; d.data[i+3] = 255; } x.putImageData(d, 0, 0); })();
+
+/* ---------- drawing ---------- */
+let lastT = performance.now() / 1000, clock = 0;
+function chamfer(x, y, w, h, c){ ctx.beginPath(); ctx.moveTo(x + c, y); ctx.lineTo(x + w, y); ctx.lineTo(x + w, y + h - c); ctx.lineTo(x + w - c, y + h); ctx.lineTo(x, y + h); ctx.lineTo(x, y + c); ctx.closePath(); }
+function text(t, x, y, font, color, align, sp){
+  ctx.font = font; ctx.fillStyle = color; ctx.textAlign = align || 'left';
+  if (sp && 'letterSpacing' in ctx){ ctx.letterSpacing = sp + 'px'; ctx.fillText(t, x, y); ctx.letterSpacing = '0px'; }
+  else ctx.fillText(t, x, y);
+}
+function fit(t, maxW){ if (ctx.measureText(t).width <= maxW) return t; let s = t; while (s.length > 1 && ctx.measureText(s + '…').width > maxW) s = s.slice(0, -1); return s + '…'; }
+function wrap2(t, maxW){
+  if (ctx.measureText(t).width <= maxW) return [t];
+  const words = t.split(' '); let a = '', i = 0;
+  for (; i < words.length; i++){ const tt = a ? a + ' ' + words[i] : words[i]; if (ctx.measureText(tt).width > maxW && a) break; a = tt; }
+  let b = words.slice(i).join(' ');
+  if (!b){ // no spaces (e.g. Korean without spaces): split by chars
+    let k = t.length; while (k > 1 && ctx.measureText(t.slice(0, k)).width > maxW) k--; a = t.slice(0, k); b = t.slice(k);
+  }
+  return [a, fit(b, maxW)];
+}
+
+function frame(){
+  const W = cv.width, H = cv.height, now = performance.now() / 1000;
+  const dt = Math.min(.1, now - lastT); lastT = now; clock += dt * vs.speed / 100;
+  const t = clock; sample(now);
+  const L = layout(W, H), u = L.u, C = vs.colors, FXo = vs.fx, k = vs.sens / 100;
+  const m = CS.meta, dur = audio.duration || (M.AU && M.AU.duration) || 0, cur = audio.currentTime || 0, prog = dur ? cur / dur : 0;
+  ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none'; ctx.textBaseline = 'alphabetic'; ctx.shadowBlur = 0;
+
+  // background
+  ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H);
+  if (vs.bgMode === 'cover') drawFit(blur, W, H, 1.08 + bassS * .03 * k);
+  else if (vs.bgMode === 'video' && bgReady) drawFit(bgv, W, H, 1);
+  if (vs.bgMode !== 'color'){ ctx.fillStyle = col(C.bg, vs.bgDim / 100); ctx.fillRect(0, 0, W, H); }
+
+  const cvr = L.cover, beat = FXo.beat ? 1 + bassS * .045 * k : 1, cs = cvr.s * beat, circle = vs.coverShape === 'circle';
+
+  if (FXo.glow){
+    const G0 = L.glowC, g = ctx.createRadialGradient(G0.x, G0.y, cs * .2, G0.x, G0.y, cs * (.85 + bassS * .6 * k));
+    g.addColorStop(0, col(C.accent, .35 + bassS * .3 * k)); g.addColorStop(1, col(C.accent, 0));
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  }
+
+  if (FXo.orbit){
+    const maxR = L.colX ? (L.colX - L.orbitC.x - 40 * u) : cs * 1.1;
+    ctx.save(); ctx.translate(L.orbitC.x, L.orbitC.y);
+    [[.95, .3, .18, .5, 0], [1.08, .38, -.12, .28, 1], [.8, .22, .25, .38, 0]].forEach(([rx, ry, sp, a, dash], i) => {
+      const RX = Math.min(cs * rx, maxR);
+      ctx.save(); ctx.rotate(-.32 + Math.sin(t * sp) * .08);
+      ctx.setLineDash(dash ? [6 * u, 10 * u] : []); ctx.strokeStyle = col(C.line, a); ctx.lineWidth = 1.1 * u;
+      ctx.beginPath(); ctx.ellipse(0, 0, RX, cs * ry, 0, 0, Math.PI * 2); ctx.stroke();
+      const ang = t * (.6 + i * .25) + i * 2;
+      ctx.fillStyle = i === 0 ? col(C.accent, 1) : col(C.line, .85);
+      ctx.beginPath(); ctx.arc(Math.cos(ang) * RX, Math.sin(ang) * cs * ry, (i === 0 ? 5 : 3) * u, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    });
+    ctx.setLineDash([]); ctx.restore();
+  }
+
+  if (FXo.particles){
+    for (const p of parts){
+      p.y -= p.v * dt * (1 + bassS * 4 * k) * vs.speed / 100; p.x += Math.sin(t * .5 + p.ph) * .0004;
+      if (p.y < -.02){ p.y = 1.02; p.x = Math.random(); }
+      const x = p.x * W, y = p.y * H, a = p.a * (.6 + .4 * Math.sin(t * 2 + p.ph));
+      if (L.keep.some(K => x > K.x0 && x < K.x1 && y > K.y0 && y < K.y1)) continue;
+      if (p.k === 2){ ctx.fillStyle = col(C.accent, a + .2); star4(x, y, (5 + p.r * 3) * u); ctx.fill(); }
+      else if (p.k === 1){ ctx.strokeStyle = col(C.line, a); ctx.lineWidth = u; const s = 5 * u; ctx.beginPath(); ctx.moveTo(x - s, y); ctx.lineTo(x + s, y); ctx.moveTo(x, y - s); ctx.lineTo(x, y + s); ctx.stroke(); }
+      else { ctx.fillStyle = col(C.line, a); ctx.beginPath(); ctx.arc(x, y, p.r * u, 0, Math.PI * 2); ctx.fill(); }
+    }
+  }
+
+  // HUD frame + side meters
+  if (L.frame){
+    const g = L.frame, c = 22 * u;
+    ctx.strokeStyle = col(C.line, .3); ctx.lineWidth = 1.2 * u;
+    ctx.beginPath(); ctx.moveTo(g + c, g); ctx.lineTo(W - g - c, g); ctx.lineTo(W - g, g + c); ctx.lineTo(W - g, H - g - c); ctx.lineTo(W - g - c, H - g); ctx.lineTo(g + c, H - g); ctx.lineTo(g, H - g - c); ctx.lineTo(g, g + c); ctx.closePath(); ctx.stroke();
+    ctx.fillStyle = col(C.accent, .9); ctx.fillRect(W / 2 - 40 * u, g - 1.5 * u, 80 * u, 3 * u);
+    ctx.fillStyle = col(C.line, .5); [[g + c + 14 * u, g], [W - g - c - 14 * u, g]].forEach(([x, y]) => ctx.fillRect(x - 3 * u, y - 3 * u, 6 * u, 6 * u));
+  }
+  if (FXo.spectrum && L.meters){
+    const Mt = L.meters, n = 22, v = bars(n), rh = (Mt.y1 - Mt.y0) / n;
+    for (let i = 0; i < n; i++){
+      const y = Mt.y0 + i * rh + rh * .3, len = Math.max(3 * u, v[n - 1 - i] * 110 * u * k);
+      ctx.fillStyle = col(v[n - 1 - i] > .6 ? C.accent : C.line, .35 + v[n - 1 - i] * .5);
+      ctx.fillRect(Mt.x0, y, len, rh * .4); ctx.fillRect(Mt.x1 - len, y, len, rh * .4);
+    }
+  }
+  // spectrum strip
+  if (FXo.spectrum && L.spectrum){
+    const S = L.spectrum, v = bars(S.n), bw = S.w / S.n;
+    for (let i = 0; i < S.n; i++){
+      const val = S.mirror ? v[Math.abs(Math.floor(S.n / 2) - i) * 2 % S.n] : v[i];
+      const h = Math.max(2 * u, val * S.h * k);
+      ctx.fillStyle = col(i % 7 === 0 ? C.accent : C.line, (S.alpha || .6) * (.5 + val * .6));
+      rr(S.x + i * bw + bw * .2, S.y - h, Math.max(1, bw * (S.thin ? .35 : .6)), h, bw * .2); ctx.fill();
+    }
+  }
+
+  // ring spectrum around cover
+  if (FXo.ring && !L.frame){
+    const n = 90, v = bars(n), R = L.frame ? L.scaleR + 34 * u : (circle ? cs * .5 : cs * .5 * 1.08) + 14 * u;
+    ctx.save(); ctx.translate(cvr.x, cvr.y); ctx.lineCap = 'round';
+    ctx.strokeStyle = col(C.line, .25); ctx.lineWidth = 1 * u; ctx.beginPath(); ctx.arc(0, 0, R - 6 * u, 0, Math.PI * 2); ctx.stroke();
+    for (let side = -1; side <= 1; side += 2){
+      for (let i = 0; i < n; i++){
+        const a = -Math.PI / 2 + side * (i + .5) / n * Math.PI, len = 3 * u + v[i] * (L.frame ? 40 : 80) * u * k;
+        ctx.strokeStyle = col(v[i] > .55 ? C.accent : C.line, .45 + v[i] * .55); ctx.lineWidth = Math.max(1, (Math.PI * R / n) * .45);
+        ctx.beginPath(); ctx.moveTo(Math.cos(a) * R, Math.sin(a) * R); ctx.lineTo(Math.cos(a) * (R + len), Math.sin(a) * (R + len)); ctx.stroke();
+      }
+    }
+    ctx.restore(); ctx.lineCap = 'butt';
+  }
+
+  if (L.frame){
+    const R = L.scaleR;
+    ctx.save(); ctx.translate(cvr.x, cvr.y);
+    ctx.save(); ctx.rotate(t * .04);
+    const tv = FXo.ring ? bars(60) : null;
+    for (let i = 0; i < 120; i++){
+      const a = i / 120 * Math.PI * 2, big = i % 10 === 0, l = (big ? 12 * u : 5 * u) + (tv ? tv[i < 60 ? i : 119 - i] * 26 * u * k : 0);
+      ctx.strokeStyle = col(C.line, big ? .55 : .25); ctx.lineWidth = (big ? 1.6 : 1) * u;
+      ctx.beginPath(); ctx.moveTo(Math.cos(a) * R, Math.sin(a) * R); ctx.lineTo(Math.cos(a) * (R - l), Math.sin(a) * (R - l)); ctx.stroke();
+    }
+    ctx.restore();
+    if (FXo.progress){
+      const a0 = -Math.PI / 2, a1 = a0 + Math.max(.001, prog) * Math.PI * 2, RR = R + 14 * u;
+      ctx.strokeStyle = col(C.line, .15); ctx.lineWidth = 2 * u; ctx.beginPath(); ctx.arc(0, 0, RR, 0, Math.PI * 2); ctx.stroke();
+      ctx.strokeStyle = col(C.accent, 1); ctx.lineWidth = 2.5 * u; ctx.lineCap = 'round'; ctx.beginPath(); ctx.arc(0, 0, RR, a0, a1); ctx.stroke(); ctx.lineCap = 'butt';
+      ctx.fillStyle = col(C.line, 1); ctx.beginPath(); ctx.arc(Math.cos(a1) * RR, Math.sin(a1) * RR, 5 * u, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  // cover
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,.55)'; ctx.shadowBlur = 50 * u; ctx.shadowOffsetY = 14 * u;
+  if (circle){
+    ctx.translate(cvr.x, cvr.y); if (FXo.spin) ctx.rotate(t * .25);
+    ctx.beginPath(); ctx.arc(0, 0, cs / 2, 0, Math.PI * 2); ctx.fillStyle = '#000'; ctx.fill(); ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+    ctx.save(); ctx.clip(); ctx.drawImage(snap, -cs / 2, -cs / 2, cs, cs); ctx.restore();
+    ctx.strokeStyle = col('#000000', .25); for (let r = cs * .2; r < cs * .5; r += cs * .035){ ctx.lineWidth = .8 * u; ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.stroke(); }
+    ctx.fillStyle = C.bg; ctx.beginPath(); ctx.arc(0, 0, cs * .045, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = col(C.line, .7); ctx.lineWidth = 1.5 * u; ctx.beginPath(); ctx.arc(0, 0, cs * .045, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = col(C.line, .4); ctx.lineWidth = 1.2 * u; ctx.beginPath(); ctx.arc(0, 0, cs / 2, 0, Math.PI * 2); ctx.stroke();
+  } else {
+    const x = cvr.x - cs / 2, y = cvr.y - cs / 2;
+    rr(x, y, cs, cs, 8 * u); ctx.fillStyle = '#000'; ctx.fill(); ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+    ctx.save(); rr(x, y, cs, cs, 8 * u); ctx.clip(); ctx.drawImage(snap, x, y, cs, cs); ctx.restore();
+    ctx.strokeStyle = col(C.line, .35); ctx.lineWidth = 1.2 * u; rr(x, y, cs, cs, 8 * u); ctx.stroke();
+    if ((L.coverBrackets || L.frame) && FXo.hud){
+      const g = 14 * u, l = 22 * u; ctx.strokeStyle = col(C.line, .6); ctx.lineWidth = 2 * u; ctx.beginPath();
+      [[x - g, y - g, 1, 1], [x + cs + g, y - g, -1, 1], [x - g, y + cs + g, 1, -1], [x + cs + g, y + cs + g, -1, -1]].forEach(([a, b, sx, sy]) => { ctx.moveTo(a + sx * l, b); ctx.lineTo(a, b); ctx.lineTo(a, b + sy * l); });
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+
+  // reticle drifting over the cover (no label, stays inside)
+  if (FXo.reticle){
+    const rx = L.retC.x + Math.cos(t * .37) * cs * .26, ry = L.retC.y + Math.sin(t * .53) * cs * .24;
+    ctx.save(); ctx.translate(rx, ry);
+    ctx.strokeStyle = col(C.line, .8); ctx.lineWidth = 1.2 * u;
+    ctx.beginPath(); ctx.arc(0, 0, 24 * u, 0, Math.PI * 2); ctx.stroke();
+    ctx.save(); ctx.rotate(t * .8); ctx.setLineDash([3 * u, 6 * u]); ctx.strokeStyle = col(C.accent, .85); ctx.beginPath(); ctx.arc(0, 0, 36 * u, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+    ctx.setLineDash([]); ctx.beginPath();
+    ctx.moveTo(-46 * u, 0); ctx.lineTo(-10 * u, 0); ctx.moveTo(10 * u, 0); ctx.lineTo(46 * u, 0); ctx.moveTo(0, -46 * u); ctx.lineTo(0, -10 * u); ctx.moveTo(0, 10 * u); ctx.lineTo(0, 46 * u); ctx.stroke();
+    ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(0, 0, 3.5 * u, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+
+  // globe
+  if (FXo.globe && L.globe){
+    const G = L.globe, R = G.r;
+    ctx.save(); ctx.translate(G.x, G.y);
+    const g = ctx.createRadialGradient(-R * .35, -R * .4, R * .1, 0, 0, R);
+    g.addColorStop(0, col('#ffffff', .5)); g.addColorStop(.3, col(C.accent, .6)); g.addColorStop(1, col(C.accent, .1));
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2); ctx.fill();
+    ctx.save(); ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2); ctx.clip(); ctx.rotate(-.25);
+    ctx.strokeStyle = col(C.line, .55); ctx.lineWidth = .9 * u;
+    for (const d of [-60, -30, 0, 30, 60]){ const a = d * Math.PI / 180, y = R * Math.sin(a), rx = R * Math.cos(a); ctx.beginPath(); ctx.ellipse(0, y, rx, rx * .2, 0, 0, Math.PI * 2); ctx.stroke(); }
+    for (let i = 0; i < 6; i++){ const ph = t * .6 + i * Math.PI / 6; const rx = Math.abs(R * Math.cos(ph)); ctx.beginPath(); ctx.ellipse(0, 0, Math.max(.5, rx), R, 0, 0, Math.PI * 2); ctx.stroke(); }
+    ctx.restore();
+    ctx.strokeStyle = col(C.line, .9); ctx.lineWidth = 1.4 * u; ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2); ctx.stroke();
+    ctx.save(); ctx.rotate(-.35); ctx.strokeStyle = col(C.line, .7); ctx.lineWidth = 1 * u; ctx.beginPath(); ctx.ellipse(0, 0, R * 1.65, R * .38, 0, 0, Math.PI * 2); ctx.stroke();
+    const a = t * 1.1; ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(Math.cos(a) * R * 1.65, Math.sin(a) * R * .38, 4 * u, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+    ctx.restore();
+  }
+
+  // titles / lyrics / data
+  const ts = vs.titleSize / 100, LB = vs.labels;
+  const T = L.title;
+  if (vs.showTitle){
+    if (L.tlAboveTitle && FXo.hud && LB.tl){
+      ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(T.x + 4 * u, T.y - T.size * ts - 18 * u, 3.5 * u * (.75 + .25 * Math.sin(t * 4)), 0, Math.PI * 2); ctx.fill();
+      text(LB.tl.toUpperCase(), T.x + 16 * u, T.y - T.size * ts - 14 * u, fontStr(600, 12 * u), col(C.text, .8), 'left', 2 * u);
+    }
+    ctx.font = fontStr(700, T.size * ts);
+    const maxW = T.w || (L.port ? W * .84 : W * .8);
+    text(fit(m.title || 'Untitled', maxW), T.x, T.y, ctx.font, col(C.text, 1), T.align);
+    ctx.font = fontStr(400, T.size * ts * .42);
+    text(fit([m.artist, T.align === 'left' ? m.album : m.year].filter(Boolean).join('  ·  '), maxW), T.x, T.y + T.size * ts * .78, ctx.font, col(C.text, .7), T.align);
+  }
+  if (L.time){
+    text(fmtTime(cur), L.time.x, L.time.y, fontStr(300, 44 * u), col(C.text, .95), 'right', 1 * u);
+    text('/ ' + fmtTime(dur), L.time.x, L.time.y + 26 * u, fontStr(500, 12 * u), col(C.text, .5), 'right', 1.5 * u);
+  }
+  if (FXo.sync && L.sync){
+    const S = L.sync, r = 19 * u, right = S.align === 'right', cx = right ? S.x - r : S.x + r, tx = right ? S.x - r * 2 - 14 * u : S.x + r * 2 + 14 * u;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = col(C.line, .18); ctx.lineWidth = 3 * u; ctx.beginPath(); ctx.arc(cx, S.y, r, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(cx, S.y, r, -Math.PI / 2, -Math.PI / 2 + syncS / 100 * Math.PI * 2); ctx.stroke(); ctx.lineCap = 'butt';
+    ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(cx, S.y, 3 * u, 0, Math.PI * 2); ctx.fill();
+    if (LB.tr) text(LB.tr.toUpperCase(), tx, S.y - 6 * u, fontStr(600, 10.5 * u), col(C.text, .55), right ? 'right' : 'left', 2 * u);
+    text(syncS.toFixed(1) + '%', tx, S.y + 17 * u, fontStr(600, 20 * u), col(C.text, .95), right ? 'right' : 'left');
+  }
+  if (FXo.eq && L.eq){
+    const E = L.eq, n = 9, v = bars(14), pw = E.w / n * .46, x0 = E.align === 'center' ? E.x - E.w / 2 : E.align === 'right' ? E.x - E.w : E.x;
+    for (let i = 0; i < n; i++){
+      const val = v[[0, 2, 4, 6, 8, 10, 12, 5, 1][i]], h = Math.max(pw, E.h * (.18 + .82 * Math.min(1, val * 1.3 * k)));
+      ctx.fillStyle = col(i % 4 === 0 ? C.line : C.accent, .9);
+      rr(x0 + i * E.w / n + (E.w / n - pw) / 2, E.y - h / 2, pw, h, pw / 2); ctx.fill();
+    }
+  }
+  if (FXo.lyrics) drawLyrics(L.lyrics, u, C);
+  if (FXo.progress && L.progress){
+    const P = L.progress, x1 = P.x + P.w, xp = P.x + P.w * prog;
+    if (P.ruler){
+      ctx.fillStyle = col(C.line, .25); ctx.fillRect(P.x, P.y, P.w, Math.max(1, u));
+      for (let i = 0; i <= 100; i++){ const x = P.x + P.w * i / 100, big = i % 10 === 0; ctx.fillStyle = col(C.line, big ? .5 : .22); ctx.fillRect(x, P.y - (big ? 12 : 5) * u, Math.max(1, u), (big ? 12 : 5) * u); }
+      ctx.fillStyle = col(C.accent, 1); ctx.fillRect(P.x, P.y - 1 * u, P.w * prog, 2.5 * u);
+      ctx.beginPath(); ctx.moveTo(xp - 6 * u, P.y - 22 * u); ctx.lineTo(xp + 6 * u, P.y - 22 * u); ctx.lineTo(xp, P.y - 13 * u); ctx.closePath(); ctx.fill();
+      ctx.fillRect(xp - .75 * u, P.y - 13 * u, 1.5 * u, 15 * u);
+      text(fmtTime(cur), P.x, P.y + 26 * u, fontStr(500, 11 * u), col(C.text, .55), 'left', 1.5 * u);
+      text(fmtTime(dur), x1, P.y + 26 * u, fontStr(500, 11 * u), col(C.text, .55), 'right', 1.5 * u);
+    } else {
+      ctx.lineCap = 'round'; ctx.lineWidth = 2.5 * u;
+      ctx.strokeStyle = col(C.line, .22); ctx.beginPath(); ctx.moveTo(P.x, P.y); ctx.lineTo(x1, P.y); ctx.stroke();
+      ctx.strokeStyle = col(C.accent, 1); ctx.beginPath(); ctx.moveTo(P.x, P.y); ctx.lineTo(Math.max(P.x + .1, xp), P.y); ctx.stroke(); ctx.lineCap = 'butt';
+      ctx.fillStyle = col(C.line, 1); ctx.beginPath(); ctx.arc(xp, P.y, 6 * u, 0, Math.PI * 2); ctx.fill();
+      text(fmtTime(cur), P.x, P.y + 28 * u, fontStr(500, 12 * u), col(C.text, .6), 'left', 1 * u);
+      text(fmtTime(dur), x1, P.y + 28 * u, fontStr(500, 12 * u), col(C.text, .6), 'right', 1 * u);
+    }
+  }
+  if (FXo.hud){
+    const g = 56 * u;
+    if (LB.tl && L.tl){
+      ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(g + 4 * u, g - 4 * u, 3.5 * u * (.75 + .25 * Math.sin(t * 4)), 0, Math.PI * 2); ctx.fill();
+      text(LB.tl.toUpperCase(), g + 16 * u, g, fontStr(600, 12 * u), col(C.text, .85), 'left', 2 * u);
+    }
+    if (LB.bl && L.bl){
+      const bx = L.frame ? L.frame + 50 * u : g, by = L.blY || (H - g + 6 * u);
+      text(LB.bl.toUpperCase(), bx, by, fontStr(500, 11 * u), col(C.text, .5), 'left', 2 * u);
+    }
+    if (L.capOk && LB.cap && vs.coverShape !== 'circle'){
+      const x = cvr.x - cvr.s / 2, y = FXo.ring ? cvr.y + cvr.s * .54 + 104 * u : cvr.y + cvr.s / 2 + 34 * u;
+      text(LB.cap.toUpperCase(), FXo.ring ? cvr.x : x, y, fontStr(500, 11 * u), col(C.text, .5), FXo.ring ? 'center' : 'left', 2 * u);
+    }
+  }
+
+  // sparkles — placed around the cover so they never sit on text
+  if (FXo.sparkle){
+    const pts = [[.62, -.56, 26], [.74, -.4, 10], [-.64, .5, 12], [-.6, -.6, 8], [.58, .62, 7]];
+    pts.forEach(([dx, dy, r], i) => {
+      const s = (.55 + .45 * Math.sin(t * 1.8 + i * 1.3)) * (1 + bassS * .3 * k);
+      ctx.save(); ctx.shadowColor = col(C.accent, .9); ctx.shadowBlur = r * u;
+      ctx.fillStyle = i % 2 ? col(C.accent, 1) : col(C.line, .95); star4(L.sparkC.x + dx * cvr.s, L.sparkC.y + dy * cvr.s, r * u * s); ctx.fill(); ctx.restore();
+    });
+  }
+
+  if (FXo.brackets){
+    const g = 26 * u, l = 40 * u; ctx.strokeStyle = col(C.line, .8); ctx.lineWidth = 2 * u; ctx.beginPath();
+    [[g, g, 1, 1], [W - g, g, -1, 1], [g, H - g, 1, -1], [W - g, H - g, -1, -1]].forEach(([x, y, sx, sy]) => { ctx.moveTo(x + sx * l, y); ctx.lineTo(x, y); ctx.lineTo(x, y + sy * l); });
+    ctx.stroke();
+  }
+
+  if (FXo.vignette){
+    const g = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * .35, W / 2, H / 2, Math.max(W, H) * .75);
+    g.addColorStop(0, col(C.bg, 0)); g.addColorStop(1, col(C.bg, .6)); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  }
+
+  if (FXo.grain){
+    const p = ctx.createPattern(noise, 'repeat');
+    if (p){
+      if (p.setTransform && typeof DOMMatrix !== 'undefined') p.setTransform(new DOMMatrix().translate(Math.random() * 200, Math.random() * 200).scale(u * 1.2));
+      ctx.globalCompositeOperation = 'overlay'; ctx.globalAlpha = .08; ctx.fillStyle = p; ctx.fillRect(0, 0, W, H);
+      ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+    }
+  }
+  if (!recording){
+    if (vs.grid){
+      ctx.strokeStyle = 'rgba(255,255,255,.14)'; ctx.lineWidth = 1; ctx.beginPath();
+      for (let i = 1; i < 12; i++){ const x = Math.round(W * i / 12) + .5, y = Math.round(H * i / 12) + .5; ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.moveTo(0, y); ctx.lineTo(W, y); }
+      ctx.stroke();
+      ctx.strokeStyle = 'rgba(255,255,255,.32)'; ctx.beginPath(); ctx.moveTo(W / 2 + .5, 0); ctx.lineTo(W / 2 + .5, H); ctx.moveTo(0, H / 2 + .5); ctx.lineTo(W, H / 2 + .5); ctx.stroke();
+    }
+    const hk = drag ? drag.key : hover, hb = hk && L.boxes[hk];
+    if (hb){ ctx.setLineDash([5, 4]); ctx.strokeStyle = col(C.accent, .95); ctx.lineWidth = 1.2; ctx.strokeRect(hb.x0, hb.y0, hb.x1 - hb.x0, hb.y1 - hb.y0); ctx.setLineDash([]); }
+    if (drag && guides.length){
+      ctx.strokeStyle = '#ff4fa3'; ctx.lineWidth = 1; ctx.beginPath();
+      guides.forEach(gd => { if (gd.x != null){ ctx.moveTo(Math.round(gd.x) + .5, 0); ctx.lineTo(Math.round(gd.x) + .5, H); } else { ctx.moveTo(0, Math.round(gd.y) + .5); ctx.lineTo(W, Math.round(gd.y) + .5); } });
+      ctx.stroke();
+    }
+  }
+  lastL = L;
+  ctx.restore();
+
+  // UI updates
+  if (!seekHeld && dur) seek.value = Math.round(prog * 1000);
+  $('#vTime').textContent = fmtTime(cur) + ' / ' + fmtTime(dur);
+  if (recording){ $('#vRecTime').textContent = fmtTime(cur) + ' / ' + fmtTime(dur); $('#vRecBar').style.width = (prog * 100).toFixed(1) + '%'; }
+}
+let seekHeld = false;
+seek.addEventListener('pointerdown', () => seekHeld = true); ['pointerup','pointercancel','change'].forEach(ev => seek.addEventListener(ev, () => seekHeld = false));
+
+function drawLyrics(B, u, C){
+  const Ly = currentLyric(audio.currentTime || 0);
+  const size = B.size * vs.lyricSize / 100, small = size * .56;
+  if (!Ly) return;
+  const e = 1 - Math.pow(1 - Ly.fade, 3), shift = (1 - e) * size * .6;
+  const yPrev = B.y + small + shift, yCur = yPrev + size * 1.5, yNext = yCur + size * 1.12;
+  const draw = (t, y, px, w, a) => { if (!t) return; ctx.font = fontStr(w, px); let s = px; while (ctx.measureText(t).width > B.w && s > px * .6){ s *= .94; ctx.font = fontStr(w, s); } text(fit(t, B.w), B.x, y, ctx.font, col(C.text, a), B.align); };
+  draw(Ly.prev, yPrev, small, 400, .3 * e);
+  ctx.save(); ctx.shadowColor = col(C.accent, .45); ctx.shadowBlur = 14 * u;
+  draw(Ly.cur, yCur, size, 600, .35 + .65 * e);
+  ctx.restore();
+  draw(Ly.next, yNext, small, 400, .38);
+}
+
+/* ---------- drag objects on the canvas ---------- */
+let drag = null, hover = null, guides = [], lastL = null;
+function cpt(e){ const r = cv.getBoundingClientRect(); return {x: (e.clientX - r.left) / r.width * cv.width, y: (e.clientY - r.top) / r.height * cv.height, r}; }
+function hitObj(pt){
+  if (!lastL) return null;
+  const B = lastL.boxes, keys = Object.keys(B).sort((a, b) => (B[a].x1 - B[a].x0) * (B[a].y1 - B[a].y0) - (B[b].x1 - B[b].x0) * (B[b].y1 - B[b].y0));
+  return keys.find(k => !vs.pin[k] && pt.x >= B[k].x0 && pt.x <= B[k].x1 && pt.y >= B[k].y0 && pt.y <= B[k].y1) || null;
+}
+cv.addEventListener('pointerdown', e => {
+  if (vs.lockObj || recording) return;
+  const pt = cpt(e), k = hitObj(pt); if (!k) return;
+  drag = {key: k, sx: pt.x, sy: pt.y, ox: vs.off[k].dx, oy: vs.off[k].dy, box: {...lastL.boxes[k]}};
+  cv.setPointerCapture(e.pointerId); $('#vWrap').classList.add('grabbing');
+});
+cv.addEventListener('pointermove', e => {
+  const pt = cpt(e), W = cv.width, H = cv.height;
+  if (!drag){ hover = vs.lockObj ? null : hitObj(pt); $('#vWrap').classList.toggle('move', !!hover); return; }
+  let dx = pt.x - drag.sx, dy = pt.y - drag.sy; guides = [];
+  if (vs.snap){
+    const b = drag.box, thr = Math.min(W, H) * .012;
+    const tx = [W / 2, W / 3, W * 2 / 3, W * .06, W * .94], ty = [H / 2, H / 3, H * 2 / 3, H * .07, H * .93];
+    if (vs.grid) for (let i = 1; i < 12; i++){ tx.push(W * i / 12); ty.push(H * i / 12); }
+    Object.entries(lastL.boxes).forEach(([k, o]) => { if (k === drag.key) return; tx.push(o.x0, (o.x0 + o.x1) / 2, o.x1); ty.push(o.y0, (o.y0 + o.y1) / 2, o.y1); });
+    const best = (vals, targets) => { let m = null; vals.forEach(v => targets.forEach(t => { const d = t - v; if (Math.abs(d) < thr && (!m || Math.abs(d) < Math.abs(m.d))) m = {d, t}; })); return m; };
+    const bx = best([b.x0 + dx, (b.x0 + b.x1) / 2 + dx, b.x1 + dx], tx), by = best([b.y0 + dy, (b.y0 + b.y1) / 2 + dy, b.y1 + dy], ty);
+    if (bx){ dx += bx.d; guides.push({x: bx.t}); }
+    if (by){ dy += by.d; guides.push({y: by.t}); }
+  }
+  vs.off[drag.key].dx = drag.ox + dx / W; vs.off[drag.key].dy = drag.oy + dy / H;
+});
+const endObjDrag = () => { drag = null; guides = []; $('#vWrap').classList.remove('grabbing'); };
+cv.addEventListener('pointerup', endObjDrag); cv.addEventListener('pointercancel', endObjDrag);
+cv.addEventListener('pointerleave', () => { if (!drag){ hover = null; $('#vWrap').classList.remove('move'); } });
+function lockUI(){
+  const b = $('#vLockObj'); b.classList.toggle('unlocked', !vs.lockObj); b.querySelector('span').textContent = vs.lockObj ? '오브젝트 잠금' : '오브젝트 이동 중';
+  $('#vGrid').classList.toggle('on', vs.grid); $('#vSnap').classList.toggle('on', vs.snap);
+  if (vs.lockObj){ hover = null; $('#vWrap').classList.remove('move'); }
+}
+$('#vLockObj').onclick = () => { vs.lockObj = !vs.lockObj; lockUI(); toast(vs.lockObj ? '오브젝트를 잠갔어요' : '이제 오브젝트를 끌어서 옮길 수 있어요'); };
+$('#vGrid').onclick = () => { vs.grid = !vs.grid; lockUI(); };
+$('#vSnap').onclick = () => { vs.snap = !vs.snap; lockUI(); toast(vs.snap ? '자석 맞춤을 켰어요' : '자석 맞춤을 껐어요'); };
+const vRowBtns = (k, n) => `<button class="pin" data-vpin="${k}" title="고정" aria-label="${n} 고정"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5 13.5 6l-2.5 1-2.5 3.5.5 2.5L3 7.5l2.5.5L9 5.5z"/><path d="M5.5 10.5 2.5 13.5"/></svg></button><button class="rst" data-vreset="${k}" title="위치 초기화" aria-label="${n} 위치 초기화"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 8a5.5 5.5 0 1 0 1.8-4.1"/><path d="M2.5 2.5v3h3"/></svg></button>`;
+$('#vObjList').innerHTML = `<div class="dlist">${OBJ.map(([k, n]) => `<div class="ditem is-on" data-vobj="${k}"><div class="drow"><span class="dname"><b>${n}</b></span>${vRowBtns(k, n)}</div></div>`).join('')}</div>`;
+function pinUI(){ $$('[data-vpin]', view).forEach(b => { const on = !!vs.pin[b.dataset.vpin]; b.classList.toggle('pinned', on); b.title = on ? '고정 풀기' : '고정'; }); }
+view.addEventListener('click', e => {
+  const r = e.target.closest('[data-vreset]'); if (r){ vs.off[r.dataset.vreset] = {dx:0, dy:0}; toast(OBJ.find(o => o[0] === r.dataset.vreset)[1] + ' 위치를 처음으로 되돌렸어요'); }
+  const pn = e.target.closest('[data-vpin]'); if (pn){ const k = pn.dataset.vpin; vs.pin[k] = !vs.pin[k]; pinUI(); toast(OBJ.find(o => o[0] === k)[1] + (vs.pin[k] ? ' 고정했어요 · 끌어도 움직이지 않아요' : ' 고정을 풀었어요')); }
+  if (e.target.closest('#vResetAll')){ OBJ.forEach(([k]) => vs.off[k] = {dx:0, dy:0}); toast('모든 오브젝트 위치를 처음으로 되돌렸어요'); }
+});
+
+/* ---------- size / loop ---------- */
+function setSize(full){
+  const [w, h] = vs.res.split('x').map(Number), sc = full ? 1 : .5;
+  cv.width = Math.round(w * sc); cv.height = Math.round(h * sc);
+  $('#vWrap').style.setProperty('--ar', (w / h).toFixed(4));
+}
+let running = false;
+function loop(){ if (!running) return; frame(); requestAnimationFrame(loop); }
+function enter(){
+  $('#vFont').innerHTML = (M.FONTS || []).map(([f,, lab]) => `<option value="${f}">${lab || f}</option>`).join('');
+  syncSource(); refreshCover(); loadFonts(); syncUI();
+  if (!running){ running = true; lastT = performance.now() / 1000; requestAnimationFrame(loop); }
+  if (bgReady) bgv.play().catch(() => {});
+}
+function leave(){ if (recording) return; running = false; audio.pause(); bgv.pause(); if (tap.on) endTap(false); }
+$$('.nav-item').forEach(n => n.addEventListener('click', () => (n.dataset.view === 'video' ? enter() : leave())));
+$('#vRefreshCover').onclick = () => { refreshCover(); toast('커버를 다시 가져왔어요'); };
+
+/* ---------- record ---------- */
+let recording = false, rec = null, recChunks = [], recCancel = false, recStream = null;
+const MIMES = ['video/mp4;codecs=avc1.640028,mp4a.40.2', 'video/mp4;codecs=avc1.42E01E,mp4a.40.2', 'video/mp4;codecs=avc1,mp4a', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm', 'video/mp4'];
+async function startRecord(){
+  syncSource();
+  if (!usingUrl) return toast('먼저 음악을 넣어 주세요');
+  if (!window.MediaRecorder || !cv.captureStream) return toast('이 브라우저에서는 영상 저장이 안 돼요 · 크롬이나 엣지를 써 주세요');
+  if (tap.on) endTap(false);
+  graph(); if (actx.state === 'suspended') await actx.resume();
+  refreshCover(); loadFonts(); if (document.fonts) await document.fonts.ready;
+  setSize(true);
+  recStream = cv.captureStream(vs.fps);
+  dest.stream.getAudioTracks().forEach(tr => recStream.addTrack(tr));
+  const mime = MIMES.find(t => MediaRecorder.isTypeSupported(t)) || '';
+  const px = cv.width * cv.height;
+  try { rec = new MediaRecorder(recStream, mime ? {mimeType: mime, videoBitsPerSecond: px > 2e6 ? 14e6 : 9e6, audioBitsPerSecond: 192000} : {}); }
+  catch(e){ setSize(false); return toast('녹화를 시작할 수 없어요'); }
+  recChunks = []; recCancel = false;
+  rec.ondataavailable = e => { if (e.data && e.data.size) recChunks.push(e.data); };
+  rec.onstop = () => {
+    recording = false; $('#vRecOv').hidden = true; setSize(false);
+    recStream.getVideoTracks().forEach(tr => tr.stop());
+    if (recCancel){ toast('녹화를 취소했어요'); return; }
+    const type = (rec.mimeType || mime || 'video/webm').split(';')[0], ext = type.includes('mp4') ? 'mp4' : 'webm';
+    const m = CS.meta, name = String([m.artist, m.title].filter(Boolean).join(' - ') || 'momo-video').replace(/[\\/:*?"<>|]+/g, '_');
+    download(new Blob(recChunks, {type}), name + '.' + ext);
+    toast(ext === 'mp4' ? '영상을 MP4로 저장했어요' : '영상을 WEBM으로 저장했어요 · 이 브라우저는 MP4 녹화를 지원하지 않아요');
+  };
+  audio.pause(); audio.currentTime = 0; if (bgReady){ bgv.currentTime = 0; bgv.play().catch(() => {}); }
+  lyrIdx = -1; clock = 0;
+  recording = true; $('#vRecOv').hidden = false;
+  if (!running){ running = true; requestAnimationFrame(loop); }
+  rec.start(500);
+  try { await audio.play(); } catch(e){ recCancel = true; rec.stop(); toast('음악을 재생할 수 없어요'); }
+}
+function stopRecord(cancel){ if (!rec || rec.state === 'inactive') return; recCancel = !!cancel; audio.pause(); rec.stop(); }
+$('#vRecord').onclick = startRecord;
+$('#vRecCancel').onclick = () => stopRecord(true);
+
+/* ---------- UI ---------- */
+$('#vFxList').innerHTML = `<div class="dlist">${FX.map(([k, n, d]) => `
+  <div class="ditem" data-vfx="${k}"><div class="drow"><span class="dname"><b>${n}</b><small>${d}</small></span>${FX_MOVE.has(k) ? vRowBtns(k, n) : ''}
+  <label class="sw"><input type="checkbox" data-vbind="fx.${k}" aria-label="${n}"><span></span></label></div></div>`).join('')}</div>`;
+$('#vFont').innerHTML = (M.FONTS || []).map(([f,, lab]) => `<option value="${f}">${lab || f}</option>`).join('');
+const VFMT = {pct: v => Math.round(v) + '%', hex: v => String(v).toUpperCase(), sec: v => (v > 0 ? '+' : '') + (+v).toFixed(1) + 's'};
+function syncUI(){
+  $$('[data-vbind]', view).forEach(el => { const v = getV(el.dataset.vbind); if (el.type === 'checkbox') el.checked = !!v; else if (document.activeElement !== el || el.type === 'range' || el.type === 'color') el.value = v ?? ''; });
+  $$('[data-vout]', view).forEach(o => { const f = VFMT[o.dataset.fmt] || (v => v); o.textContent = f(getV(o.dataset.vout)); });
+  $$('[data-vset]', view).forEach(b => b.classList.toggle('on', String(getV(b.dataset.vset)) === b.dataset.val));
+  $$('[data-vfx]', view).forEach(d => d.classList.toggle('is-on', !!vs.fx[d.dataset.vfx]));
+  if (typeof pinUI === 'function') pinUI();
+  $('#vDropCover').hidden = vs.coverSrc !== 'upload';
+  $('#vDropBg').hidden = vs.bgMode !== 'video';
+  $('#vRes').value = vs.res; $('#vFps').value = String(vs.fps);
+}
+view.addEventListener('input', e => {
+  const el = e.target, p = el.dataset && el.dataset.vbind; if (!p) return;
+  const v = el.type === 'checkbox' ? el.checked : el.type === 'range' ? parseFloat(el.value) : el.value;
+  setV(p, v); syncUI(); if (p === 'font' || p.startsWith('labels.')) loadFonts();
+});
+view.addEventListener('click', e => {
+  const b = e.target.closest('[data-vset]'); if (!b) return;
+  setV(b.dataset.vset, b.dataset.val);
+  if (b.dataset.vset === 'template') vs.coverShape = b.dataset.val === 'center' ? 'circle' : 'square';
+  if (b.dataset.vset === 'template' || b.dataset.vset === 'res') OBJ.forEach(([k]) => vs.off[k] = {dx:0, dy:0});
+  if (b.dataset.vset === 'coverSrc') refreshCover();
+  syncUI();
+});
+$('#vRes').onchange = () => { vs.res = $('#vRes').value; setSize(false); };
+$('#vFps').onchange = () => { vs.fps = +$('#vFps').value; };
+$('#vFxOn').onclick = () => { FX.forEach(([k]) => vs.fx[k] = true); syncUI(); };
+$('#vFxOff').onclick = () => { FX.forEach(([k]) => vs.fx[k] = false); syncUI(); };
+$('#vColorsFromCover').onclick = () => { Object.assign(vs.colors, {bg: CS.cover.bg, text: CS.cover.text, line: CS.cover.deco, accent: CS.cover.accent}); syncUI(); };
+
+// files (drops on the video view never reach the cover tab's global drop handler)
+function setupDrop(el, ok, fn, msg){
+  const input = el.querySelector('input[type=file]');
+  input.addEventListener('change', () => { const f = input.files[0]; input.value = ''; if (f) ok(f) ? fn(f) : toast(msg); });
+}
+const isAudio = f => f.type.startsWith('audio/') || /\.(mp3|m4a|wav|ogg|flac|aac)$/i.test(f.name);
+const isVideo = f => f.type.startsWith('video/') || /\.(mp4|webm|mov|m4v)$/i.test(f.name);
+const isImage = f => f.type.startsWith('image/');
+setupDrop($('#vDropAudio'), isAudio, loadAudioFile, '음악 파일을 넣어 주세요');
+setupDrop($('#vDropCover'), isImage, loadCoverFile, '이미지 파일을 넣어 주세요');
+setupDrop($('#vDropBg'), isVideo, loadBgVideo, '영상 파일을 넣어 주세요');
+view.addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); });
+view.addEventListener('drop', e => {
+  e.preventDefault(); e.stopPropagation();
+  const f = e.dataTransfer && e.dataTransfer.files[0]; if (!f) return;
+  if (isAudio(f)) loadAudioFile(f);
+  else if (isVideo(f)) loadBgVideo(f);
+  else if (isImage(f)) loadCoverFile(f);
+  else if (/\.(lrc|txt)$/i.test(f.name)) f.text().then(tx => { $('#vLyrics').value = tx; lyr = parseLyrics(tx); lyrStat(); loadFonts(); toast('가사를 불러왔어요'); });
+  else toast('음악, 영상, 이미지, 가사 파일만 넣을 수 있어요');
+});
+
+setSize(false); syncUI(); lockUI(); refreshCover(); frame();
+})();
+</script>
+<script>
+/* ===================== THUMBNAIL MAKER ===================== */
+(() => {
+'use strict';
+const M = window.MMC; if (!M) return;
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const view = $('#view-thumb'), cv = $('#tCanvas'), ctx = cv.getContext('2d'), W = 1280, H = 720, u = H / 1000;
+const CS = M.state, toast = M.toast, download = M.download;
+function hexRgb(h){ h = String(h).replace('#',''); if (h.length === 3) h = h.split('').map(c => c + c).join(''); const n = parseInt(h, 16) || 0; return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+function col(h, a){ const [r,g,b] = hexRgb(h); return `rgba(${r},${g},${b},${Math.max(0, Math.min(1, a))})`; }
+function star4(x, y, r){ ctx.beginPath(); ctx.moveTo(x, y - r); ctx.quadraticCurveTo(x, y, x + r, y); ctx.quadraticCurveTo(x, y, x, y + r); ctx.quadraticCurveTo(x, y, x - r, y); ctx.quadraticCurveTo(x, y, x, y - r); ctx.closePath(); }
+function rr(x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+function rng(seed){ let a = seed >>> 0; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+/* ---------- state ---------- */
+const OBJ = [['title','제목'],['sub','부제'],['badge','배지'],['cover','앨범 커버'],['ring','커버 링'],['glow','하이라이트 빛'],['sparkle','반짝이'],['globe','지구본'],['target','조준점']];
+const FIX = [['brackets','코너 브래킷','네 귀퉁이 꺾쇠'],['dust','별가루','흩뿌려진 점과 작은 별'],['fade','글자 쪽 음영','글자가 잘 보이게 어둡게'],['vignette','비네트','가장자리 음영'],['grain','그레인','필름 질감']];
+const PRESETS = {
+  left:  {align:'left',   o:{title:{x:7,y:36,s:100}, sub:{x:7,y:66,s:100}, badge:{x:7,y:20,s:100}, cover:{x:72,y:50,s:100}, ring:{x:72,y:50,s:100}, glow:{x:72,y:50,s:110}, sparkle:{x:90,y:16,s:100}, globe:{x:90,y:82,s:100}, target:{x:56,y:24,s:100}}},
+  right: {align:'left',   o:{title:{x:54,y:36,s:100}, sub:{x:54,y:66,s:100}, badge:{x:54,y:20,s:100}, cover:{x:27,y:50,s:100}, ring:{x:27,y:50,s:100}, glow:{x:27,y:50,s:110}, sparkle:{x:44,y:16,s:100}, globe:{x:90,y:84,s:100}, target:{x:10,y:16,s:100}}},
+  center:{align:'center', o:{title:{x:50,y:62,s:92},  sub:{x:50,y:85,s:90},  badge:{x:50,y:6,s:84},  cover:{x:50,y:37,s:56}, ring:{x:50,y:37,s:56}, glow:{x:50,y:37,s:70},  sparkle:{x:64,y:14,s:90}, globe:{x:86,y:22,s:90}, target:{x:16,y:22,s:90}}},
+  big:   {align:'left',   o:{title:{x:6,y:26,s:150},  sub:{x:6,y:76,s:110}, badge:{x:6,y:12,s:110}, cover:{x:84,y:66,s:58}, ring:{x:84,y:66,s:58}, glow:{x:84,y:66,s:70},  sparkle:{x:92,y:14,s:110}, globe:{x:84,y:24,s:100}, target:{x:70,y:16,s:100}}}
+};
+const tb = {
+  preset:'left', bgMode:'cover', bgDim:35, coverSrc:'cover', coverShape:'square', tilt:0,
+  colors:{bg:CS.cover.bg, text:'#ffffff', accent:CS.cover.accent, line:CS.cover.deco},
+  title:null, sub:null, badge:'NEW', font:'Paperlogy', weight:'800', align:'left', stroke:0, strokeColor:'#000000', shadow:true, glow:false,
+  on:{title:true, sub:true, badge:true, cover:true, sparkle:true, globe:false, target:false, ring:true, glow:false, brackets:false, dust:true, fade:true, vignette:true, grain:true},
+  o:JSON.parse(JSON.stringify(PRESETS.left.o)),
+  lock:true, grid:false, snap:true, safe:true, pin:{}
+};
+const getT = p => p.split('.').reduce((o, k) => o == null ? o : o[k], tb);
+const setT = (p, v) => { const ks = p.split('.'); const l = ks.pop(); ks.reduce((o, k) => o[k], tb)[l] = v; };
+const titleText = () => (tb.title ?? CS.meta.title) || 'Untitled';
+const subText = () => (tb.sub ?? CS.meta.artist) || '';
+
+/* ---------- images ---------- */
+const snap = document.createElement('canvas'); snap.width = snap.height = 1000;
+const blurC = document.createElement('canvas'); blurC.width = 320; blurC.height = 180;
+let upCover = null, bgImg = null;
+function refreshCover(){
+  const s = snap.getContext('2d'); s.clearRect(0, 0, 1000, 1000);
+  if (tb.coverSrc === 'upload' && upCover){
+    const sc = Math.max(1000 / upCover.naturalWidth, 1000 / upCover.naturalHeight), w = upCover.naturalWidth * sc, h = upCover.naturalHeight * sc;
+    s.drawImage(upCover, (1000 - w) / 2, (1000 - h) / 2, w, h);
+  } else { try { M.render(s, 1000, false); } catch(e){ console.error(e); } }
+  const b = blurC.getContext('2d'); b.clearRect(0, 0, 320, 180); b.filter = 'blur(10px)'; b.drawImage(snap, -30, -100, 380, 380); b.filter = 'none';
+  draw();
+}
+function drawFit(src){
+  const sw = src.naturalWidth || src.width, sh = src.naturalHeight || src.height; if (!sw || !sh) return;
+  const sc = Math.max(W / sw, H / sh), w = sw * sc, h = sh * sc; ctx.drawImage(src, (W - w) / 2, (H - h) / 2, w, h);
+}
+function loadImg(f, cb){ const url = URL.createObjectURL(f), im = new Image(); im.onload = () => cb(im, url); im.onerror = () => toast('이미지를 열 수 없어요'); im.src = url; }
+
+/* ---------- fonts ---------- */
+const fs = (w, px) => `${w} ${px}px "${tb.font}", "Paperlogy", "Pretendard Variable", sans-serif`;
+function loadFonts(){
+  if (!document.fonts) return;
+  const txt = titleText() + subText() + tb.badge.toUpperCase();
+  Promise.all(['500', tb.weight, '700'].map(w => document.fonts.load(`${w} 60px "${tb.font}"`, txt).catch(() => {}))).then(draw);
+}
+
+/* ---------- render ---------- */
+let boxes = {}, hover = null, drag = null, guides = [];
+function textBlockLines(t, px, maxW){
+  ctx.font = fs(tb.weight, px);
+  const lines = String(t).split('\n').map(x => x.trim()).filter(Boolean);
+  let size = px;
+  const widest = () => Math.max(...lines.map(l => ctx.measureText(l).width), 1);
+  while (widest() > maxW && size > px * .45){ size *= .95; ctx.font = fs(tb.weight, size); }
+  return {lines, size};
+}
+function anchorX(x, w){ return tb.align === 'center' ? x - w / 2 : tb.align === 'right' ? x - w : x; }
+function paintText(str, x, y, font, color, strokeW){
+  ctx.font = font; ctx.textAlign = tb.align; ctx.textBaseline = 'alphabetic';
+  if (strokeW > 0){ ctx.save(); ctx.lineJoin = 'round'; ctx.miterLimit = 2; ctx.lineWidth = strokeW * 2; ctx.strokeStyle = tb.strokeColor; ctx.strokeText(str, x, y); ctx.restore(); }
+  ctx.save();
+  if (tb.glow){ ctx.shadowColor = col(tb.colors.accent, .9); ctx.shadowBlur = 26 * u; }
+  else if (tb.shadow){ ctx.shadowColor = 'rgba(0,0,0,.55)'; ctx.shadowBlur = 22 * u; ctx.shadowOffsetY = 6 * u; }
+  ctx.fillStyle = color; ctx.fillText(str, x, y); ctx.restore();
+}
+function draw(preview = true){
+  const C = tb.colors, O = tb.o, on = tb.on; boxes = {};
+  ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.shadowBlur = 0; ctx.filter = 'none';
+  // background
+  ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H);
+  if (tb.bgMode === 'cover') drawFit(blurC);
+  else if (tb.bgMode === 'image' && bgImg) drawFit(bgImg);
+  else {
+    const g = ctx.createRadialGradient(W * .75, H * .3, 0, W * .75, H * .3, W * .7);
+    g.addColorStop(0, col(C.accent, .32)); g.addColorStop(1, col(C.accent, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  }
+  ctx.fillStyle = col(C.bg, tb.bgDim / 100); ctx.fillRect(0, 0, W, H);
+  if (on.fade){
+    const tx = O.title.x / 100, g = tb.align === 'center' ? ctx.createLinearGradient(0, H, 0, H * .3) : tx < .45 ? ctx.createLinearGradient(0, 0, W * .7, 0) : ctx.createLinearGradient(W, 0, W * .3, 0);
+    g.addColorStop(0, col(C.bg, .78)); g.addColorStop(1, col(C.bg, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  }
+  if (on.dust){
+    const r = rng(7 + titleText().length);
+    for (let i = 0; i < 70; i++){ ctx.fillStyle = col(C.line, .15 + r() * .45); ctx.beginPath(); ctx.arc(r() * W, r() * H, (.8 + r() * 1.8) * u, 0, Math.PI * 2); ctx.fill(); }
+    for (let i = 0; i < 6; i++){ ctx.fillStyle = i % 2 ? col(C.line, .7) : col(C.accent, .85); star4(r() * W, r() * H, (6 + r() * 8) * u); ctx.fill(); }
+  }
+  // glow + ring (free objects, drawn behind the cover)
+  if (on.glow){
+    const p = O.glow, x = p.x / 100 * W, y = p.y / 100 * H, r = 330 * u * p.s / 100;
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, col(C.accent, .5)); g.addColorStop(.5, col(C.accent, .14)); g.addColorStop(1, col(C.accent, 0));
+    ctx.save(); ctx.globalCompositeOperation = 'screen'; ctx.fillStyle = g; ctx.fillRect(x - r, y - r, r * 2, r * 2); ctx.restore();
+    const rb = r * .45; boxes.glow = {x0: x - rb, y0: y - rb, x1: x + rb, y1: y + rb};
+  }
+  if (on.ring){
+    const p = O.ring, cx = p.x / 100 * W, cy = p.y / 100 * H, cs = 560 * u * p.s / 100;
+    ctx.strokeStyle = col(C.line, .3); ctx.lineWidth = 1.4 * u;
+    [.78, .9].forEach((f, i) => { ctx.setLineDash(i ? [5 * u, 8 * u] : []); ctx.beginPath(); ctx.arc(cx, cy, cs * f, 0, Math.PI * 2); ctx.stroke(); });
+    ctx.setLineDash([]); ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(cx + Math.cos(-.7) * cs * .78, cy + Math.sin(-.7) * cs * .78, 7 * u, 0, Math.PI * 2); ctx.fill();
+    const r = cs * .9; boxes.ring = {x0: cx - r, y0: cy - r, x1: cx + r, y1: cy + r};
+  }
+  // cover
+  if (on.cover){
+    const c = O.cover, cs = 560 * u * c.s / 100, cx = c.x / 100 * W, cy = c.y / 100 * H;
+    ctx.save(); ctx.translate(cx, cy); ctx.rotate(tb.tilt * Math.PI / 180);
+    ctx.shadowColor = 'rgba(0,0,0,.55)'; ctx.shadowBlur = 50 * u; ctx.shadowOffsetY = 18 * u;
+    if (tb.coverShape === 'circle'){ ctx.beginPath(); ctx.arc(0, 0, cs / 2, 0, Math.PI * 2); } else rr(-cs / 2, -cs / 2, cs, cs, 10 * u);
+    ctx.fillStyle = '#000'; ctx.fill(); ctx.shadowColor = 'transparent';
+    ctx.save(); ctx.clip(); ctx.drawImage(snap, -cs / 2, -cs / 2, cs, cs); ctx.restore();
+    ctx.strokeStyle = col(C.line, .35); ctx.lineWidth = 1.5 * u; ctx.stroke();
+    ctx.restore();
+    boxes.cover = {x0: cx - cs / 2, y0: cy - cs / 2, x1: cx + cs / 2, y1: cy + cs / 2};
+  }
+  // symbols
+  const sym = (k, fn, box) => { if (!on[k]) return; const p = O[k], x = p.x / 100 * W, y = p.y / 100 * H, sc = u * p.s / 100; ctx.save(); ctx.translate(x, y); ctx.scale(sc, sc); fn(); ctx.restore(); boxes[k] = {x0: x + box[0] * sc, y0: y + box[1] * sc, x1: x + box[2] * sc, y1: y + box[3] * sc}; };
+  sym('sparkle', () => {
+    [[0, 0, 44, 'w'], [-64, 42, 18, 'a'], [50, -48, 13, 'a'], [70, 34, 9, 'w']].forEach(([x, y, r, c]) => { ctx.save(); ctx.shadowColor = col(C.accent, .9); ctx.shadowBlur = r; ctx.fillStyle = c === 'w' ? col(C.line, .95) : col(C.accent, 1); star4(x, y, r); ctx.fill(); ctx.restore(); });
+  }, [-85, -70, 85, 70]);
+  sym('globe', () => {
+    const R = 90;
+    const g = ctx.createRadialGradient(-R * .38, -R * .42, R * .08, 0, 0, R);
+    g.addColorStop(0, 'rgba(255,255,255,.55)'); g.addColorStop(.3, col(C.accent, .65)); g.addColorStop(1, col(C.accent, .12));
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2); ctx.fill();
+    ctx.save(); ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2); ctx.clip(); ctx.rotate(-.22); ctx.strokeStyle = col(C.line, .5); ctx.lineWidth = 1.2;
+    for (const d of [-60, -30, 0, 30, 60]){ const a = d * Math.PI / 180, yy = R * Math.sin(a), rx = R * Math.cos(a); ctx.beginPath(); ctx.ellipse(0, yy, rx, rx * .2, 0, 0, Math.PI * 2); ctx.stroke(); }
+    for (const d of [0, 30, 60, 90, 120, 150]){ const rx = Math.abs(R * Math.cos(d * Math.PI / 180)); ctx.beginPath(); ctx.ellipse(0, 0, Math.max(.5, rx), R, 0, 0, Math.PI * 2); ctx.stroke(); }
+    ctx.restore();
+    ctx.strokeStyle = col(C.line, .9); ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2); ctx.stroke();
+    ctx.save(); ctx.rotate(-.36); ctx.strokeStyle = col(C.line, .75); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.ellipse(0, 0, R * 1.6, R * .36, 0, 0, Math.PI * 2); ctx.stroke(); ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(Math.cos(.55) * R * 1.6, Math.sin(.55) * R * .36, 6, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+  }, [-150, -95, 150, 95]);
+  sym('target', () => {
+    ctx.strokeStyle = col(C.line, .9); ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, 40, 0, Math.PI * 2); ctx.stroke();
+    ctx.setLineDash([3, 6]); ctx.strokeStyle = col(C.accent, .9); ctx.beginPath(); ctx.arc(0, 0, 58, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+    ctx.strokeStyle = col(C.line, .9); ctx.beginPath(); ctx.moveTo(-76, 0); ctx.lineTo(-16, 0); ctx.moveTo(16, 0); ctx.lineTo(76, 0); ctx.moveTo(0, -76); ctx.lineTo(0, -16); ctx.moveTo(0, 16); ctx.lineTo(0, 76); ctx.stroke();
+    ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(0, 0, 5, 0, Math.PI * 2); ctx.fill();
+  }, [-80, -80, 80, 80]);
+  if (on.brackets){
+    const g = 34 * u, l = 54 * u; ctx.strokeStyle = col(C.line, .85); ctx.lineWidth = 3 * u; ctx.beginPath();
+    [[g, g, 1, 1], [W - g, g, -1, 1], [g, H - g, 1, -1], [W - g, H - g, -1, -1]].forEach(([x, y, sx, sy]) => { ctx.moveTo(x + sx * l, y); ctx.lineTo(x, y); ctx.lineTo(x, y + sy * l); });
+    ctx.stroke();
+  }
+  // texts
+  const maxW = (tb.align === 'center' ? .86 : .52) * W;
+  if (on.badge && tb.badge.trim()){
+    const p = O.badge, sc = p.s / 100, t = tb.badge.trim().toUpperCase(); ctx.font = fs(700, 30 * u * sc);
+    const tw = ctx.measureText(t).width, bw = tw + 40 * u * sc, bh = 54 * u * sc, x = anchorX(p.x / 100 * W, bw), y = p.y / 100 * H;
+    rr(x, y, bw, bh, bh / 2); ctx.fillStyle = col(C.accent, 1); ctx.fill();
+    const lum = (([r, g, b]) => (r * 299 + g * 587 + b * 114) / 1000)(hexRgb(C.accent));
+    ctx.fillStyle = lum > 150 ? '#141414' : '#ffffff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, x + bw / 2, y + bh / 2 + 1.5 * u); ctx.textBaseline = 'alphabetic';
+    boxes.badge = {x0: x, y0: y, x1: x + bw, y1: y + bh};
+  }
+  if (on.title){
+    const p = O.title, {lines, size} = textBlockLines(titleText(), 150 * u * p.s / 100, maxW), lh = size * 1.06;
+    const x = p.x / 100 * W; let y = p.y / 100 * H + size * .82, wmax = 0;
+    ctx.font = fs(tb.weight, size); lines.forEach(l => wmax = Math.max(wmax, ctx.measureText(l).width));
+    lines.forEach((l, i) => paintText(l, x, y + i * lh, fs(tb.weight, size), tb.colors.text, tb.stroke * u * p.s / 100));
+    const x0 = anchorX(x, wmax); boxes.title = {x0: x0 - 6, y0: p.y / 100 * H, x1: x0 + wmax + 6, y1: p.y / 100 * H + lh * lines.length};
+  }
+  if (on.sub && subText()){
+    const p = O.sub, sz = 46 * u * p.s / 100; ctx.font = fs(500, sz);
+    let t = subText(); while (ctx.measureText(t).width > maxW && t.length > 1) t = t.slice(0, -1);
+    const x = p.x / 100 * W, y = p.y / 100 * H + sz * .85, w = ctx.measureText(t).width;
+    paintText(t, x, y, fs(500, sz), col(tb.colors.text, .88), tb.stroke * .6 * u * p.s / 100);
+    const x0 = anchorX(x, w); boxes.sub = {x0: x0 - 6, y0: p.y / 100 * H, x1: x0 + w + 6, y1: p.y / 100 * H + sz * 1.15};
+  }
+  if (on.vignette){ const g = ctx.createRadialGradient(W / 2, H / 2, H * .45, W / 2, H / 2, W * .72); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.45)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+  if (on.grain){
+    const nc = noise(); const p = ctx.createPattern(nc, 'repeat');
+    if (p){ ctx.globalCompositeOperation = 'overlay'; ctx.globalAlpha = .08; ctx.fillStyle = p; ctx.fillRect(0, 0, W, H); ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1; }
+  }
+  // preview overlays
+  if (preview){
+    if (tb.grid){
+      ctx.strokeStyle = 'rgba(255,255,255,.16)'; ctx.lineWidth = 1; ctx.beginPath();
+      for (let i = 1; i < 12; i++){ const x = Math.round(W * i / 12) + .5, y = Math.round(H * i / 12) + .5; ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.moveTo(0, y); ctx.lineTo(W, y); }
+      ctx.stroke(); ctx.strokeStyle = 'rgba(255,255,255,.34)'; ctx.beginPath(); ctx.moveTo(W / 2 + .5, 0); ctx.lineTo(W / 2 + .5, H); ctx.moveTo(0, H / 2 + .5); ctx.lineTo(W, H / 2 + .5); ctx.stroke();
+    }
+    if (tb.safe){
+      const bw = 92, bh = 36, x = W - bw - 14, y = H - bh - 14;
+      ctx.fillStyle = 'rgba(0,0,0,.65)'; rr(x, y, bw, bh, 6); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.font = '600 20px system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('3:45', x + bw / 2, y + bh / 2 + 1); ctx.textBaseline = 'alphabetic';
+    }
+    const hk = drag ? drag.key : hover, hb = hk && boxes[hk];
+    if (hb){ ctx.setLineDash([6, 5]); ctx.strokeStyle = col(C.accent, .95); ctx.lineWidth = 1.5; ctx.strokeRect(hb.x0, hb.y0, hb.x1 - hb.x0, hb.y1 - hb.y0); ctx.setLineDash([]); }
+    if (drag && guides.length){
+      ctx.strokeStyle = '#ff4fa3'; ctx.lineWidth = 1; ctx.beginPath();
+      guides.forEach(g => { if (g.x != null){ ctx.moveTo(Math.round(g.x) + .5, 0); ctx.lineTo(Math.round(g.x) + .5, H); } else { ctx.moveTo(0, Math.round(g.y) + .5); ctx.lineTo(W, Math.round(g.y) + .5); } });
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
+let NZ = null;
+function noise(){ if (NZ) return NZ; NZ = document.createElement('canvas'); NZ.width = NZ.height = 200; const x = NZ.getContext('2d'), d = x.createImageData(200, 200); for (let i = 0; i < d.data.length; i += 4){ const v = Math.random() * 255; d.data[i] = d.data[i+1] = d.data[i+2] = v; d.data[i+3] = 255; } x.putImageData(d, 0, 0); return NZ; }
+let rq = 0; const sched = () => { if (rq) return; rq = requestAnimationFrame(() => { rq = 0; draw(true); }); };
+
+/* ---------- drag ---------- */
+function pt(e){ const r = cv.getBoundingClientRect(); return {x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H}; }
+function hit(p){ const ks = Object.keys(boxes).filter(k => !tb.pin[k]).sort((a, b) => (boxes[a].x1 - boxes[a].x0) * (boxes[a].y1 - boxes[a].y0) - (boxes[b].x1 - boxes[b].x0) * (boxes[b].y1 - boxes[b].y0)); return ks.find(k => p.x >= boxes[k].x0 && p.x <= boxes[k].x1 && p.y >= boxes[k].y0 && p.y <= boxes[k].y1) || null; }
+cv.addEventListener('pointerdown', e => {
+  if (tb.lock) return; const p = pt(e), k = hit(p); if (!k) return;
+  drag = {key: k, sx: p.x, sy: p.y, ox: tb.o[k].x, oy: tb.o[k].y, box: {...boxes[k]}};
+  cv.setPointerCapture(e.pointerId); $('#tWrap').classList.add('grabbing'); sched();
+});
+cv.addEventListener('pointermove', e => {
+  const p = pt(e);
+  if (!drag){ const h = tb.lock ? null : hit(p); if (h !== hover){ hover = h; sched(); } $('#tWrap').classList.toggle('move', !!hover); return; }
+  let dx = p.x - drag.sx, dy = p.y - drag.sy; guides = [];
+  if (tb.snap){
+    const b = drag.box, thr = 9, tx = [W / 2, W / 3, W * 2 / 3, W * .06, W * .94], ty = [H / 2, H / 3, H * 2 / 3, H * .08, H * .92];
+    if (tb.grid) for (let i = 1; i < 12; i++){ tx.push(W * i / 12); ty.push(H * i / 12); }
+    Object.entries(boxes).forEach(([k, o]) => { if (k === drag.key) return; tx.push(o.x0, (o.x0 + o.x1) / 2, o.x1); ty.push(o.y0, (o.y0 + o.y1) / 2, o.y1); });
+    const best = (vals, ts) => { let m = null; vals.forEach(v => ts.forEach(t => { const d = t - v; if (Math.abs(d) < thr && (!m || Math.abs(d) < Math.abs(m.d))) m = {d, t}; })); return m; };
+    const bx = best([b.x0 + dx, (b.x0 + b.x1) / 2 + dx, b.x1 + dx], tx), by = best([b.y0 + dy, (b.y0 + b.y1) / 2 + dy, b.y1 + dy], ty);
+    if (bx){ dx += bx.d; guides.push({x: bx.t}); } if (by){ dy += by.d; guides.push({y: by.t}); }
+  }
+  tb.o[drag.key].x = drag.ox + dx / W * 100; tb.o[drag.key].y = drag.oy + dy / H * 100; sched();
+});
+const endDrag = () => { if (drag){ drag = null; guides = []; $('#tWrap').classList.remove('grabbing'); syncUI(); sched(); } };
+cv.addEventListener('pointerup', endDrag); cv.addEventListener('pointercancel', endDrag);
+cv.addEventListener('pointerleave', () => { if (!drag && hover){ hover = null; $('#tWrap').classList.remove('move'); sched(); } });
+cv.addEventListener('wheel', e => {
+  if (tb.lock) return; const k = hover || hit(pt(e)); if (!k) return; e.preventDefault();
+  tb.o[k].s = Math.round(Math.max(30, Math.min(220, tb.o[k].s * (1 - e.deltaY * .0012)))); syncUI(); sched();
+}, {passive:false});
+
+/* ---------- UI ---------- */
+$('#tFont').innerHTML = (M.FONTS || []).map(([f,, lab]) => `<option value="${f}">${lab || f}</option>`).join('');
+const RST = '<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 8a5.5 5.5 0 1 0 1.8-4.1"/><path d="M2.5 2.5v3h3"/></svg>';
+$('#tObjList').innerHTML = `<div class="dlist">${OBJ.map(([k, n]) => `<div class="ditem" data-tkey="${k}"><div class="drow"><span class="dname"><b>${n}</b></span>
+  <button class="pin" data-tpin="${k}" title="고정" aria-label="${n} 고정"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5 13.5 6l-2.5 1-2.5 3.5.5 2.5L3 7.5l2.5.5L9 5.5z"/><path d="M5.5 10.5 2.5 13.5"/></svg></button><button class="rst" data-treset="${k}" title="위치 초기화" aria-label="${n} 위치 초기화">${RST}</button>
+  <label class="sw"><input type="checkbox" data-tbind="on.${k}" aria-label="${n}"><span></span></label></div></div>`).join('')}</div>`;
+$('#tFixList').innerHTML = `<div class="dlist">${FIX.map(([k, n]) => `<div class="ditem" data-tkey="${k}"><div class="drow"><span class="dname"><b>${n}</b></span>
+  <label class="sw"><input type="checkbox" data-tbind="on.${k}" aria-label="${n}"><span></span></label></div></div>`).join('')}</div>`;
+const TF = {pct: v => Math.round(v) + '%', hex: v => String(v).toUpperCase(), int: v => String(Math.round(v * 10) / 10), deg: v => (+v).toFixed(1) + '°'};
+function syncUI(){
+  $$('[data-tbind]', view).forEach(el => { const v = getT(el.dataset.tbind); if (el.type === 'checkbox') el.checked = !!v; else if (document.activeElement !== el || el.type === 'range' || el.type === 'color') el.value = v ?? ''; });
+  $$('[data-tout]', view).forEach(o => o.textContent = (TF[o.dataset.fmt] || (v => v))(getT(o.dataset.tout)));
+  $$('[data-tset]', view).forEach(b => b.classList.toggle('on', String(getT(b.dataset.tset)) === b.dataset.val));
+  $$('[data-tpreset]', view).forEach(b => b.classList.toggle('on', tb.preset === b.dataset.tpreset));
+  $$('[data-tkey]', view).forEach(d => d.classList.toggle('is-on', !!tb.on[d.dataset.tkey]));
+  $$('[data-tpin]', view).forEach(b => { const on = !!tb.pin[b.dataset.tpin]; b.classList.toggle('pinned', on); b.title = on ? '고정 풀기' : '고정'; });
+  if (document.activeElement !== $('#tTitle')) $('#tTitle').value = titleText();
+  if (document.activeElement !== $('#tSub')) $('#tSub').value = subText();
+  $('#tDropBg').hidden = tb.bgMode !== 'image'; $('#tDropCover').hidden = tb.coverSrc !== 'upload';
+  $('#tLock').classList.toggle('unlocked', !tb.lock); $('#tLock span').textContent = tb.lock ? '오브젝트 잠금' : '오브젝트 이동 중';
+  $('#tGrid').classList.toggle('on', tb.grid); $('#tSnap').classList.toggle('on', tb.snap); $('#tSafe').classList.toggle('on', tb.safe);
+}
+view.addEventListener('input', e => {
+  const el = e.target;
+  if (el.id === 'tTitle'){ tb.title = el.value; loadFonts(); sched(); return; }
+  if (el.id === 'tSub'){ tb.sub = el.value; loadFonts(); sched(); return; }
+  const p = el.dataset && el.dataset.tbind; if (!p) return;
+  setT(p, el.type === 'checkbox' ? el.checked : el.type === 'range' ? parseFloat(el.value) : el.value);
+  if (p === 'o.cover.s') tb.o.ring.s = tb.o.cover.s;
+  syncUI(); if (p === 'font' || p === 'weight' || p === 'badge') loadFonts(); sched();
+});
+view.addEventListener('click', e => {
+  const s = e.target.closest('[data-tset]');
+  if (s){ setT(s.dataset.tset, s.dataset.val); if (s.dataset.tset === 'coverSrc') refreshCover(); syncUI(); sched(); return; }
+  const pr = e.target.closest('[data-tpreset]');
+  if (pr){ const P = PRESETS[pr.dataset.tpreset]; tb.preset = pr.dataset.tpreset; tb.align = P.align; tb.o = JSON.parse(JSON.stringify(P.o)); syncUI(); sched(); return; }
+  const r = e.target.closest('[data-treset]');
+  if (r){ const k = r.dataset.treset; tb.o[k] = {...PRESETS[tb.preset].o[k]}; syncUI(); sched(); toast(OBJ.find(o => o[0] === k)[1] + ' 위치를 처음으로 되돌렸어요'); return; }
+  const pn = e.target.closest('[data-tpin]');
+  if (pn){ const k = pn.dataset.tpin; tb.pin[k] = !tb.pin[k]; syncUI(); toast(OBJ.find(o => o[0] === k)[1] + (tb.pin[k] ? ' 고정했어요 · 끌어도 움직이지 않아요' : ' 고정을 풀었어요')); }
+});
+$('#tResetAll').onclick = () => { tb.o = JSON.parse(JSON.stringify(PRESETS[tb.preset].o)); syncUI(); sched(); toast('모든 위치를 처음으로 되돌렸어요'); };
+$('#tFromMeta').onclick = () => { tb.title = null; tb.sub = null; syncUI(); loadFonts(); sched(); };
+$('#tLock').onclick = () => { tb.lock = !tb.lock; if (tb.lock) hover = null; syncUI(); sched(); toast(tb.lock ? '오브젝트를 잠갔어요' : '이제 오브젝트를 끌어서 옮길 수 있어요'); };
+$('#tGrid').onclick = () => { tb.grid = !tb.grid; syncUI(); sched(); };
+$('#tSnap').onclick = () => { tb.snap = !tb.snap; syncUI(); toast(tb.snap ? '자석 맞춤을 켰어요' : '자석 맞춤을 껐어요'); };
+$('#tSafe').onclick = () => { tb.safe = !tb.safe; syncUI(); sched(); };
+$('#tRefreshCover').onclick = () => { refreshCover(); toast('커버를 다시 가져왔어요'); };
+const fileIn = (el, fn) => { const i = el.querySelector('input[type=file]'); i.addEventListener('change', () => { const f = i.files[0]; i.value = ''; if (f && f.type.startsWith('image/')) fn(f); else if (f) toast('이미지 파일을 넣어 주세요'); }); };
+const setBg = f => loadImg(f, (im, url) => { bgImg = im; tb.bgMode = 'image'; $('#tBgName').textContent = f.name; $('#tBgThumb').innerHTML = `<img src="${url}" alt="">`; syncUI(); sched(); });
+const setCover = f => loadImg(f, (im, url) => { upCover = im; tb.coverSrc = 'upload'; $('#tCoverName').textContent = f.name; $('#tCoverThumb').innerHTML = `<img src="${url}" alt="">`; syncUI(); refreshCover(); });
+fileIn($('#tDropBg'), setBg); fileIn($('#tDropCover'), setCover);
+view.addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); });
+view.addEventListener('drop', e => { e.preventDefault(); e.stopPropagation(); const f = e.dataTransfer && e.dataTransfer.files[0]; if (!f) return; if (f.type.startsWith('image/')) setBg(f); else toast('이미지 파일을 넣어 주세요'); });
+$('#tSave').onclick = async () => {
+  if (document.fonts) await document.fonts.ready;
+  draw(false);
+  const fmt = $('#tFmt').value, m = CS.meta;
+  const name = String([m.artist, m.title].filter(Boolean).join(' - ') || 'thumbnail').replace(/[\\/:*?"<>|]+/g, '_') + ' (썸네일).' + (fmt === 'jpeg' ? 'jpg' : 'png');
+  cv.toBlob(b => { draw(true); if (!b) return toast('이미지를 만들지 못했어요'); download(b, name); toast(fmt === 'jpeg' ? `JPG로 저장했어요 · ${(b.size / 1048576).toFixed(2)}MB` : 'PNG로 저장했어요'); }, 'image/' + fmt, .92);
+};
+$$('.nav-item').forEach(n => n.addEventListener('click', () => { if (n.dataset.view === 'thumb'){ const f = tb.font; $('#tFont').innerHTML = (M.FONTS || []).map(([ff,, lab]) => `<option value="${ff}">${lab || ff}</option>`).join(''); tb.font = f; refreshCover(); loadFonts(); syncUI(); } }));
+syncUI(); refreshCover();
 })();
 </script>
 </body>
