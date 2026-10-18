@@ -195,6 +195,7 @@ input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;bac
 .ditem.is-on .pin{display:grid}
 .pin.pinned{background:var(--on);border-color:var(--on);color:var(--on-ink)}
 .dsub .color{height:28px}
+.range > .color:last-child{grid-column:2 / span 2;height:30px}
 .dsub .range .link{justify-self:end}
 .adj svg{transition:transform .15s}
 .ditem.open .adj svg{transform:rotate(180deg)}
@@ -467,6 +468,12 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
               </div>
               <div class="sec">
                 <div class="sec-h"><h3>텍스트 그림자</h3><label class="sw"><input type="checkbox" data-bind="text.shadow"><span></span></label></div>
+                <div class="fold-body" data-fold="text.shadow">
+                  <div class="range"><span class="lbl">색</span><div class="color"><input type="color" data-bind="text.shadowColor" aria-label="그림자 색"><span data-out="text.shadowColor" data-fmt="hex"></span></div></div>
+                  <div class="range"><span class="lbl">진하기</span><input type="range" min="5" max="100" step="1" data-bind="text.shadowAmt"><output data-out="text.shadowAmt" data-fmt="pct"></output></div>
+                  <div class="range"><span class="lbl">번짐</span><input type="range" min="0" max="80" step="1" data-bind="text.shadowBlur"><output data-out="text.shadowBlur" data-fmt="int"></output></div>
+                  <div class="range"><span class="lbl">거리</span><input type="range" min="0" max="30" step="1" data-bind="text.shadowDist"><output data-out="text.shadowDist" data-fmt="int"></output></div>
+                </div>
               </div>
               <div class="sec">
                 <div class="sec-h"><h3>커버에 표시할 정보</h3></div>
@@ -786,6 +793,12 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                   <div class="field"><label>외곽선</label><div class="color"><input type="color" data-tbind="strokeColor"><span data-tout="strokeColor" data-fmt="hex"></span></div></div>
                 </div>
                 <div class="sec-h" style="margin:4px 0 8px"><span>그림자</span><label class="sw"><input type="checkbox" data-tbind="shadow"><span></span></label></div>
+                <div class="fold-body" id="tShadowBox">
+                  <div class="range"><span class="lbl">색</span><div class="color"><input type="color" data-tbind="shadowColor" aria-label="그림자 색"><span data-tout="shadowColor" data-fmt="hex"></span></div></div>
+                  <div class="range"><span class="lbl">진하기</span><input type="range" min="5" max="100" step="1" data-tbind="shadowAmt"><output data-tout="shadowAmt" data-fmt="pct"></output></div>
+                  <div class="range"><span class="lbl">번짐</span><input type="range" min="0" max="80" step="1" data-tbind="shadowBlur"><output data-tout="shadowBlur" data-fmt="int"></output></div>
+                  <div class="range"><span class="lbl">거리</span><input type="range" min="0" max="40" step="1" data-tbind="shadowDist"><output data-tout="shadowDist" data-fmt="int"></output></div>
+                </div>
                 <div class="sec-h" style="margin:0 0 10px"><span>포인트 글로우</span><label class="sw"><input type="checkbox" data-tbind="glow"><span></span></label></div>
               </div>
             </div>
@@ -959,7 +972,7 @@ function defaultDesign(){
 const DEFAULT_COVER = {bg:'#2b2b31', text:'#f7f5f2', deco:'#ffffff', accent:'#f4a3c6', zoom:1, ox:0, oy:0, adjustOn:false,
   bright:100, contrast:100, sat:100, gray:0, blur:0, opacity:100, tintOn:false, tint:'#f4a3c6', tintAmt:30, tintMode:'soft-light'};
 const DEFAULT_TEXT = {layout:'bl', titleFont:'Paperlogy', titleWeight:'700', titleCase:'none', titleSize:96, titleTrack:-3, artistScale:28, lineGap:100,
-  infoFont:'Paperlogy', infoWeight:'500', infoCase:'upper', infoSize:13, infoTrack:6, shadow:false};
+  infoFont:'Paperlogy', infoWeight:'500', infoCase:'upper', infoSize:13, infoTrack:6, shadow:false, shadowColor:'#000000', shadowAmt:45, shadowBlur:24, shadowDist:4};
 const DEFAULT_SHOW = {track:false, genre:false, artist:true, feat:true, album:true, year:true, label:false, catalog:false, bpm:false, key:false, duration:false, copyright:false};
 const clone = o => JSON.parse(JSON.stringify(o));
 
@@ -1524,7 +1537,7 @@ function drawTextBlock(ctx, S){
   const H = items.reduce((a, it) => a + it.gap + it.lh, 0);
   let y = L[0] === 't' ? (D.on.header ? 140 : 88) * u : L === 'center' ? (S - H) / 2 : S - 80*u - H;
   ctx.save();
-  if (T.shadow){ ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = 24 * u; ctx.shadowOffsetY = 4 * u; }
+  if (T.shadow){ ctx.shadowColor = col(T.shadowColor || '#000000', (T.shadowAmt ?? 45) / 100); ctx.shadowBlur = (T.shadowBlur ?? 24) * u; ctx.shadowOffsetY = (T.shadowDist ?? 4) * u; }
   for (const it of items){
     y += it.gap;
     setFont(ctx, it.w, it.s, it.f); need(it.f, it.w, it.t);
@@ -2842,7 +2855,7 @@ const PRESETS = {
 const tb = {
   preset:'left', bgMode:'cover', bgDim:35, coverSrc:'cover', coverShape:'square', tilt:0,
   colors:{bg:CS.cover.bg, text:'#ffffff', accent:CS.cover.accent, line:CS.cover.deco},
-  title:null, sub:null, badge:'NEW', font:'Paperlogy', weight:'800', align:'left', stroke:0, strokeColor:'#000000', shadow:true, glow:false,
+  title:null, sub:null, badge:'NEW', font:'Paperlogy', weight:'800', align:'left', stroke:0, strokeColor:'#000000', shadow:true, shadowColor:'#000000', shadowAmt:55, shadowBlur:22, shadowDist:6, glow:false,
   on:{title:true, sub:true, badge:true, cover:true, sparkle:true, globe:false, target:false, ring:true, glow:false, brackets:false, dust:true, fade:true, vignette:true, grain:true},
   o:JSON.parse(JSON.stringify(PRESETS.left.o)),
   lock:true, grid:false, snap:true, safe:true, pin:{}
@@ -2895,7 +2908,7 @@ function paintText(str, x, y, font, color, strokeW){
   if (strokeW > 0){ ctx.save(); ctx.lineJoin = 'round'; ctx.miterLimit = 2; ctx.lineWidth = strokeW * 2; ctx.strokeStyle = tb.strokeColor; ctx.strokeText(str, x, y); ctx.restore(); }
   ctx.save();
   if (tb.glow){ ctx.shadowColor = col(tb.colors.accent, .9); ctx.shadowBlur = 26 * u; }
-  else if (tb.shadow){ ctx.shadowColor = 'rgba(0,0,0,.55)'; ctx.shadowBlur = 22 * u; ctx.shadowOffsetY = 6 * u; }
+  else if (tb.shadow){ ctx.shadowColor = col(tb.shadowColor, tb.shadowAmt / 100); ctx.shadowBlur = tb.shadowBlur * u; ctx.shadowOffsetY = tb.shadowDist * u; }
   ctx.fillStyle = color; ctx.fillText(str, x, y); ctx.restore();
 }
 function draw(preview = true){
@@ -3076,6 +3089,7 @@ function syncUI(){
   $$('[data-tpin]', view).forEach(b => { const on = !!tb.pin[b.dataset.tpin]; b.classList.toggle('pinned', on); b.title = on ? '고정 풀기' : '고정'; });
   if (document.activeElement !== $('#tTitle')) $('#tTitle').value = titleText();
   if (document.activeElement !== $('#tSub')) $('#tSub').value = subText();
+  $('#tShadowBox').hidden = !tb.shadow;
   $('#tDropBg').hidden = tb.bgMode !== 'image'; $('#tDropCover').hidden = tb.coverSrc !== 'upload';
   $('#tLock').classList.toggle('unlocked', !tb.lock); $('#tLock span').textContent = tb.lock ? '오브젝트 잠금' : '오브젝트 이동 중';
   $('#tGrid').classList.toggle('on', tb.grid); $('#tSnap').classList.toggle('on', tb.snap); $('#tSafe').classList.toggle('on', tb.safe);
