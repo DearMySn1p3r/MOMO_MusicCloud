@@ -403,6 +403,7 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                   <input type="file" accept=".mp3,audio/mpeg" id="inAudio">
                 </label>
                 <div class="file-stats" id="fileStats" hidden></div>
+                <div class="sec-h" style="margin:2px 0 10px"><span style="font-weight:500">노래의 앨범 커버 자동으로 넣기</span><label class="sw"><input type="checkbox" id="autoArt"><span></span></label></div>
               </div>
               <div id="metaGroups"></div>
               <div class="sec">
@@ -682,6 +683,16 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                 <div class="sec-h" style="margin:4px 0 10px"><span>곡 제목 · 아티스트 표시</span><label class="sw"><input type="checkbox" data-vbind="showTitle"><span></span></label></div>
               </div>
               <div class="sec">
+                <div class="sec-h"><h3>곡 정보</h3><button class="link" id="vMetaFromSong">노래에서 다시 가져오기</button></div>
+                <p class="note">노래를 넣으면 태그에서 자동으로 채워져요. 직접 고쳐 써도 돼요.</p>
+                <div class="grid2">
+                  <div class="field full"><label>제목</label><input type="text" data-vbind="meta.title" id="vMetaTitle" maxlength="120"></div>
+                  <div class="field full"><label>아티스트</label><input type="text" data-vbind="meta.artist" id="vMetaArtist" maxlength="120"></div>
+                  <div class="field"><label>앨범</label><input type="text" data-vbind="meta.album" id="vMetaAlbum" maxlength="120"></div>
+                  <div class="field"><label>연도</label><input type="text" data-vbind="meta.year" id="vMetaYear" maxlength="10"></div>
+                </div>
+              </div>
+              <div class="sec">
                 <div class="sec-h"><h3>화면 문구</h3></div>
                 <p class="note">비워 두면 그 문구는 사라져요. (효과 탭의 "HUD 문구"를 켜야 보여요)</p>
                 <div class="grid2">
@@ -802,6 +813,14 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
           <div class="panel-body">
             <div class="pane" data-pane="ttext">
               <div class="sec">
+                <div class="sec-h"><h3>노래</h3></div>
+                <label class="drop" id="tDropSong">
+                  <div class="di" id="tSongThumb"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6 12.5V3.5l7-1.5v9"/><circle cx="4.5" cy="12.5" r="1.8"/><circle cx="11.5" cy="11" r="1.8"/></svg></div>
+                  <div><b id="tSongName">노래 불러오기</b><span>제목·아티스트와 노래의 앨범 커버가 자동으로 들어가요</span></div>
+                  <input type="file" accept=".mp3,audio/mpeg,audio/*">
+                </label>
+              </div>
+              <div class="sec">
                 <div class="sec-h"><h3>배치</h3></div>
                 <div class="tpls" style="grid-template-columns:repeat(4,1fr)">
                   <button class="tpl" data-tpreset="left"><svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><path d="M7 13h22M7 18h16M7 24h10"/><rect x="38" y="8" width="20" height="20" rx="1"/></svg><span>왼쪽 글자</span></button>
@@ -815,7 +834,7 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                 <div class="field" style="margin-bottom:10px"><label>제목 (줄바꿈 가능)</label><textarea id="tTitle" rows="2"></textarea></div>
                 <div class="grid2">
                   <div class="field full"><label>부제</label><input type="text" id="tSub"></div>
-                  <div class="field full"><label>배지</label><input type="text" data-tbind="badge" maxlength="24" placeholder="예: NEW · MV · LYRICS"></div>
+                  <div class="field full"><label>배지</label><input type="text" data-tbind="badge" maxlength="24" placeholder="비워 두면 안 보여요"></div>
                 </div>
               </div>
               <div class="sec">
@@ -827,6 +846,10 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                 </div>
                 <div class="range"><span class="lbl">제목 크기</span><input type="range" min="40" max="220" step="1" data-tbind="o.title.s"><output data-tout="o.title.s" data-fmt="pct"></output></div>
                 <div class="range"><span class="lbl">부제 크기</span><input type="range" min="40" max="220" step="1" data-tbind="o.sub.s"><output data-tout="o.sub.s" data-fmt="pct"></output></div>
+                <div class="range"><span class="lbl">자간</span><input type="range" min="-8" max="20" step="0.5" data-tbind="tracking"><output data-tout="tracking" data-fmt="int"></output></div>
+                <div class="range"><span class="lbl">줄 간격</span><input type="range" min="85" max="150" step="1" data-tbind="lineH"><output data-tout="lineH" data-fmt="pct"></output></div>
+                <div class="range"><span class="lbl">최대 줄 수</span><input type="range" min="1" max="4" step="1" data-tbind="maxLines"><output data-tout="maxLines" data-fmt="int"></output></div>
+                <p class="note" style="margin:-2px 0 10px">제목이 길면 자동으로 줄을 바꾸고 크기를 줄여서 커버나 화면 밖으로 넘치지 않아요.</p>
                 <div class="range"><span class="lbl">외곽선</span><input type="range" min="0" max="14" step="0.5" data-tbind="stroke"><output data-tout="stroke" data-fmt="int"></output></div>
                 <div class="colors4">
                   <div class="field"><label>글자</label><div class="color"><input type="color" data-tbind="colors.text"><span data-tout="colors.text" data-fmt="hex"></span></div></div>
@@ -1860,7 +1883,11 @@ function bindVol(pfx, apply){
   VOL.subs.push(ui); ui();
 }
 bindVol('c', g => { audio.volume = g; });
+const AUTO_ART = {on: (() => { try { return localStorage.getItem('mmc-auto-art') !== '0'; } catch(e){ return true; } })()};
+$('#autoArt').checked = AUTO_ART.on;
+$('#autoArt').addEventListener('change', e => { AUTO_ART.on = e.target.checked; try { localStorage.setItem('mmc-auto-art', AUTO_ART.on ? '1' : '0'); } catch(err){} toast(AUTO_ART.on ? '노래를 넣으면 그 노래의 앨범 커버가 자동으로 들어가요' : '노래를 넣어도 지금 이미지는 그대로 둬요'); });
 async function loadMp3(f, opts = {}){
+  let artApplied = false;
   try {
     const ab = await f.arrayBuffer();
     const tag = parseID3(ab);
@@ -1872,9 +1899,13 @@ async function loadMp3(f, opts = {}){
     $('#audioSub').textContent = '다른 파일을 넣으면 교체돼요';
     $('#fileChip').textContent = f.name;
     $('#playBtn').disabled = false; $('#btnReloadMeta').disabled = false;
-    if (tag.pic && !IMG.el) await loadImageBlob(new Blob([tag.pic.data], {type: tag.pic.mime}), '내장 커버');
+    if (tag.pic){
+      const bl = new Blob([tag.pic.data], {type: tag.pic.mime});
+      if (opts.restore){ if (!IMG.el) await loadImageBlob(bl, '내장 커버'); }
+      else if (AUTO_ART.on || !IMG.el){ if (await loadImageBlob(bl, '내장 커버')){ STORE.put('cover-img', bl, '내장 커버'); artApplied = true; } }
+    }
     updateImgUI(); syncUI(); scheduleRender(); renderStats();
-    if (!opts.restore){ toast(tag.ver ? `ID3v2.${tag.ver} 태그를 불러왔어요` : '태그가 없는 파일이라 기본값으로 채웠어요'); STORE.put('cover-mp3', f, f.name); }
+    if (!opts.restore){ toast(artApplied ? '태그와 노래의 앨범 커버를 불러왔어요' : tag.ver ? `ID3v2.${tag.ver} 태그를 불러왔어요` + (tag.pic ? '' : ' · 들어 있는 앨범 커버는 없어요') : '태그가 없는 파일이라 기본값으로 채웠어요'); STORE.put('cover-mp3', f, f.name); }
     try {
       const AC = window.AudioContext || window.webkitAudioContext;
       const ac = new AC(); const dec = await ac.decodeAudioData(ab.slice(0)); if (ac.close) ac.close();
@@ -2220,7 +2251,7 @@ syncUI(); updateImgUI(); updateLocks();
 render(pctx, pv.width);
 if (document.fonts) document.fonts.ready.then(scheduleRender);
 requestAnimationFrame(drawPlayer);
-window.MMC = {state, parseID3, buildMp3, render, AU, FONTS, toast, download, bindVol, STORE, autosave, deepAssign, fileOf, attachResets, refreshResets, makeHistory, EDITORS, normDeg};
+window.MMC = {AUTO_ART, state, parseID3, buildMp3, render, AU, FONTS, toast, download, bindVol, STORE, autosave, deepAssign, fileOf, attachResets, refreshResets, makeHistory, EDITORS, normDeg};
 window.MMC.ready = restoreCover().catch(e => { console.error(e); });
 })();
 </script>
@@ -2270,9 +2301,19 @@ const vs = {
   labels:{tl:'Now Playing', tr:'Sync Rate', bl:'Audio Online · MMC-001', cap:'Artwork // MMC-001'}, font:'Paperlogy', titleSize:100, showTitle:true, sens:100, speed:100, lyricSize:100, lyricOffset:0,
   fx:{spectrum:true, ring:true, eq:true, sync:false, particles:true, sparkle:true, orbit:false, reticle:false, globe:false, hud:true, spin:true, beat:true, glow:true, progress:true, brackets:false, vignette:true, grain:true, lyrics:true},
   off:Object.fromEntries(OBJ.map(([k]) => [k, {dx:0, dy:0}])),
-  lockObj:true, grid:false, snap:true, pin:{}, rot:Object.fromEntries(OBJ.map(([k]) => [k, 0]))
+  lockObj:true, grid:false, snap:true, pin:{}, rot:Object.fromEntries(OBJ.map(([k]) => [k, 0])),
+  meta:{title:'', artist:'', album:'', year:''}
 };
 const getV = p => p.split('.').reduce((o, k) => o == null ? o : o[k], vs);
+// video song info: what was typed / read from the song first, then the album-cover page (without its placeholder text)
+const PLACEHOLDER = {title:'Untitled Track', artist:'Artist Name', album:'Album Title'};
+const VM = () => { const o = {}; ['title', 'artist', 'album', 'year'].forEach(k => { const own = String(vs.meta[k] || '').trim(), c = String(CS.meta[k] || '').trim(); o[k] = own || (c && c !== PLACEHOLDER[k] ? c : ''); }); return o; };
+function metaFromSong(tag, fileName){
+  const T = (tag && tag.text) || {}, base = String(fileName || '').replace(/\.[^.]+$/, '');
+  let title = String(T.TIT2 || '').trim(), artist = String(T.TPE1 || '').trim();
+  if (!title){ const p = base.split(/\s+-\s+/); if (p.length > 1 && !artist){ artist = p[0].trim(); title = p.slice(1).join(' - ').trim(); } else title = base; }
+  return {title, artist, album: String(T.TALB || '').trim(), year: String(T.TYER || T.TDRC || '').trim().slice(0, 4)};
+}
 const VDEF = JSON.parse(JSON.stringify(vs));
 const vDef = p => { const v = p.split('.').reduce((o, k) => o == null ? o : o[k], VDEF); return (v !== null && typeof v === 'object') ? undefined : v; };
 const setV = (p, v) => { const ks = p.split('.'); const l = ks.pop(); ks.reduce((o, k) => o[k], vs)[l] = v; };
@@ -2306,7 +2347,16 @@ function syncSource(){
 function loadAudioFile(f){
   if (ownUrl) URL.revokeObjectURL(ownUrl);
   ownUrl = URL.createObjectURL(f); ownName = f.name; syncSource();
-  if (!loadAudioFile.quiet){ toast('음악을 불러왔어요'); M.STORE.put('video-audio', f, f.name); }
+  if (!loadAudioFile.quiet){
+    M.STORE.put('video-audio', f, f.name);
+    const useArt = !M.AUTO_ART || M.AUTO_ART.on;
+    f.arrayBuffer().then(ab => {
+      const tg = M.parseID3(ab);
+      vs.meta = metaFromSong(tg, f.name); syncUI(); loadFonts();
+      if (tg.pic && useArt){ loadCoverFile(new File([tg.pic.data], '노래의 앨범 커버', {type: tg.pic.mime})); toast('노래의 제목·아티스트와 앨범 커버를 넣었어요'); }
+      else toast('노래의 제목·아티스트를 넣었어요');
+    }).catch(() => toast('음악을 불러왔어요'));
+  }
 }
 $('#vUseCoverAudio').onclick = () => { if (ownUrl) URL.revokeObjectURL(ownUrl); ownUrl = null; syncSource(); M.STORE.del('video-audio'); };
 
@@ -2428,7 +2478,7 @@ $('#vClearTimes').onclick = () => { lyr.forEach(l => l.t = null); writeLyrics();
 $('#vLrcIn').addEventListener('change', async e => { const f = e.target.files[0]; e.target.value = ''; if (!f) return; $('#vLyrics').value = await f.text(); lyr = parseLyrics($('#vLyrics').value); lyrStat(); loadFonts(); toast('가사를 불러왔어요'); });
 $('#vLrcOut').onclick = () => {
   if (!lyr.length) return toast('저장할 가사가 없어요');
-  const m = CS.meta, head = `[ti:${m.title}]\n[ar:${m.artist}]\n[al:${m.album}]\n`;
+  const m = VM(), head = `[ti:${m.title}]\n[ar:${m.artist}]\n[al:${m.album}]\n`;
   download(new Blob([head + $('#vLyrics').value], {type:'text/plain'}), (m.artist ? m.artist + ' - ' : '') + (m.title || 'lyrics') + '.lrc');
 };
 
@@ -2473,7 +2523,7 @@ document.addEventListener('keydown', e => {
 function fontStr(w, px){ return `${w} ${px}px "${vs.font}", "Paperlogy", "Pretendard Variable", sans-serif`; }
 function loadFonts(){
   if (!document.fonts) return;
-  const m = CS.meta, txt = [m.title, m.artist, m.album, m.year, ...lyr.map(l => l.text), ...Object.values(vs.labels), '0123456789%:./'].join(' ').toUpperCase() + ' ' + lyr.map(l => l.text).join(' ');
+  const m = VM(), txt = [m.title, m.artist, m.album, m.year, ...lyr.map(l => l.text), ...Object.values(vs.labels), '0123456789%:./'].join(' ').toUpperCase() + ' ' + lyr.map(l => l.text).join(' ');
   ['400','500','700'].forEach(w => document.fonts.load(`${w} 40px "${vs.font}"`, txt).catch(() => {}));
 }
 
@@ -2555,7 +2605,7 @@ function layout(W, H){
   { const c = L.cover; const r = (T === 'hud' ? L.scaleR + 12 * u : c.s / 2); B.cover = {x0: c.x - r, y0: c.y - r, x1: c.x + r, y1: c.y + r}; }
   if (vs.showTitle){
     const Tt = L.title; ctx.font = fontStr(700, Tt.size * ts);
-    const w = Math.min(ctx.measureText(CS.meta.title || 'Untitled').width, Tt.w || W * .8) + 10 * u, x0 = Tt.align === 'center' ? Tt.x - w / 2 : Tt.x;
+    const w = Math.min(ctx.measureText(VM().title || 'Untitled').width, Tt.w || W * .8) + 10 * u, x0 = Tt.align === 'center' ? Tt.x - w / 2 : Tt.x;
     B.title = {x0, y0: Tt.y - Tt.size * ts * .95, x1: x0 + w, y1: Tt.y + Tt.size * ts * .95};
   }
   if (FXo.lyrics){ const Ly = L.lyrics, sz = Ly.size * vs.lyricSize / 100, x0 = Ly.align === 'center' ? Ly.x - Ly.w / 2 : Ly.x; B.lyrics = {x0, y0: Ly.y - 4 * u, x1: x0 + Ly.w, y1: Ly.y + sz * 3.2}; }
@@ -2625,7 +2675,7 @@ function frame(){
   const dt = Math.min(.1, now - lastT); lastT = now; clock += dt * vs.speed / 100;
   const t = clock; sample(now);
   const L = layout(W, H), u = L.u, C = vs.colors, FXo = vs.fx, k = vs.sens / 100; lastFrameL = L;
-  const m = CS.meta, dur = audio.duration || (M.AU && M.AU.duration) || 0, cur = audio.currentTime || 0, prog = dur ? cur / dur : 0;
+  const m = VM(), dur = audio.duration || (M.AU && M.AU.duration) || 0, cur = audio.currentTime || 0, prog = dur ? cur / dur : 0;
   ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none'; ctx.textBaseline = 'alphabetic'; ctx.shadowBlur = 0;
 
   // background
@@ -3066,7 +3116,7 @@ async function startRecord(){
     recStream.getVideoTracks().forEach(tr => tr.stop());
     if (recCancel){ toast('녹화를 취소했어요'); return; }
     const type = (rec.mimeType || mime || 'video/webm').split(';')[0], ext = type.includes('mp4') ? 'mp4' : 'webm';
-    const m = CS.meta, name = String([m.artist, m.title].filter(Boolean).join(' - ') || 'momo-video').replace(/[\\/:*?"<>|]+/g, '_');
+    const m = VM(), name = String([m.artist, m.title].filter(Boolean).join(' - ') || 'momo-video').replace(/[\\/:*?"<>|]+/g, '_');
     download(new Blob(recChunks, {type}), name + '.' + ext);
     toast(ext === 'mp4' ? '영상을 MP4로 저장했어요' : '영상을 WEBM으로 저장했어요 · 이 브라우저는 MP4 녹화를 지원하지 않아요');
   };
@@ -3096,14 +3146,23 @@ function syncUI(){
   $('#vDropCover').hidden = vs.coverSrc !== 'upload';
   $('#vDropBg').hidden = vs.bgMode !== 'video';
   $('#vRes').value = vs.res; $('#vFps').value = String(vs.fps);
+  { const vm = VM(); [['Title', 'title', '곡 제목'], ['Artist', 'artist', '아티스트'], ['Album', 'album', '앨범'], ['Year', 'year', '연도']].forEach(([id, k, ph]) => { const el = $('#vMeta' + id); if (el) el.placeholder = vs.meta[k] ? ph : (vm[k] || ph); }); }
   if (M.refreshResets) M.refreshResets(view, vDef, getV);
   if (typeof vAlignUI === 'function') vAlignUI();
 }
 view.addEventListener('input', e => {
   const el = e.target, p = el.dataset && el.dataset.vbind; if (!p) return;
   const v = el.type === 'checkbox' ? el.checked : el.type === 'range' ? parseFloat(el.value) : el.value;
-  setV(p, v); syncUI(); if (p === 'font' || p.startsWith('labels.')) loadFonts();
+  setV(p, v); syncUI(); if (p === 'font' || p.startsWith('labels.') || p.startsWith('meta.')) loadFonts();
 });
+$('#vMetaFromSong').onclick = async () => {
+  const f = ownUrl ? null : (M.AU && M.AU.file);
+  try {
+    if (ownUrl){ const r = await M.STORE.get('video-audio'); if (r){ vs.meta = metaFromSong(M.parseID3(await r.blob.arrayBuffer()), r.name); syncUI(); loadFonts(); toast('노래에서 곡 정보를 다시 가져왔어요'); return; } }
+    if (f){ vs.meta = metaFromSong(M.AU.tag || M.parseID3(await f.arrayBuffer()), f.name); syncUI(); loadFonts(); toast('노래에서 곡 정보를 다시 가져왔어요'); return; }
+    toast('먼저 음악 파일을 넣어 주세요');
+  } catch(e){ toast('노래 파일을 읽지 못했어요'); }
+};
 view.addEventListener('click', e => {
   const b = e.target.closest('[data-vset]'); if (!b) return;
   setV(b.dataset.vset, b.dataset.val);
@@ -3190,18 +3249,19 @@ function rng(seed){ let a = seed >>> 0; return () => { a |= 0; a = a + 0x6D2B79F
 
 /* ---------- state ---------- */
 const OBJ = [['title','제목'],['sub','부제'],['badge','배지'],['cover','앨범 커버'],['ring','커버 링'],['glow','하이라이트 빛'],['sparkle','반짝이'],['globe','지구본'],['target','조준점']];
-const FIX = [['brackets','코너 브래킷','네 귀퉁이 꺾쇠'],['dust','별가루','흩뿌려진 점과 작은 별'],['fade','글자 쪽 음영','글자가 잘 보이게 어둡게'],['vignette','비네트','가장자리 음영'],['grain','그레인','필름 질감']];
+const FIX = [['accentBar','포인트 선','제목 위 짧은 선'],['brackets','코너 브래킷','네 귀퉁이 꺾쇠'],['dust','별가루','흩뿌려진 점과 작은 별'],['fade','글자 쪽 음영','글자가 잘 보이게 어둡게'],['vignette','비네트','가장자리 음영'],['grain','그레인','필름 질감']];
+// title.y = bottom of the title block (long titles grow upward), sub.y = top of the subtitle
 const PRESETS = {
-  left:  {align:'left',   o:{title:{x:7,y:36,s:100}, sub:{x:7,y:66,s:100}, badge:{x:7,y:20,s:100}, cover:{x:72,y:50,s:100}, ring:{x:72,y:50,s:100}, glow:{x:72,y:50,s:110}, sparkle:{x:90,y:16,s:100}, globe:{x:90,y:82,s:100}, target:{x:56,y:24,s:100}}},
-  right: {align:'left',   o:{title:{x:54,y:36,s:100}, sub:{x:54,y:66,s:100}, badge:{x:54,y:20,s:100}, cover:{x:27,y:50,s:100}, ring:{x:27,y:50,s:100}, glow:{x:27,y:50,s:110}, sparkle:{x:44,y:16,s:100}, globe:{x:90,y:84,s:100}, target:{x:10,y:16,s:100}}},
-  center:{align:'center', o:{title:{x:50,y:62,s:92},  sub:{x:50,y:85,s:90},  badge:{x:50,y:6,s:84},  cover:{x:50,y:37,s:56}, ring:{x:50,y:37,s:56}, glow:{x:50,y:37,s:70},  sparkle:{x:64,y:14,s:90}, globe:{x:86,y:22,s:90}, target:{x:16,y:22,s:90}}},
-  big:   {align:'left',   o:{title:{x:6,y:26,s:150},  sub:{x:6,y:76,s:110}, badge:{x:6,y:12,s:110}, cover:{x:84,y:66,s:58}, ring:{x:84,y:66,s:58}, glow:{x:84,y:66,s:70},  sparkle:{x:92,y:14,s:110}, globe:{x:84,y:24,s:100}, target:{x:70,y:16,s:100}}}
+  left:  {align:'left',   o:{title:{x:7,y:58,s:100}, sub:{x:7,y:62,s:100}, badge:{x:7,y:11,s:100}, cover:{x:74,y:50,s:96}, ring:{x:74,y:50,s:96}, glow:{x:74,y:50,s:110}, sparkle:{x:92,y:14,s:90}, globe:{x:92,y:84,s:90}, target:{x:56,y:18,s:90}}},
+  right: {align:'left',   o:{title:{x:52,y:58,s:100}, sub:{x:52,y:62,s:100}, badge:{x:52,y:11,s:100}, cover:{x:26,y:50,s:96}, ring:{x:26,y:50,s:96}, glow:{x:26,y:50,s:110}, sparkle:{x:44,y:14,s:90}, globe:{x:92,y:84,s:90}, target:{x:8,y:14,s:90}}},
+  center:{align:'center', o:{title:{x:50,y:79,s:86},  sub:{x:50,y:83,s:90},  badge:{x:50,y:5,s:86},  cover:{x:50,y:35,s:60}, ring:{x:50,y:35,s:60}, glow:{x:50,y:35,s:72}, sparkle:{x:66,y:12,s:80}, globe:{x:88,y:20,s:80}, target:{x:12,y:20,s:80}}},
+  big:   {align:'left',   o:{title:{x:6,y:64,s:140},  sub:{x:6,y:68,s:110}, badge:{x:6,y:10,s:105}, cover:{x:86,y:76,s:46}, ring:{x:86,y:76,s:46}, glow:{x:86,y:76,s:60}, sparkle:{x:92,y:12,s:90}, globe:{x:86,y:22,s:90}, target:{x:72,y:14,s:90}}}
 };
 const tb = {
-  preset:'left', bgMode:'cover', bgDim:35, coverSrc:'cover', coverShape:'square', tilt:0,
-  colors:{bg:CS.cover.bg, text:'#ffffff', accent:CS.cover.accent, line:CS.cover.deco},
-  title:null, sub:null, badge:'NEW', font:'Paperlogy', weight:'800', align:'left', stroke:0, strokeColor:'#000000', shadow:true, shadowColor:'#000000', shadowAmt:55, shadowBlur:22, shadowDist:6, glow:false,
-  on:{title:true, sub:true, badge:true, cover:true, sparkle:true, globe:false, target:false, ring:true, glow:false, brackets:false, dust:true, fade:true, vignette:true, grain:true},
+  v:2, preset:'left', bgMode:'cover', bgDim:30, coverSrc:'cover', coverShape:'square', tilt:0,
+  colors:{bg:CS.cover.bg, text:'#ffffff', accent:CS.cover.accent, line:'#ffffff'},
+  title:null, sub:null, songName:'', badge:'', font:'Paperlogy', weight:'800', align:'left', tracking:-2, lineH:104, maxLines:3, stroke:0, strokeColor:'#000000', shadow:true, shadowColor:'#000000', shadowAmt:35, shadowBlur:30, shadowDist:4, glow:false,
+  on:{title:true, sub:true, badge:true, cover:true, sparkle:false, globe:false, target:false, ring:false, glow:false, accentBar:true, brackets:false, dust:false, fade:true, vignette:true, grain:true},
   o:JSON.parse(JSON.stringify(PRESETS.left.o)),
   lock:true, grid:false, snap:true, safe:true, pin:{}
 };
@@ -3222,7 +3282,7 @@ function refreshCover(){
     const sc = Math.max(1000 / upCover.naturalWidth, 1000 / upCover.naturalHeight), w = upCover.naturalWidth * sc, h = upCover.naturalHeight * sc;
     s.drawImage(upCover, (1000 - w) / 2, (1000 - h) / 2, w, h);
   } else { try { M.render(s, 1000, false); } catch(e){ console.error(e); } }
-  const b = blurC.getContext('2d'); b.clearRect(0, 0, 320, 180); b.filter = 'blur(10px)'; b.drawImage(snap, -30, -100, 380, 380); b.filter = 'none';
+  const b = blurC.getContext('2d'); b.clearRect(0, 0, 320, 180); b.filter = 'blur(14px) saturate(1.2)'; b.drawImage(snap, -40, -110, 400, 400); b.filter = 'none';
   draw();
 }
 function drawFit(src){
@@ -3251,13 +3311,50 @@ function textBlockLines(t, px, maxW){
 }
 function rotAt(cx, cy, deg, fn){ if (!deg){ fn(); return; } ctx.save(); ctx.translate(cx, cy); ctx.rotate(deg * Math.PI / 180); ctx.translate(-cx, -cy); fn(); ctx.restore(); }
 function anchorX(x, w){ return tb.align === 'center' ? x - w / 2 : tb.align === 'right' ? x - w : x; }
-function paintText(str, x, y, font, color, strokeW){
-  ctx.font = font; ctx.textAlign = tb.align; ctx.textBaseline = 'alphabetic';
+const HAS_LS = 'letterSpacing' in ctx;
+const setLS = px => { if (HAS_LS) ctx.letterSpacing = (Math.round(px * 10) / 10) + 'px'; };
+// wrap one text into lines that fit maxW (words first, then characters for long words / Korean without spaces)
+function wrapText(text, maxW){
+  const out = [], fits = s => ctx.measureText(s).width <= maxW;
+  String(text).split('\n').map(x => x.trim()).filter(Boolean).forEach(para => {
+    let line = '';
+    para.split(/\s+/).forEach(w => {
+      const test = line ? line + ' ' + w : w;
+      if (fits(test)){ line = test; return; }
+      if (line) out.push(line);
+      if (fits(w)){ line = w; return; }
+      let cur = '';
+      for (const ch of w){ if (cur && !fits(cur + ch)){ out.push(cur); cur = ch; } else cur += ch; }
+      line = cur;
+    });
+    if (line) out.push(line);
+  });
+  return out.length ? out : [''];
+}
+function ellipsize(s, maxW){ if (ctx.measureText(s).width <= maxW) return s; while (s.length > 1 && ctx.measureText(s + '…').width > maxW) s = s.slice(0, -1); return s.trimEnd() + '…'; }
+// fit the title into a box: wrap, shrink, and finally cut with … so it never spills over the cover or off screen
+function fitTitle(text, base, maxW, maxH){
+  const lhF = tb.lineH / 100, maxL = Math.max(1, Math.round(tb.maxLines)), minS = Math.max(26, base * .34);
+  let size = base, lines;
+  for (;;){
+    ctx.font = fs(tb.weight, size); setLS(size * tb.tracking / 100);
+    lines = wrapText(text, maxW);
+    const h = size * .82 + (lines.length - 1) * size * lhF + size * .2;
+    if ((lines.length <= maxL && h <= maxH) || size <= minS) break;
+    size = Math.max(minS, size * .94);
+  }
+  const lhPx = size * lhF, room = Math.max(1, Math.min(maxL, Math.floor((maxH - size) / lhPx) + 1));
+  if (lines.length > room){ lines = lines.slice(0, room); lines[room - 1] = ellipsize(lines[room - 1] + ' ', maxW); }
+  lines = lines.map(l => ellipsize(l, maxW));
+  return {lines, size, lhPx};
+}
+function paintText(str, x, y, font, color, strokeW, ls = 0){
+  ctx.font = font; ctx.textAlign = tb.align; ctx.textBaseline = 'alphabetic'; setLS(ls);
   if (strokeW > 0){ ctx.save(); ctx.lineJoin = 'round'; ctx.miterLimit = 2; ctx.lineWidth = strokeW * 2; ctx.strokeStyle = tb.strokeColor; ctx.strokeText(str, x, y); ctx.restore(); }
   ctx.save();
   if (tb.glow){ ctx.shadowColor = col(tb.colors.accent, .9); ctx.shadowBlur = 26 * u; }
   else if (tb.shadow){ ctx.shadowColor = col(tb.shadowColor, tb.shadowAmt / 100); ctx.shadowBlur = tb.shadowBlur * u; ctx.shadowOffsetY = tb.shadowDist * u; }
-  ctx.fillStyle = color; ctx.fillText(str, x, y); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(str, x, y); ctx.restore(); setLS(0);
 }
 function draw(preview = true){
   const C = tb.colors, O = tb.o, on = tb.on; const prevBoxes = boxes; boxes = {};
@@ -3272,8 +3369,8 @@ function draw(preview = true){
   }
   ctx.fillStyle = col(C.bg, tb.bgDim / 100); ctx.fillRect(0, 0, W, H);
   if (on.fade){
-    const tx = O.title.x / 100, g = tb.align === 'center' ? ctx.createLinearGradient(0, H, 0, H * .3) : tx < .45 ? ctx.createLinearGradient(0, 0, W * .7, 0) : ctx.createLinearGradient(W, 0, W * .3, 0);
-    g.addColorStop(0, col(C.bg, .78)); g.addColorStop(1, col(C.bg, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    const tx = O.title.x / 100, g = tb.align === 'center' ? ctx.createLinearGradient(0, H, 0, H * .25) : tx < .45 ? ctx.createLinearGradient(0, 0, W * .75, 0) : ctx.createLinearGradient(W, 0, W * .25, 0);
+    g.addColorStop(0, col(C.bg, .7)); g.addColorStop(.55, col(C.bg, .3)); g.addColorStop(1, col(C.bg, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
   }
   if (on.dust){
     const r = rng(7 + titleText().length), keep = ['title', 'sub', 'badge'].map(k => prevBoxes[k]).filter(Boolean);
@@ -3301,11 +3398,11 @@ function draw(preview = true){
   if (on.cover){
     const c = O.cover, cs = 560 * u * c.s / 100, cx = c.x / 100 * W, cy = c.y / 100 * H;
     ctx.save(); ctx.translate(cx, cy); ctx.rotate(tb.tilt * Math.PI / 180);
-    ctx.shadowColor = 'rgba(0,0,0,.55)'; ctx.shadowBlur = 50 * u; ctx.shadowOffsetY = 18 * u;
-    if (tb.coverShape === 'circle'){ ctx.beginPath(); ctx.arc(0, 0, cs / 2, 0, Math.PI * 2); } else rr(-cs / 2, -cs / 2, cs, cs, 10 * u);
+    ctx.shadowColor = 'rgba(0,0,0,.42)'; ctx.shadowBlur = 70 * u; ctx.shadowOffsetY = 26 * u;
+    if (tb.coverShape === 'circle'){ ctx.beginPath(); ctx.arc(0, 0, cs / 2, 0, Math.PI * 2); } else rr(-cs / 2, -cs / 2, cs, cs, 8 * u);
     ctx.fillStyle = '#000'; ctx.fill(); ctx.shadowColor = 'transparent';
     ctx.save(); ctx.clip(); ctx.drawImage(snap, -cs / 2, -cs / 2, cs, cs); ctx.restore();
-    ctx.strokeStyle = col(C.line, .35); ctx.lineWidth = 1.5 * u; ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,255,255,.1)'; ctx.lineWidth = 1.2 * u; ctx.stroke();
     ctx.restore();
     boxes.cover = {x0: cx - cs / 2, y0: cy - cs / 2, x1: cx + cs / 2, y1: cy + cs / 2};
   }
@@ -3338,35 +3435,59 @@ function draw(preview = true){
     ctx.stroke();
   }
   // texts
-  const maxW = (tb.align === 'center' ? .86 : .52) * W;
+  // the text column stops before the cover (when the cover sits beside it) and inside the safe margins
+  const cb = boxes.cover, GAP = 44 * u, ML = W * .05, MR = W * .95;
+  const column = (x, yTop, yBot) => {
+    let L = ML, R = MR;
+    if (cb && !(x >= cb.x0 && x <= cb.x1) && cb.y0 < yBot && cb.y1 > yTop){ if ((cb.x0 + cb.x1) / 2 > x) R = Math.min(R, cb.x0 - GAP); else L = Math.max(L, cb.x1 + GAP); }
+    const w = tb.align === 'center' ? 2 * Math.min(x - L, R - x) : tb.align === 'right' ? x - L : R - x;
+    return Math.max(120 * u, w);
+  };
   if (on.badge && tb.badge.trim()){
-    const p = O.badge, sc = p.s / 100, t = tb.badge.trim().toUpperCase(); ctx.font = fs(700, 30 * u * sc);
-    const tw = ctx.measureText(t).width, bw = tw + 40 * u * sc, bh = 54 * u * sc, x = anchorX(p.x / 100 * W, bw), y = p.y / 100 * H;
+    const p = O.badge, sc = p.s / 100, t = tb.badge.trim().toUpperCase(), fsz = 21 * u * sc;
+    ctx.font = fs(600, fsz); setLS(fsz * .16);
+    const tw = ctx.measureText(t).width, dot = 7 * u * sc, padX = 18 * u * sc, bw = tw + padX * 2 + dot + 10 * u * sc, bh = 44 * u * sc, x = anchorX(p.x / 100 * W, bw), y = p.y / 100 * H;
     rotAt(x + bw / 2, y + bh / 2, p.r || 0, () => {
-    rr(x, y, bw, bh, bh / 2); ctx.fillStyle = col(C.accent, 1); ctx.fill();
-    const lum = (([r, g, b]) => (r * 299 + g * 587 + b * 114) / 1000)(hexRgb(C.accent));
-    ctx.fillStyle = lum > 150 ? '#141414' : '#ffffff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, x + bw / 2, y + bh / 2 + 1.5 * u); ctx.textBaseline = 'alphabetic';
+      rr(x, y, bw, bh, 7 * u * sc); ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.fill();
+      ctx.strokeStyle = col(C.line, .55); ctx.lineWidth = 1.4 * u; ctx.stroke();
+      ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(x + padX + dot / 2, y + bh / 2, dot / 2, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = col(C.line, .95); ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(t, x + padX + dot + 10 * u * sc, y + bh / 2 + 1 * u); ctx.textBaseline = 'alphabetic';
     });
+    setLS(0);
     boxes.badge = {x0: x, y0: y, x1: x + bw, y1: y + bh};
   }
   if (on.title){
-    const p = O.title, {lines, size} = textBlockLines(titleText(), 150 * u * p.s / 100, maxW), lh = size * 1.06;
-    const x = p.x / 100 * W; let y = p.y / 100 * H + size * .82, wmax = 0;
-    ctx.font = fs(tb.weight, size); lines.forEach(l => wmax = Math.max(wmax, ctx.measureText(l).width));
-    { const bx0 = anchorX(x, wmax), by0 = p.y / 100 * H; rotAt(bx0 + wmax / 2, by0 + lh * lines.length / 2, p.r || 0, () => lines.forEach((l, i) => paintText(l, x, y + i * lh, fs(tb.weight, size), tb.colors.text, tb.stroke * u * p.s / 100))); }
-    const x0 = anchorX(x, wmax); boxes.title = {x0: x0 - 6, y0: p.y / 100 * H, x1: x0 + wmax + 6, y1: p.y / 100 * H + lh * lines.length};
+    const p = O.title, x = p.x / 100 * W, bottom = p.y / 100 * H, barH = on.accentBar ? 34 * u * p.s / 100 : 0;
+    // ceiling: top margin, or the badge / cover when they sit above the title
+    let top = H * .06;
+    const above = b => b && b.y1 <= bottom - 20 * u && b.y1 > top;
+    if (above(boxes.badge) && !(boxes.badge.x1 < x - W * .4 || boxes.badge.x0 > x + W * .4)) top = boxes.badge.y1 + 22 * u;
+    if (cb && x >= cb.x0 && x <= cb.x1 && above(cb)) top = cb.y1 + 34 * u;
+    const maxW = column(x, top, bottom), maxH = Math.max(60 * u, bottom - top - barH);
+    const {lines, size, lhPx} = fitTitle(titleText(), 150 * u * p.s / 100, maxW, maxH), ls = size * tb.tracking / 100;
+    ctx.font = fs(tb.weight, size); setLS(ls);
+    const wmax = Math.max(...lines.map(l => ctx.measureText(l).width), 1); setLS(0);
+    const lastBase = bottom - size * .2, firstBase = lastBase - (lines.length - 1) * lhPx, blockTop = firstBase - size * .82;
+    const x0 = anchorX(x, wmax);
+    rotAt(x0 + wmax / 2, (blockTop + bottom) / 2, p.r || 0, () => {
+      lines.forEach((l, i) => paintText(l, x, firstBase + i * lhPx, fs(tb.weight, size), tb.colors.text, tb.stroke * u * p.s / 100, ls));
+      if (on.accentBar){ const bw = 56 * u * p.s / 100, bh = 5 * u * p.s / 100; rr(anchorX(x, bw), blockTop - barH + bh, bw, bh, bh / 2); ctx.fillStyle = col(C.accent, 1); ctx.fill(); }
+    });
+    boxes.title = {x0: x0 - 6, y0: blockTop - barH, x1: x0 + wmax + 6, y1: bottom};
   }
   if (on.sub && subText()){
-    const p = O.sub, sz = 46 * u * p.s / 100; ctx.font = fs(500, sz);
-    let t = subText(); while (ctx.measureText(t).width > maxW && t.length > 1) t = t.slice(0, -1);
-    const x = p.x / 100 * W, y = p.y / 100 * H + sz * .85, w = ctx.measureText(t).width;
-    { const bx0 = anchorX(x, w); rotAt(bx0 + w / 2, p.y / 100 * H + sz * .58, p.r || 0, () => paintText(t, x, y, fs(500, sz), col(tb.colors.text, .88), tb.stroke * .6 * u * p.s / 100)); }
-    const x0 = anchorX(x, w); boxes.sub = {x0: x0 - 6, y0: p.y / 100 * H, x1: x0 + w + 6, y1: p.y / 100 * H + sz * 1.15};
+    const p = O.sub, x = p.x / 100 * W, y0 = p.y / 100 * H; let sz = 42 * u * p.s / 100;
+    const maxW = column(x, y0, y0 + sz * 1.2);
+    let t = subText().replace(/\s*\n\s*/g, ' '); ctx.font = fs(500, sz); setLS(sz * .01);
+    while (ctx.measureText(t).width > maxW && sz > 42 * u * p.s / 100 * .75){ sz *= .95; ctx.font = fs(500, sz); setLS(sz * .01); }
+    t = ellipsize(t, maxW); const w = ctx.measureText(t).width, y = y0 + sz * .85; setLS(0);
+    { const bx0 = anchorX(x, w); rotAt(bx0 + w / 2, y0 + sz * .58, p.r || 0, () => paintText(t, x, y, fs(500, sz), col(tb.colors.text, .82), tb.stroke * .6 * u * p.s / 100, sz * .01)); }
+    const x0 = anchorX(x, w); boxes.sub = {x0: x0 - 6, y0, x1: x0 + w + 6, y1: y0 + sz * 1.15};
   }
-  if (on.vignette){ const g = ctx.createRadialGradient(W / 2, H / 2, H * .45, W / 2, H / 2, W * .72); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.45)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+  if (on.vignette){ const g = ctx.createRadialGradient(W / 2, H / 2, H * .45, W / 2, H / 2, W * .72); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.34)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
   if (on.grain){
     const nc = noise(); const p = ctx.createPattern(nc, 'repeat');
-    if (p){ ctx.globalCompositeOperation = 'overlay'; ctx.globalAlpha = .08; ctx.fillStyle = p; ctx.fillRect(0, 0, W, H); ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1; }
+    if (p){ ctx.globalCompositeOperation = 'overlay'; ctx.globalAlpha = .055; ctx.fillStyle = p; ctx.fillRect(0, 0, W, H); ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1; }
   }
   // preview overlays
   if (preview){
@@ -3447,6 +3568,7 @@ function syncUI(){
   if (document.activeElement !== $('#tTitle')) $('#tTitle').value = titleText();
   if (document.activeElement !== $('#tSub')) $('#tSub').value = subText();
   $('#tShadowBox').hidden = !tb.shadow;
+  $('#tSongName').textContent = tb.songName || '노래 불러오기';
   $('#tDropBg').hidden = tb.bgMode !== 'image'; $('#tDropCover').hidden = tb.coverSrc !== 'upload';
   $('#tLock').classList.toggle('unlocked', !tb.lock); $('#tLock span').textContent = tb.lock ? '오브젝트 잠금' : '오브젝트 이동 중';
   $$('[data-talign]', view).forEach(b => b.disabled = !sel || tb.lock);
@@ -3502,8 +3624,26 @@ const fileIn = (el, fn) => { const i = el.querySelector('input[type=file]'); i.a
 const setBg = (f, quiet) => new Promise(res => loadImg(f, (im, url) => { bgImg = im; tb.bgMode = 'image'; $('#tBgName').textContent = f.name; $('#tBgThumb').innerHTML = `<img src="${url}" alt="">`; syncUI(); sched(); if (!quiet) M.STORE.put('thumb-bg', f, f.name); res(); }));
 const setCover = (f, quiet) => new Promise(res => loadImg(f, (im, url) => { upCover = im; tb.coverSrc = 'upload'; $('#tCoverName').textContent = f.name; $('#tCoverThumb').innerHTML = `<img src="${url}" alt="">`; syncUI(); refreshCover(); if (!quiet) M.STORE.put('thumb-cover', f, f.name); res(); }));
 fileIn($('#tDropBg'), f => setBg(f)); fileIn($('#tDropCover'), f => setCover(f));
+const isAudio = f => f && (/^audio\//.test(f.type) || /\.mp3$/i.test(f.name));
+const songThumb = url => { $('#tSongThumb').innerHTML = `<img src="${url}" alt="">`; };
+// a song fills the title, artist and the song's own album cover
+async function loadSong(f){
+  try {
+    const tag = M.parseID3(await f.arrayBuffer()), T = tag.text || {}, base = f.name.replace(/\.[^.]+$/, '');
+    let title = String(T.TIT2 || '').trim(), artist = String(T.TPE1 || '').trim();
+    if (!title){ const m = base.split(/\s+-\s+/); if (m.length > 1 && !artist){ artist = m[0].trim(); title = m.slice(1).join(' - ').trim(); } else title = base; }
+    tb.title = title; tb.sub = artist || tb.sub; tb.songName = f.name;
+    if (tag.pic){
+      const art = new File([tag.pic.data], '노래의 앨범 커버', {type: tag.pic.mime || 'image/jpeg'});
+      await setCover(art); songThumb($('#tCoverThumb img') ? $('#tCoverThumb img').src : URL.createObjectURL(art));
+      toast('노래 정보와 앨범 커버를 넣었어요');
+    } else { toast('노래 정보를 넣었어요 · 이 파일에는 앨범 커버가 없어요'); }
+    syncUI(); loadFonts(); sched();
+  } catch(e){ console.error(e); toast('노래 파일을 읽지 못했어요'); }
+}
+{ const i = $('#tDropSong input'); i.addEventListener('change', () => { const f = i.files[0]; i.value = ''; if (isAudio(f)) loadSong(f); else if (f) toast('MP3 같은 음악 파일을 넣어 주세요'); }); }
 view.addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); });
-view.addEventListener('drop', e => { e.preventDefault(); e.stopPropagation(); const f = e.dataTransfer && e.dataTransfer.files[0]; if (!f) return; if (f.type.startsWith('image/')) setBg(f); else toast('이미지 파일을 넣어 주세요'); });
+view.addEventListener('drop', e => { e.preventDefault(); e.stopPropagation(); const f = e.dataTransfer && e.dataTransfer.files[0]; if (!f) return; if (isAudio(f)) loadSong(f); else if (f.type.startsWith('image/')) setBg(f); else toast('이미지나 음악 파일을 넣어 주세요'); });
 $('#tSave').onclick = async () => {
   if (document.fonts) await document.fonts.ready;
   draw(false);
@@ -3519,7 +3659,12 @@ syncUI(); refreshCover();
   const S = M.STORE, saved = S.read('mmc-thumb-state');
   const b = await S.get('thumb-bg'); if (b) await setBg(M.fileOf(b), true);
   const c = await S.get('thumb-cover'); if (c) await setCover(M.fileOf(c), true);
-  if (saved){ M.deepAssign(tb, saved); tb.lock = true; }
+  if (saved){
+    let s = saved;
+    if (s.v !== 2){ const keep = {}; ['title', 'sub', 'font', 'weight', 'bgMode', 'coverSrc', 'coverShape', 'stroke', 'strokeColor'].forEach(k => { if (k in s) keep[k] = s[k]; }); s = keep; }
+    M.deepAssign(tb, s); tb.lock = true;
+    if (tb.songName && c && tb.coverSrc === 'upload' && $('#tCoverThumb img')) songThumb($('#tCoverThumb img').src);
+  }
   syncUI(); refreshCover(); loadFonts();
   M.autosave('mmc-thumb-state', () => tb);
   const TT = ['lock', 'grid', 'snap', 'safe'];
