@@ -289,6 +289,32 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
 .rec-bar{width:100%;height:4px;background:var(--line);border-radius:4px;overflow:hidden}
 .rec-bar i{display:block;height:100%;width:0;background:var(--on)}
 
+/* ---------- playlist ---------- */
+.ptabs{grid-template-columns:repeat(5,1fr)}
+.ptabs .tab{font-size:11px;padding:6px 0;letter-spacing:-.02em}
+.pplayer{grid-template-columns:auto auto auto 1fr auto auto;gap:10px}
+.pplayer .vol-btn{width:30px;height:30px}
+.pplayer input[type=range]{width:100%}
+.ptl{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.ptr{display:grid;grid-template-columns:22px 34px minmax(0,1fr) auto;gap:8px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:6px 6px 6px 6px;background:var(--surface-2)}
+.ptr.cur{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.ptn{border:0;background:none;padding:0;font-size:10.5px;font-weight:600;color:var(--faint);width:22px;height:22px;border-radius:6px;display:grid;place-items:center}
+.ptn:hover{background:var(--surface);color:var(--text)}
+.ptr.cur .ptn{color:var(--accent)}
+.ptimg{width:34px;height:34px;border-radius:6px;background:var(--surface);border:1px solid var(--line);overflow:hidden;display:grid;place-items:center;color:var(--faint)}
+.ptimg img{width:100%;height:100%;object-fit:cover;display:block}
+.ptf{min-width:0;display:flex;flex-direction:column;gap:1px}
+.ptf input{width:100%;border:1px solid transparent;background:none;border-radius:6px;padding:2px 5px;font-size:12px;font-weight:600;outline:none;min-width:0;height:auto}
+.ptf input.ar{font-size:11px;font-weight:400;color:var(--muted)}
+.ptf input:focus{border-color:var(--line-2);background:var(--surface)}
+.ptx{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.ptx small{font-size:10px;color:var(--muted);padding-right:4px}
+.ptb{display:flex;gap:1px}
+.ptb button{border:0;background:none;width:20px;height:20px;border-radius:5px;color:var(--faint);display:grid;place-items:center;padding:0}
+.ptb button:hover{color:var(--text);background:var(--surface)}
+.stamp-out{font-family:'Space Mono',ui-monospace,monospace !important;font-size:11.5px !important;line-height:1.7 !important}
+.warn{font-size:11px;color:#c9822b;margin:-4px 0 12px}
+
 @media (max-width: 1100px){ .workspace{grid-template-columns:1fr 320px} }
 @media (max-width: 900px){
   body{overflow:auto}
@@ -311,6 +337,8 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
   .player{grid-template-columns:auto 1fr auto auto}
   .vplayer{grid-template-columns:auto 1fr auto}
   .vplayer .pl-time{display:none}
+  .pplayer{grid-template-columns:auto auto auto 1fr auto}
+  .pplayer .pl-time{display:none}
   .vol{width:92px}
   .panel{border-left:0;border-top:1px solid var(--line)}
   .panel-body{overflow:visible;padding:4px 16px 28px}
@@ -330,6 +358,10 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
     <button class="nav-item" data-view="video">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.5" y="3" width="13" height="10" rx="2"/><path d="M6.5 6v4l3.5-2z" fill="currentColor" stroke="none"/></svg>
       영상
+    </button>
+    <button class="nav-item" data-view="playlist">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M2 3.5h8M2 7h8M2 10.5h5"/><path d="M12 13.5V8l2.5-.8"/><circle cx="10.6" cy="13.5" r="1.4"/></svg>
+      플레이리스트
     </button>
     <button class="nav-item" data-view="thumb">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.5" y="3" width="13" height="10" rx="2"/><path d="M4 10.5l2.5-2.5 2 2 1.5-1.5 2 2"/><circle cx="10.8" cy="6" r="1"/></svg>
@@ -552,7 +584,7 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                 <div class="sec-h"><h3>꾸밈 요소</h3>
                   <div style="display:flex;gap:10px"><button class="link" id="allPosReset">위치 초기화</button><button class="link" id="allOn">모두 켜기</button><button class="link" id="allOff">모두 끄기</button></div>
                 </div>
-                <div class="inline-btns" style="margin:0 0 10px"><button class="btn sm" id="coverFullReset">전체 초기화 (색 포함)</button></div>
+                <div class="inline-btns" style="margin:0 0 10px"><button class="btn sm" id="coverFullReset">전체 초기화</button></div>
                 <p class="note">커버 위 "꾸밈 잠금"을 풀면 꾸밈을 마우스로 끌어 옮기고 휠로 크기를 바꿀 수 있어요.</p>
                 <p class="kbd-hint">꾸밈을 클릭해 선택한 뒤 방향키로 조금씩 이동 (Shift = 크게) · [ ] 로 회전 · Delete 로 지우기 · Ctrl+Z 되돌리기 · Ctrl+Shift+Z 다시 실행</p>
                 <div id="decoList"></div>
@@ -672,7 +704,7 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                 <div class="inline-btns">
                   <button class="btn sm" id="vExportSets">파일로 내보내기</button>
                   <label class="btn sm" style="cursor:pointer">파일 불러오기<input type="file" accept=".json,application/json" id="vInSets" hidden></label>
-                  <button class="btn sm" id="vFullReset">전체 초기화 (색 포함)</button>
+                  <button class="btn sm" id="vFullReset">전체 초기화</button>
                 </div>
               </div>
               <div class="sec">
@@ -813,6 +845,277 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
           <button class="btn sm" id="vRecListen" style="margin:2px auto 8px">🔇 소리 꺼짐 · 눌러서 듣기</button>
           <small>곡 길이만큼 걸려요. 이 탭을 닫거나 다른 탭으로 옮기면 영상이 끊길 수 있어요.</small>
           <button class="btn sm" id="vRecCancel">취소</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-playlist" hidden>
+      <header class="topbar">
+        <h1>플레이리스트</h1>
+        <span class="chip" id="pChip">곡 없음</span>
+        <div class="spacer"></div>
+        <div class="tb-group">
+          <select class="sm" id="pRes" aria-label="영상 크기">
+            <option value="1920x1080">1920×1080 가로</option>
+            <option value="1080x1920">1080×1920 세로</option>
+            <option value="1080x1080">1080×1080 정사각</option>
+          </select>
+          <select class="sm" id="pFps" aria-label="프레임">
+            <option value="24">24fps</option>
+            <option value="30">30fps</option>
+            <option value="60">60fps</option>
+          </select>
+          <select class="sm" id="pQual" aria-label="화질">
+            <option value="3">화질 보통</option>
+            <option value="6">화질 높음</option>
+            <option value="10">화질 최고</option>
+          </select>
+          <button class="btn" id="pCopyStamps">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>타임스탬프 복사</button>
+          <button class="btn primary" id="pRecord">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="3.5" width="9.5" height="9" rx="2"/><path d="m11 7 3.5-2v6L11 9"/></svg>영상 저장</button>
+        </div>
+      </header>
+      <div class="workspace">
+        <div class="stage">
+          <div class="canvas-area">
+            <div class="lockbar" role="group" aria-label="배치 도구">
+              <button class="lock" id="pLock"><svg class="i-lock" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="10" height="7.5" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg><svg class="i-open" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="10" height="7.5" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5-.5"/></svg><span>오브젝트 잠금</span></button>
+              <i class="lsep"></i>
+              <button class="lock tgl" id="pGrid"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="2" width="12" height="12" rx="1.5"/><path d="M6 2v12M10 2v12M2 6h12M2 10h12"/></svg><span>그리드</span></button>
+              <button class="lock tgl" id="pSnap"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 2.5v5a5 5 0 0 0 10 0v-5"/><path d="M3 5h3M10 5h3"/></svg><span>자석 맞춤</span></button><i class="lsep"></i><span class="algrp" title="선택한 오브젝트 정렬"><button class="lock al" data-palign="left" title="왼쪽 정렬" aria-label="왼쪽 정렬"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M2.5 2v12"/><rect x="4.5" y="4" width="8" height="3" rx=".8"/><rect x="4.5" y="9" width="5" height="3" rx=".8"/></svg></button><button class="lock al" data-palign="hcenter" title="가로 가운데" aria-label="가로 가운데"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M8 2v12"/><rect x="3" y="4" width="10" height="3" rx=".8"/><rect x="5" y="9" width="6" height="3" rx=".8"/></svg></button><button class="lock al" data-palign="right" title="오른쪽 정렬" aria-label="오른쪽 정렬"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M13.5 2v12"/><rect x="3.5" y="4" width="8" height="3" rx=".8"/><rect x="6.5" y="9" width="5" height="3" rx=".8"/></svg></button><button class="lock al" data-palign="top" title="위쪽 정렬" aria-label="위쪽 정렬"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M2 2.5h12"/><rect x="4" y="4.5" width="3" height="8" rx=".8"/><rect x="9" y="4.5" width="3" height="5" rx=".8"/></svg></button><button class="lock al" data-palign="vcenter" title="세로 가운데" aria-label="세로 가운데"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M2 8h12"/><rect x="4" y="3" width="3" height="10" rx=".8"/><rect x="9" y="5" width="3" height="6" rx=".8"/></svg></button><button class="lock al" data-palign="bottom" title="아래쪽 정렬" aria-label="아래쪽 정렬"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M2 13.5h12"/><rect x="4" y="3.5" width="3" height="8" rx=".8"/><rect x="9" y="6.5" width="3" height="5" rx=".8"/></svg></button></span>
+            </div>
+            <div class="vwrap" id="pWrap"><canvas id="pCanvas" width="960" height="540" aria-label="플레이리스트 영상 미리보기"></canvas></div>
+          </div>
+          <div class="player pplayer">
+            <button class="vol-btn" id="pPrev" aria-label="이전 곡" title="이전 곡"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><rect x="2.5" y="3" width="2" height="10" rx=".5"/><path d="M13 3v10L5.5 8z"/></svg></button>
+            <button class="play" id="pPlay" aria-label="재생">
+              <svg class="ic-play" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.5v11l9.5-5.5z"/></svg>
+              <svg class="ic-pause" width="14" height="14" viewBox="0 0 16 16" fill="currentColor" style="display:none"><rect x="3.5" y="2.5" width="3" height="11" rx=".5"/><rect x="9.5" y="2.5" width="3" height="11" rx=".5"/></svg>
+            </button>
+            <button class="vol-btn" id="pNext" aria-label="다음 곡" title="다음 곡"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><rect x="11.5" y="3" width="2" height="10" rx=".5"/><path d="M3 3v10l7.5-5z"/></svg></button>
+            <input type="range" id="pSeek" min="0" max="1000" value="0" step="1" aria-label="재생 위치">
+            <div class="pl-time" id="pTime">0:00 / 0:00</div>
+            <div class="vol" id="pVol"><button class="vol-btn" id="pVolBtn" aria-label="음소거" title="음소거"><svg class="ic-vol" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6h2.5l3.5-3v10L5 10H2.5z" fill="currentColor"/><path class="w1" d="M10.8 5.8a3 3 0 0 1 0 4.4"/><path class="w2" d="M12.6 4a5.5 5.5 0 0 1 0 8"/><path class="mx" d="m11 6 4 4m0-4-4 4"/></svg></button><input type="range" id="pVolRange" min="0" max="100" step="1" value="80" aria-label="볼륨"></div>
+          </div>
+        </div>
+
+        <aside class="panel">
+          <div class="tabs ptabs" role="tablist">
+            <button class="tab active" data-tab="ptracks">곡</button>
+            <button class="tab" data-tab="pstyle">스타일</button>
+            <button class="tab" data-tab="pobj">배치</button>
+            <button class="tab" data-tab="pfx">효과</button>
+            <button class="tab" data-tab="pstamp">타임스탬프</button>
+          </div>
+          <div class="panel-body">
+
+            <!-- TRACKS -->
+            <div class="pane" data-pane="ptracks">
+              <div class="sec">
+                <div class="sec-h"><h3>플레이리스트 이름</h3></div>
+                <input class="inp" type="text" data-pbind="name" maxlength="60" placeholder="비우면 안 보여요" aria-label="플레이리스트 이름" style="margin-bottom:6px">
+                <p class="note">왼쪽 위 문구와 저장할 파일 이름에 쓰여요. 비워 두면 화면에 아무것도 안 나와요.</p>
+                <div class="sec-h"><h3>음원 방식</h3></div>
+                <div class="seg txt">
+                  <button data-pset="mode" data-val="files">곡 파일 여러 개</button>
+                  <button data-pset="mode" data-val="single">긴 음원 하나</button>
+                </div>
+                <p class="note" id="pModeNote"></p>
+              </div>
+              <div id="pFilesBox">
+                <div class="sec">
+                  <div class="sec-h"><h3>곡 목록</h3><small id="pTotal"></small></div>
+                  <label class="drop" id="pDropFiles">
+                    <div class="di"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6 12.5V3.5l7-1.5v9"/><circle cx="4.5" cy="12.5" r="1.8"/><circle cx="11.5" cy="11" r="1.8"/></svg></div>
+                    <div><b>노래 파일 추가</b><span>여러 개를 한 번에 끌어다 놓거나 골라요 · 제목·아티스트·커버를 태그에서 읽어와요</span></div>
+                    <input type="file" multiple accept="audio/*,.mp3,.m4a,.wav,.ogg,.flac">
+                  </label>
+                  <div id="pTrackList"></div>
+                  <div class="inline-btns">
+                    <button class="btn sm" id="pSortName">파일 이름순 정렬</button>
+                    <button class="btn sm" id="pFromCover">앨범 커버 탭의 곡 추가</button>
+                    <button class="btn sm" id="pClear">모두 지우기</button>
+                  </div>
+                  <div class="range"><span class="lbl">곡 사이 쉼</span><input type="range" min="0" max="5" step="0.5" data-pbind="gap"><output data-pout="gap" data-fmt="sec"></output></div>
+                  <p class="note">번호를 누르면 그 곡부터 재생돼요. 제목·아티스트는 목록에서 바로 고칠 수 있어요.</p>
+                </div>
+              </div>
+              <div id="pSingleBox" hidden>
+                <div class="sec">
+                  <div class="sec-h"><h3>음원</h3></div>
+                  <label class="drop" id="pDropSingle">
+                    <div class="di"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6 12.5V3.5l7-1.5v9"/><circle cx="4.5" cy="12.5" r="1.8"/><circle cx="11.5" cy="11" r="1.8"/></svg></div>
+                    <div><b id="pSingleName">긴 음원 파일 불러오기</b><span>여러 곡이 이어진 MP3 · M4A · WAV</span></div>
+                    <input type="file" accept="audio/*,.mp3,.m4a,.wav,.ogg,.flac">
+                  </label>
+                </div>
+                <div class="sec">
+                  <div class="sec-h"><h3>타임스탬프</h3><small id="pStampStat"></small></div>
+                  <div class="field" style="margin-bottom:10px"><textarea id="pStampIn" rows="11" class="stamp-out" placeholder="한 줄에 한 곡씩 적어 주세요&#10;&#10;00:00 첫 번째 곡&#10;03:24 아티스트 - 두 번째 곡&#10;1:07:02 세 번째 곡"></textarea></div>
+                  <div class="inline-btns">
+                    <button class="btn primary sm" id="pMarkNow">지금 위치 시간 넣기</button>
+                    <label class="btn sm" style="cursor:pointer">텍스트 파일 불러오기<input type="file" accept=".txt,.lrc,text/plain" id="pStampFile" hidden></label>
+                  </div>
+                  <div class="field" style="margin-bottom:12px"><label>줄 글자 나누기</label><select data-pbind="split">
+                    <option value="artist-title">아티스트 - 제목</option>
+                    <option value="title-artist">제목 - 아티스트</option>
+                    <option value="none">나누지 않기 (전부 제목)</option>
+                  </select></div>
+                  <p class="note">음악을 틀어 놓고 곡이 바뀌는 순간 "지금 위치 시간 넣기"를 누르면 그 시간이 한 줄 추가돼요. 뒤에 곡 이름만 적으면 돼요.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- STYLE -->
+            <div class="pane" data-pane="pstyle" hidden>
+              <div class="sec">
+                <div class="sec-h"><h3>내 플레이리스트 세트</h3></div>
+                <p class="note">템플릿 · 배경 · 색 · 글자 · 배치 · 오브젝트 설정 · 효과를 한꺼번에 저장해요. (곡과 타임스탬프는 빼고 저장돼요)</p>
+                <div class="saverow"><input class="inp" id="pSetName" placeholder="세트 이름" maxlength="30"><button class="btn primary sm" id="pSaveSet" style="height:32px">저장</button></div>
+                <div class="sets" id="pSetList"></div>
+                <div class="inline-btns">
+                  <button class="btn sm" id="pExportSets">파일로 내보내기</button>
+                  <label class="btn sm" style="cursor:pointer">파일 불러오기<input type="file" accept=".json,application/json" id="pInSets" hidden></label>
+                  <button class="btn sm" id="pFullReset">전체 초기화</button>
+                </div>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>템플릿</h3></div>
+                <div class="tpls" style="grid-template-columns:repeat(2,1fr)">
+                  <button class="tpl" data-ppreset="side"><svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><rect x="6" y="5" width="15" height="15" rx="1"/><path d="M25 9h20M25 13h12M25 17h24"/><path d="M6 25h14M24 25h14M42 25h14M6 29h14M24 29h14" stroke-opacity=".55"/></svg><span>커버 옆 제목</span></button>
+                  <button class="tpl" data-ppreset="center"><svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><circle cx="32" cy="11" r="7"/><path d="M22 22h20M27 25h10"/><path d="M8 30h12M26 30h12M44 30h12" stroke-opacity=".55"/></svg><span>가운데</span></button>
+                  <button class="tpl" data-ppreset="wide"><svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><circle cx="46" cy="11" r="6" stroke-opacity=".45"/><path d="M6 19h22M6 23h14"/><path d="M6 26.5h18" stroke-opacity=".6"/><path d="M12 31h40" stroke-opacity=".6"/></svg><span>와이드</span></button>
+                  <button class="tpl" data-ppreset="minimal"><svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><rect x="26" y="6" width="12" height="12" rx="1"/><path d="M24 22h16M28 25h8"/><path d="M14 31h36" stroke-opacity=".6"/></svg><span>미니멀</span></button>
+                </div>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>배경</h3></div>
+                <div class="seg txt" style="grid-auto-columns:auto;grid-template-columns:repeat(5,1fr)">
+                  <button data-pset="bgMode" data-val="coverBlur">흐린 커버</button>
+                  <button data-pset="bgMode" data-val="cover">커버</button>
+                  <button data-pset="bgMode" data-val="image">이미지</button>
+                  <button data-pset="bgMode" data-val="video">영상</button>
+                  <button data-pset="bgMode" data-val="color">단색</button>
+                </div>
+                <label class="drop" id="pDropBg" hidden>
+                  <div class="di" id="pBgThumb"></div>
+                  <div><b id="pBgName">배경 이미지 불러오기</b><span>화면에 꽉 차게 맞춰져요</span></div>
+                  <input type="file" accept="image/*">
+                </label>
+                <label class="drop" id="pDropBgV" hidden>
+                  <div class="di"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.5" y="3" width="13" height="10" rx="2"/><path d="M6.5 6v4l3.5-2z" fill="currentColor" stroke="none"/></svg></div>
+                  <div><b id="pBgVName">배경 영상 불러오기</b><span>MP4 · WEBM · MOV — 소리 없이 반복 재생돼요</span></div>
+                  <input type="file" accept="video/*">
+                </label>
+                <div class="range"><span class="lbl">어둡게</span><input type="range" min="0" max="95" step="1" data-pbind="bgDim"><output data-pout="bgDim" data-fmt="pct"></output></div>
+                <div class="range"><span class="lbl">흐리게</span><input type="range" min="0" max="40" step="1" data-pbind="bgBlur"><output data-pout="bgBlur" data-fmt="int"></output></div>
+                <div class="range"><span class="lbl">가로 위치</span><input type="range" min="0" max="100" step="1" data-pbind="bgX"><output data-pout="bgX" data-fmt="pct"></output></div>
+                <div class="range"><span class="lbl">세로 위치</span><input type="range" min="0" max="100" step="1" data-pbind="bgY"><output data-pout="bgY" data-fmt="pct"></output></div>
+                <p class="note">"흐리게"는 커버 · 이미지 배경에 적용돼요. 위치는 사진이 화면보다 길 때 어디를 보여 줄지 정해요.</p>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>커버 이미지</h3><button class="link" id="pRefreshCover">커버 다시 가져오기</button></div>
+                <div class="sec-h" style="margin:0 0 6px"><span>곡마다 그 노래의 커버 쓰기</span><label class="sw"><input type="checkbox" data-pbind="trackArt" aria-label="곡마다 커버"><span></span></label></div>
+                <p class="note">커버가 없는 곡에는 아래 기본 커버가 나와요.</p>
+                <div class="seg txt">
+                  <button data-pset="coverSrc" data-val="cover">만든 커버</button>
+                  <button data-pset="coverSrc" data-val="upload">이미지 올리기</button>
+                </div>
+                <label class="drop" id="pDropCover" hidden>
+                  <div class="di" id="pCoverThumb"></div>
+                  <div><b id="pCoverName">기본 커버 이미지</b><span>정사각형으로 맞춰져요</span></div>
+                  <input type="file" accept="image/*">
+                </label>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>색상</h3><button class="link" id="pColorsFromCover">커버 색 가져오기</button></div>
+                <div class="colors4">
+                  <div class="field"><label>배경</label><div class="color"><input type="color" data-pbind="colors.bg"><span data-pout="colors.bg" data-fmt="hex"></span></div></div>
+                  <div class="field"><label>텍스트</label><div class="color"><input type="color" data-pbind="colors.text"><span data-pout="colors.text" data-fmt="hex"></span></div></div>
+                  <div class="field"><label>라인</label><div class="color"><input type="color" data-pbind="colors.line"><span data-pout="colors.line" data-fmt="hex"></span></div></div>
+                  <div class="field"><label>포인트</label><div class="color"><input type="color" data-pbind="colors.accent"><span data-pout="colors.accent" data-fmt="hex"></span></div></div>
+                </div>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>글자</h3></div>
+                <div class="grid2">
+                  <div class="field full"><label style="display:flex;justify-content:space-between">폰트 <label class="link" style="cursor:pointer">내 폰트 추가<input type="file" accept=".ttf,.otf,.woff,.woff2,font/*" hidden data-fontin="p"></label></label><select data-pbind="font" id="pFont"></select></div>
+                  <div class="field full"><label>제목 굵기</label><select data-pbind="weight"><option value="500">Medium</option><option value="600">SemiBold</option><option value="700">Bold</option><option value="800">ExtraBold</option><option value="900">Black</option></select></div>
+                </div>
+                <div class="sec-h" style="margin:4px 0 8px"><span>텍스트 그림자</span><label class="sw"><input type="checkbox" data-pbind="tshadow.on" aria-label="텍스트 그림자"><span></span></label></div>
+                <div class="fold-body" id="pTShadowBox">
+                  <div class="range"><span class="lbl">색</span><div class="color"><input type="color" data-pbind="tshadow.color" aria-label="그림자 색"><span data-pout="tshadow.color" data-fmt="hex"></span></div></div>
+                  <div class="range"><span class="lbl">진하기</span><input type="range" min="5" max="100" step="1" data-pbind="tshadow.amt"><output data-pout="tshadow.amt" data-fmt="pct"></output></div>
+                  <div class="range"><span class="lbl">번짐</span><input type="range" min="0" max="80" step="1" data-pbind="tshadow.blur"><output data-pout="tshadow.blur" data-fmt="int"></output></div>
+                  <div class="range"><span class="lbl">거리</span><input type="range" min="0" max="40" step="1" data-pbind="tshadow.dist"><output data-pout="tshadow.dist" data-fmt="int"></output></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- OBJECTS -->
+            <div class="pane" data-pane="pobj" hidden>
+              <div class="sec">
+                <div class="sec-h"><h3>오브젝트</h3><div style="display:flex;gap:10px"><button class="link" id="pPosReset">위치 초기화</button><button class="link" id="pObjOn">모두 켜기</button><button class="link" id="pObjOff">모두 끄기</button></div></div>
+                <p class="note">영상 위 "오브젝트 잠금"을 풀면 끌어서 옮기고 휠로 크기를 바꿀 수 있어요. 조정을 누르면 글자 · 색 · 모양을 바꿀 수 있어요.</p>
+                <p class="kbd-hint">클릭해 선택 → 방향키 이동 (Shift = 크게) · [ ] 회전 · Delete 끄기 · Ctrl+Z 되돌리기 · Ctrl+Shift+Z 다시 실행</p>
+                <div class="selbox" id="pSelBox" hidden>
+                  <div class="selbox-h"><span>선택: <b id="pSelName"></b></span><small>방향키 이동 · [ ] 회전</small></div>
+                  <div class="range"><span class="lbl">크기</span><input type="range" id="pSelS" min="30" max="300" step="1" aria-label="크기"><output id="pSelSOut"></output></div>
+                  <div class="range"><span class="lbl">회전</span><input type="range" id="pSelR" min="-180" max="180" step="1" aria-label="회전"><output id="pSelROut"></output></div>
+                </div>
+                <div id="pObjList"></div>
+              </div>
+            </div>
+
+            <!-- FX -->
+            <div class="pane" data-pane="pfx" hidden>
+              <div class="sec">
+                <div class="sec-h"><h3>효과</h3><div style="display:flex;gap:10px"><button class="link" id="pFxOn">모두 켜기</button><button class="link" id="pFxOff">모두 끄기</button></div></div>
+                <p class="note">켜진 효과의 조정을 누르면 양 · 크기 · 색을 바꿀 수 있어요.</p>
+                <div id="pFxList"></div>
+              </div>
+            </div>
+
+            <!-- STAMPS -->
+            <div class="pane" data-pane="pstamp" hidden>
+              <div class="sec">
+                <div class="sec-h"><h3>유튜브 설명란용 타임스탬프</h3></div>
+                <div class="grid2">
+                  <div class="field full"><label>곡 이름 형식</label><select data-pbind="stampFmt">
+                    <option value="at">아티스트 - 제목</option>
+                    <option value="ta">제목 - 아티스트</option>
+                    <option value="t">제목만</option>
+                  </select></div>
+                </div>
+                <div class="sec-h" style="margin:0 0 10px"><span>앞에 번호 붙이기 (01.)</span><label class="sw"><input type="checkbox" data-pbind="stampNum" aria-label="번호 붙이기"><span></span></label></div>
+                <div class="seg txt" id="pStampSrcSeg" hidden>
+                  <button data-pset="stampSrc" data-val="rec">녹화한 영상 기준</button>
+                  <button data-pset="stampSrc" data-val="calc">곡 길이로 계산</button>
+                </div>
+                <div class="field" style="margin-bottom:10px"><textarea id="pStampOut" rows="14" class="stamp-out" readonly></textarea></div>
+                <p class="warn" id="pStampWarn" hidden></p>
+                <div class="inline-btns">
+                  <button class="btn primary sm" id="pCopyStamps2">복사</button>
+                  <button class="btn sm" id="pSaveStamps">텍스트 파일로 저장</button>
+                </div>
+                <p class="note" id="pStampNote"></p>
+              </div>
+            </div>
+
+          </div>
+        </aside>
+      </div>
+      <div class="rec-ov" id="pRecOv" hidden>
+        <div class="rec-card">
+          <div class="rec-dot"></div>
+          <b>플레이리스트 영상 녹화 중</b>
+          <p id="pRecTrack"></p>
+          <p id="pRecTime">0:00 / 0:00</p>
+          <div class="rec-bar"><i id="pRecBar"></i></div>
+          <button class="btn sm" id="pRecListen" style="margin:2px auto 8px">🔇 소리 꺼짐 · 눌러서 듣기</button>
+          <small>전체 길이만큼 실제 시간이 걸려요. 이 탭을 닫거나 다른 탭으로 옮기면 영상이 끊길 수 있어요.</small>
+          <button class="btn sm" id="pRecCancel">취소</button>
         </div>
       </div>
     </section>
@@ -971,7 +1274,7 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
               <div class="sec">
                 <div class="sec-h"><h3>오브젝트</h3><div style="display:flex;gap:10px"><button class="link" id="tResetAll">위치 초기화</button><button class="link" id="tAllOn">모두 켜기</button><button class="link" id="tAllOff">모두 끄기</button></div></div>
                 <p class="note">썸네일 위 "오브젝트 잠금"을 풀면 끌어서 옮기고 휠로 크기를 바꿀 수 있어요. 모두 켜기 · 끄기는 제목 · 부제 · 커버는 그대로 두고 장식과 배경 꾸밈에만 적용돼요.</p>
-                <div class="inline-btns" style="margin:-2px 0 10px"><button class="btn sm" id="tFullReset">전체 초기화 (색 포함)</button></div>
+                <div class="inline-btns" style="margin:-2px 0 10px"><button class="btn sm" id="tFullReset">전체 초기화</button></div>
 <div class="selbox" id="tSelBox" hidden>
                   <div class="selbox-h"><span>선택: <b id="tSelName"></b></span><small>방향키 이동 · [ ] 회전 · Delete 지우기</small></div>
                   <div class="range"><span class="lbl">회전</span><input type="range" id="tRot" min="-180" max="180" step="1" aria-label="회전"><output id="tRotOut"></output><button class="rv show" id="tRotReset" title="회전 처음 값으로" aria-label="회전 처음 값으로"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2.5 8a5.5 5.5 0 1 0 1.8-4.1"/><path d="M2.5 2.5v3h3"/></svg></button></div>
@@ -2314,7 +2617,7 @@ $('#btnNewWork').onclick = () => {
     return;
   }
   RESETTING = true;
-  ['mmc-cover-state', 'mmc-video-state', 'mmc-thumb-state', 'mmc-fonts'].forEach(k => { try { localStorage.removeItem(k); } catch(e){} });
+  ['mmc-cover-state', 'mmc-video-state', 'mmc-thumb-state', 'mmc-pl-state', 'mmc-fonts'].forEach(k => { try { localStorage.removeItem(k); } catch(e){} });
   STORE.clear().then(() => location.reload());
 };
 async function addFontBlob(blob, fileName, silent){
@@ -4092,7 +4395,7 @@ $('#tFullReset').onclick = () => {
   tb.colors.bg = CS.cover.bg; tb.colors.accent = CS.cover.accent;
   applyPresetTo(tb, keep.preset);
   sel = null; hover = null; refreshCover(); syncUI(); loadFonts(); sched();
-  toast(`'${PRESETS[tb.preset].name}' 처음 상태로 되돌렸어요 (색 포함) · Ctrl+Z로 되돌릴 수 있어요`);
+  toast(`'${PRESETS[tb.preset].name}' 처음 상태로 되돌렸어요 · Ctrl+Z로 되돌릴 수 있어요`);
 };
 const TTXB = {}; // detail-text panels, shown inside each decoration's 조정
 { // detail-text rows (same look as the video page)
@@ -4260,6 +4563,1352 @@ syncUI(); refreshCover();
     nudge(dx, dy){ if (tb.lock || !sel || !tb.o[sel] || tb.pin[sel]) return false; tb.o[sel].x += dx / W * 100; tb.o[sel].y += dy / H * 100; syncUI(); sched(); return true; },
     rotate(deg){ if (tb.lock || !sel || !tb.o[sel] || tb.pin[sel]) return false; setTRot(M.normDeg((sel === 'cover' ? tb.tilt : (tb.o[sel].r || 0)) + deg)); return true; }
     , remove(){ if (tb.lock || !sel || !tb.o[sel] || tb.pin[sel]) return null; const name = (OBJ.find(o => o[0] === sel) || [0, '오브젝트'])[1]; tb.on[sel] = false; sel = null; hover = null; syncUI(); sched(); return name; }
+  };
+})();
+})();
+</script>
+<script>
+/* ===================== PLAYLIST MAKER ===================== */
+(() => {
+'use strict';
+const M = window.MMC; if (!M) return;
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const view = $('#view-playlist'), cv = $('#pCanvas'), ctx = cv.getContext('2d');
+const CS = M.state, toast = M.toast, download = M.download;
+
+/* ---------- helpers ---------- */
+function hexRgb(h){ h = String(h).replace('#',''); if (h.length === 3) h = h.split('').map(c => c + c).join(''); const n = parseInt(h, 16) || 0; return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+function col(h, a){ const [r,g,b] = hexRgb(h); return `rgba(${r},${g},${b},${Math.max(0, Math.min(1, a))})`; }
+const mixHex = (a, b, t) => { const A = hexRgb(a), B = hexRgb(b); return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, '0')).join(''); };
+function rr(x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, Math.max(0, Math.min(r, Math.abs(w) / 2, Math.abs(h) / 2))); else ctx.rect(x, y, w, h); }
+function star4(x, y, r){ ctx.beginPath(); ctx.moveTo(x, y - r); ctx.quadraticCurveTo(x, y, x + r, y); ctx.quadraticCurveTo(x, y, x, y + r); ctx.quadraticCurveTo(x, y, x - r, y); ctx.quadraticCurveTo(x, y, x, y - r); ctx.closePath(); }
+const pad2 = n => String(n).padStart(2, '0');
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const fmtTime = s => { if (!isFinite(s) || s < 0) s = 0; const m = Math.floor(s / 60), r = Math.floor(s % 60); return m + ':' + pad2(r); };
+const fmtStamp = (s, long) => { s = Math.max(0, Math.floor((+s || 0) + 1e-6)); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), r = s % 60; return long ? `${h}:${pad2(m)}:${pad2(r)}` : `${pad2(Math.floor(s / 60))}:${pad2(r)}`; };
+const isAudio = f => f && ((f.type || '').startsWith('audio/') || /\.(mp3|m4a|wav|ogg|flac|aac|opus)$/i.test(f.name));
+const isImage = f => f && (f.type || '').startsWith('image/');
+const isVideo = f => f && ((f.type || '').startsWith('video/') || /\.(mp4|webm|mov|m4v)$/i.test(f.name));
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clone = o => JSON.parse(JSON.stringify(o));
+
+/* ---------- objects + effects ---------- */
+const OBJ = [['cover','앨범 커버'],['title','지금 곡 제목'],['progress','곡 진행 바'],['next','다음 곡'],['list','곡 목록 (크게)'],['ticker','아래 작은 곡 목록'],
+  ['tl','왼쪽 위 문구'],['tr','오른쪽 위 문구'],['count','곡 수 · 전체 길이'],['clock','재생 시간'],['wave','음파 라인'],['spectrum','스펙트럼 막대'],
+  ['ring','원형 음파'],['eq','미니 이퀄라이저'],['glow','커버 빛'],['orbit','궤도선'],['sparkle','반짝이']];
+const OBJ_NAME = Object.fromEntries(OBJ);
+const FXL_ = [['particles','별가루','은은하게 떠오르는 점과 별'],['embers','불꽃 입자','반짝이며 튀어 오르는 불티'],['snow','눈','천천히 내리는 눈송이'],['bokeh','빛망울','크고 흐린 빛 동그라미'],
+  ['lightleak','빛 번짐','필름처럼 번지는 따뜻한 빛'],['flash','비트 플래시','저음이 칠 때 화면이 번쩍'],['shake','비트 흔들림','저음에 맞춰 화면이 살짝 흔들림'],['beat','비트 줌','저음에 맞춰 커버가 커짐'],
+  ['bgZoom','배경 움직임','배경이 천천히 흐르고 비트에 커짐'],['scan','스캔라인','브라운관 같은 가로줄'],['letterbox','시네마 바','위아래 검은 띠'],
+  ['brackets','코너 브래킷','네 귀퉁이 꺾쇠'],['frame','테두리','안쪽 얇은 테두리'],['vignette','비네트','가장자리 음영'],['grain','그레인','필름 질감']];
+const FXL = FXL_;
+const NAME = k => OBJ_NAME[k] || (FXL.find(f => f[0] === k) || [0, '효과'])[1];
+const ST = {
+  cover:{shape:'square', radius:8, shadow:55, border:30},
+  title:{align:'auto', label:true, artist:true, c:'auto', color:'#ffffff', a:100, upper:false},
+  progress:{times:true, width:100, thick:100, c:'accent', color:'#ffffff'},
+  next:{label:'NEXT', c:'text', color:'#ffffff', a:55},
+  list:{mode:'all', dim:45, size:100, num:true, time:true, artist:true, c:'accent', color:'#ffffff'},
+  ticker:{sep:'|', lines:2, width:72, size:100, dim:45, num:false, artist:false, c:'text', color:'#ffffff', glow:true, stroke:true, upper:false},
+  tl:{text:'', c:'text', color:'#ffffff', a:95, upper:true},
+  tr:{text:'', c:'text', color:'#ffffff', a:95, upper:true},
+  count:{c:'text', color:'#ffffff', a:60},
+  clock:{mode:'total', c:'text', color:'#ffffff', a:85},
+  wave:{style:'bars', width:100, height:100, c:'line', color:'#ffffff', a:85},
+  spectrum:{style:'mirror', height:100, c:'line', color:'#ffffff', a:60},
+  ring:{height:100, c:'auto', color:'#ffffff'},
+  eq:{c:'accent', color:'#ffffff'},
+  glow:{amt:100, c:'accent', color:'#ffffff'},
+  orbit:{c:'line', color:'#ffffff', a:70},
+  sparkle:{c:'auto', color:'#ffffff', a:100}
+};
+const FXS = {
+  particles:{amt:100, size:100, a:100, c:'auto', color:'#ffffff'},
+  embers:{amt:100, size:100, speed:100, color:'#ffa24a'},
+  snow:{amt:100, size:100, speed:100, color:'#ffffff'},
+  bokeh:{amt:100, size:100, a:100, c:'accent', color:'#ffffff'},
+  lightleak:{amt:55, size:100, color:'#ffb38a', two:true},
+  flash:{amt:40, color:'#ffffff'},
+  shake:{amt:50},
+  beat:{amt:100},
+  bgZoom:{pulse:100, drift:100},
+  scan:{amt:40, move:true},
+  letterbox:{size:9},
+  brackets:{c:'line', color:'#ffffff', a:80, inset:100, pulse:true},
+  frame:{c:'line', color:'#ffffff', a:30, inset:100},
+  vignette:{amt:60},
+  grain:{amt:60}
+};
+const PRESETS = {
+  side:   {name:'커버 옆 제목', on:['cover','title','progress','list','tl','count','glow','eq'], fx:['particles','bokeh','bgZoom','vignette','grain'], bg:'color', dim:62, list:'all', shape:'square'},
+  center: {name:'가운데', on:['cover','title','progress','next','list','tl','count','ring','glow','sparkle'], fx:['particles','lightleak','vignette','grain'], bg:'color', dim:62, list:'window', shape:'circle'},
+  wide:   {name:'와이드', on:['title','progress','ticker','tl','count','eq'], fx:['particles','bokeh','lightleak','bgZoom','vignette','grain'], bg:'image', dim:45, list:'all', shape:'square'},
+  minimal:{name:'미니멀', on:['cover','title','progress','ticker','tl','clock'], fx:['particles','vignette','grain'], bg:'color', dim:70, list:'all', shape:'square'}
+};
+const MOVE_FX = ['lightleak', 'vignette'];
+let bgImg = null, bgImgC = null;
+function applyPreset(t, k){
+  const P = PRESETS[k] || PRESETS.side; t.preset = PRESETS[k] ? k : 'side';
+  OBJ.forEach(([o]) => { t.on[o] = P.on.includes(o); t.o[o] = {dx:0, dy:0, s:100, r:0}; });
+  MOVE_FX.forEach(f => { t.o[f] = {dx:0, dy:0, s:100, r:0}; });
+  FXL.forEach(([f]) => { t.fx[f] = P.fx.includes(f); });
+  t.bgMode = P.bg === 'image' && !bgImg ? 'color' : P.bg; t.bgDim = P.dim; t.st.list.mode = P.list; t.st.cover.shape = P.shape; t.pin = {};
+}
+
+/* ---------- state ---------- */
+const ps = {
+  mode:'files', gap:0, split:'artist-title', singleText:'', name:'',
+  preset:'side', bgMode:'coverBlur', bgDim:62, bgBlur:0, bgX:50, bgY:50,
+  coverSrc:'cover', trackArt:true,
+  colors:{bg:CS.cover.bg, text:'#f7f5f2', line:'#ffffff', accent:CS.cover.accent},
+  font:'Paperlogy', weight:'700', tshadow:{on:true, color:'#000000', amt:40, blur:18, dist:3},
+  on:{}, o:{}, st:clone(ST), fx:{}, fxs:clone(FXS), pin:{},
+  lock:true, grid:false, snap:true,
+  stampFmt:'at', stampNum:false, stampSrc:'calc', res:'1920x1080', fps:30, qual:6
+};
+applyPreset(ps, 'side');
+const PDEF = clone(ps);
+const getP = p => p.split('.').reduce((o, k) => o == null ? o : o[k], ps);
+const setP = (p, v) => { const ks = p.split('.'); const l = ks.pop(); ks.reduce((o, k) => o[k], ps)[l] = v; };
+const pDef = p => { const v = p.split('.').reduce((o, k) => o == null ? o : o[k], PDEF); return (v !== null && typeof v === 'object') ? undefined : v; };
+const colorOf = (o, def) => { const C = ps.colors, c = o && o.c; return !c || c === 'auto' ? def : c === 'accent' ? C.accent : c === 'line' ? C.line : c === 'text' ? C.text : c === 'custom' ? (o.color || def) : def; };
+
+const tracks = [];          // {id, name, title, artist, dur, url, art, blur, thumb}
+const single = {url:null, name:'', dur:0, title:'', artist:'', art:null, blur:null};
+let uid = Date.now();
+let recording = false, recListen = false;
+
+/* ---------- tags + covers ---------- */
+async function readTag(blob){
+  try {
+    const h = new Uint8Array(await blob.slice(0, 10).arrayBuffer());
+    if (h.length < 10 || h[0] !== 0x49 || h[1] !== 0x44 || h[2] !== 0x33) return null;
+    const size = ((h[6] & 127) << 21 | (h[7] & 127) << 14 | (h[8] & 127) << 7 | (h[9] & 127)) + 20;
+    return M.parseID3(await blob.slice(0, size).arrayBuffer());
+  } catch(e){ return null; }
+}
+function nameFrom(tag, fileName){
+  const T = (tag && tag.text) || {}, base = String(fileName || '').replace(/\.[^.]+$/, '').replace(/^\d{1,3}[\s._-]+(?=\S)/, '');
+  let title = String(T.TIT2 || '').trim(), artist = String(T.TPE1 || '').trim();
+  if (!title){ const p = base.split(/\s+-\s+/); if (p.length > 1 && !artist){ artist = p[0].trim(); title = p.slice(1).join(' - ').trim(); } else title = base; }
+  return {title, artist};
+}
+function imgFromBlob(blob){ return new Promise(res => { const url = URL.createObjectURL(blob), im = new Image(); im.onload = () => res(im); im.onerror = () => { URL.revokeObjectURL(url); res(null); }; im.src = url; }); }
+function makeArt(src){
+  const a = document.createElement('canvas'); a.width = a.height = 640; const x = a.getContext('2d');
+  const sw = src.naturalWidth || src.width, sh = src.naturalHeight || src.height; if (!sw || !sh) return a;
+  const sc = Math.max(640 / sw, 640 / sh); x.drawImage(src, (640 - sw * sc) / 2, (640 - sh * sc) / 2, sw * sc, sh * sc); return a;
+}
+function makeBlur(art){ const b = document.createElement('canvas'); b.width = b.height = 240; const x = b.getContext('2d'); x.filter = 'blur(12px)'; x.drawImage(art, -30, -30, 300, 300); x.filter = 'none'; return b; }
+function thumbOf(art){ const c = document.createElement('canvas'); c.width = c.height = 72; c.getContext('2d').drawImage(art, 0, 0, 72, 72); return c.toDataURL('image/jpeg', .8); }
+function probeDur(url){
+  return new Promise(res => {
+    const a = new Audio(); a.preload = 'metadata'; let done = false;
+    const fin = v => { if (done) return; done = true; a.ontimeupdate = null; a.removeAttribute('src'); try { a.load(); } catch(e){} res(isFinite(v) ? v : 0); };
+    a.onloadedmetadata = () => { if (isFinite(a.duration) && a.duration > 0) fin(a.duration); else { a.ontimeupdate = () => fin(a.duration); try { a.currentTime = 1e7; } catch(e){ fin(0); } } };
+    a.onerror = () => fin(0); setTimeout(() => fin(a.duration), 15000); a.src = url;
+  });
+}
+async function makeTrack(blob, name, id, meta){
+  const url = URL.createObjectURL(blob), tag = await readTag(blob), nm = nameFrom(tag, name);
+  const t = {id, name, title: meta && typeof meta.title === 'string' ? meta.title : nm.title, artist: meta && typeof meta.artist === 'string' ? meta.artist : nm.artist, dur: (meta && meta.dur) || 0, url, art:null, blur:null, thumb:''};
+  if (tag && tag.pic){ const im = await imgFromBlob(new Blob([tag.pic.data], {type: tag.pic.mime})); if (im){ t.art = makeArt(im); t.blur = makeBlur(t.art); t.thumb = thumbOf(t.art); } }
+  if (!t.dur) t.dur = await probeDur(url);
+  return t;
+}
+
+/* default cover (made on the album-cover page, or an uploaded picture) */
+const defArt = document.createElement('canvas'); defArt.width = defArt.height = 640;
+let defBlur = makeBlur(defArt), upImg = null;
+function refreshDefault(){
+  const x = defArt.getContext('2d'); x.clearRect(0, 0, 640, 640);
+  if (ps.coverSrc === 'upload' && upImg){ const sw = upImg.naturalWidth, sh = upImg.naturalHeight, sc = Math.max(640 / sw, 640 / sh); x.drawImage(upImg, (640 - sw * sc) / 2, (640 - sh * sc) / 2, sw * sc, sh * sc); }
+  else { try { M.render(x, 640, false); } catch(e){ console.error(e); } }
+  defBlur = makeBlur(defArt); softCache = new WeakMap();
+}
+function loadCoverImg(f, quiet){
+  return imgFromBlob(f).then(im => {
+    if (!im) return toast('이미지를 열 수 없어요');
+    upImg = im; ps.coverSrc = 'upload'; $('#pCoverName').textContent = f.name || '기본 커버 이미지';
+    $('#pCoverThumb').innerHTML = `<img src="${im.src}" alt="">`;
+    refreshDefault(); syncUI(); if (!quiet){ M.STORE.put('pl-cover', f, f.name); toast('기본 커버를 바꿨어요'); }
+  });
+}
+/* background picture / video */
+function loadBgImg(f, quiet){
+  return imgFromBlob(f).then(im => {
+    if (!im) return toast('이미지를 열 수 없어요');
+    bgImg = im; const sc = Math.min(1, 2200 / Math.max(im.naturalWidth, im.naturalHeight));
+    bgImgC = document.createElement('canvas'); bgImgC.width = Math.round(im.naturalWidth * sc); bgImgC.height = Math.round(im.naturalHeight * sc);
+    bgImgC.getContext('2d').drawImage(im, 0, 0, bgImgC.width, bgImgC.height);
+    $('#pBgName').textContent = f.name || '배경 이미지'; $('#pBgThumb').innerHTML = `<img src="${im.src}" alt="">`;
+    if (!quiet){ ps.bgMode = 'image'; M.STORE.put('pl-bg', f, f.name); toast('배경 이미지를 넣었어요'); }
+    syncUI();
+  });
+}
+const bgv = document.createElement('video'); bgv.muted = true; bgv.loop = true; bgv.playsInline = true; let bgReady = false, bgvUrl = null;
+bgv.addEventListener('loadeddata', () => { bgReady = true; });
+function loadBgVideo(f, quiet){
+  if (bgvUrl) URL.revokeObjectURL(bgvUrl);
+  bgReady = false; bgvUrl = URL.createObjectURL(f); bgv.src = bgvUrl; $('#pBgVName').textContent = f.name;
+  if (!quiet){ ps.bgMode = 'video'; syncUI(); toast('배경 영상을 넣었어요'); M.STORE.put('pl-bgv', f, f.name).then(ok => { if (!ok) toast('배경 영상이 너무 커서 자동 저장은 안 돼요'); }); }
+}
+let softCache = new WeakMap();
+function soft(src){
+  const amt = ps.bgBlur; if (!src || amt <= 0) return src;
+  const c0 = softCache.get(src); if (c0 && c0.amt === amt) return c0.c;
+  const sw = src.width, sh = src.height, sc = Math.min(1, 900 / Math.max(sw, sh)), c = document.createElement('canvas');
+  c.width = Math.max(1, Math.round(sw * sc)); c.height = Math.max(1, Math.round(sh * sc));
+  const x = c.getContext('2d'), px = amt * Math.max(c.width, c.height) / 1000, m = px * 3;
+  x.filter = `blur(${px}px)`; x.drawImage(src, -m, -m, c.width + m * 2, c.height + m * 2); x.filter = 'none';
+  softCache.set(src, {amt, c}); return c;
+}
+
+/* ---------- timeline ---------- */
+const TS_RE = /\[?(?:(\d{1,2}):)?(\d{1,3}):(\d{2})(?:[.,](\d{1,3}))?\]?/;
+function parseStamps(txt){
+  const out = [];
+  for (const raw of String(txt).split(/\r?\n/)){
+    const m = raw.match(TS_RE); if (!m) continue;
+    const t = (+(m[1] || 0)) * 3600 + (+m[2]) * 60 + (+m[3]) + (m[4] ? +('0.' + m[4]) : 0);
+    let rest = (raw.slice(0, m.index) + ' ' + raw.slice(m.index + m[0].length)).trim();
+    rest = rest.replace(/^\d{1,3}[.)]\s*/, '').replace(/^[\s\-–—|:.)\]]+/, '').replace(/[\s\-–—|]+$/, '').trim();
+    let title = rest, artist = '';
+    const sp = rest.split(/\s+[-–—]\s+/);
+    if (sp.length > 1 && ps.split !== 'none'){
+      if (ps.split === 'artist-title'){ artist = sp[0]; title = sp.slice(1).join(' - '); } else { title = sp[0]; artist = sp.slice(1).join(' - '); }
+    }
+    out.push({t, title: title || `Track ${out.length + 1}`, artist});
+  }
+  return out.sort((a, b) => a.t - b.t);
+}
+let stCache = {k: null, v: null};
+function timeline(){
+  if (ps.mode === 'files'){
+    let t = 0;
+    const items = tracks.map((tr, i) => { const o = {i, title: tr.title, artist: tr.artist, start: t, end: t + tr.dur, art: tr.art, blur: tr.blur}; t += tr.dur + (i < tracks.length - 1 ? ps.gap : 0); return o; });
+    return {items, total: t};
+  }
+  const total = single.dur || 0, key = ps.singleText + '\u0000' + ps.split;
+  if (stCache.k !== key){ stCache = {k: key, v: parseStamps(ps.singleText)}; }
+  let list = stCache.v;
+  if (!list.length) list = single.url ? [{t: 0, title: single.title || '긴 음원', artist: single.artist}] : [];
+  const items = list.map((s, i) => ({i, title: s.title, artist: s.artist, start: s.t, end: list[i + 1] ? list[i + 1].t : Math.max(total, s.t), art: null, blur: null}));
+  return {items, total};
+}
+const idxAt = (items, g) => { if (!items.length) return -1; let c = 0; for (let k = 0; k < items.length; k++){ if (items[k].start <= g + 1e-3) c = k; else break; } return c; };
+const artOf = it => (ps.trackArt && it && it.art) || (ps.trackArt && ps.mode === 'single' && single.art) || defArt;
+const blurOf = it => (ps.trackArt && it && it.blur) || (ps.trackArt && ps.mode === 'single' && single.blur) || defBlur;
+
+/* ---------- audio ---------- */
+const audio = new Audio(); audio.preload = 'auto';
+let actx = null, analyser = null, dest = null, gain = null, freqB = null, waveB = null, vol = .8;
+function graph(){
+  if (actx) return;
+  actx = new (window.AudioContext || window.webkitAudioContext)();
+  const src = actx.createMediaElementSource(audio);
+  analyser = actx.createAnalyser(); analyser.fftSize = 2048; analyser.smoothingTimeConstant = .8;
+  src.connect(analyser); gain = actx.createGain(); analyser.connect(gain); gain.connect(actx.destination);
+  dest = actx.createMediaStreamDestination(); src.connect(dest);
+  freqB = new Uint8Array(analyser.frequencyBinCount); waveB = new Uint8Array(analyser.fftSize); applySpeaker();
+}
+function applySpeaker(){ if (!gain) return; gain.gain.value = (recording && !recListen) ? 0 : vol; }
+if (M.bindVol) M.bindVol('p', v => { vol = v; applySpeaker(); });
+
+let curId = null, gapT = null, gapAt = 0, gapping = false;
+const curIdx = () => tracks.findIndex(t => t.id === curId);
+const isPlaying = () => !audio.paused || gapping;
+function clearGap(){ if (gapT){ clearTimeout(gapT); gapT = null; } gapping = false; }
+function ready(){ return audio.readyState >= 1 ? Promise.resolve() : new Promise(r => { const f = () => { audio.removeEventListener('loadedmetadata', f); audio.removeEventListener('error', f); r(); }; audio.addEventListener('loadedmetadata', f); audio.addEventListener('error', f); }); }
+function stopAudio(){ clearGap(); audio.pause(); curId = null; audio.removeAttribute('src'); try { audio.load(); } catch(e){} }
+async function loadAt(i, at, play){
+  clearGap();
+  if (ps.mode === 'files'){ const t = tracks[i]; if (!t) return; if (curId !== t.id){ curId = t.id; audio.src = t.url; } }
+  else { if (!single.url) return; if (curId !== 'single'){ curId = 'single'; audio.src = single.url; } }
+  await ready();
+  try { audio.currentTime = Math.max(0, at || 0); } catch(e){}
+  if (play){ graph(); if (actx.state === 'suspended') await actx.resume(); try { await audio.play(); } catch(e){ toast('재생할 수 없는 파일이에요'); } }
+}
+function gTime(TL){
+  if (ps.mode === 'single') return curId === 'single' ? (audio.currentTime || 0) : 0;
+  const i = curIdx(); if (i < 0) return 0; const it = TL.items[i];
+  if (gapping) return it.end + Math.min(ps.gap, (performance.now() - gapAt) / 1000);
+  return it.start + Math.min(audio.currentTime || 0, tracks[i].dur || 1e9);
+}
+audio.addEventListener('ended', () => {
+  if (ps.mode === 'files'){
+    const i = curIdx();
+    if (i >= 0 && i < tracks.length - 1){
+      if (ps.gap > 0){ gapping = true; gapAt = performance.now(); gapT = setTimeout(() => { gapT = null; gapping = false; loadAt(i + 1, 0, true); }, ps.gap * 1000); }
+      else loadAt(i + 1, 0, true);
+      return;
+    }
+  }
+  if (recording) stopRecord(false);
+});
+let recT0 = 0, recStamps = null, recSig = '', rec = null, recChunks = [], recCancel = false, recStream = null;
+const sig = () => tracks.map(t => t.id + ':' + Math.round(t.dur * 10)).join('|') + '|' + ps.gap;
+audio.addEventListener('playing', () => { if (recording && ps.mode === 'files' && recStamps){ const i = curIdx(); if (i >= 0 && recStamps[i] == null) recStamps[i] = (performance.now() - recT0) / 1000; } });
+
+async function togglePlay(){
+  if (ps.mode === 'files' && !tracks.length) return toast('먼저 곡을 넣어 주세요');
+  if (ps.mode === 'single' && !single.url) return toast('먼저 음원을 넣어 주세요');
+  if (isPlaying()){ audio.pause(); clearGap(); return; }
+  if (ps.mode === 'files'){
+    const i = curIdx();
+    if (i < 0) return loadAt(0, 0, true);
+    if (audio.ended) return loadAt(i < tracks.length - 1 ? i + 1 : 0, 0, true);
+  } else if (curId !== 'single') return loadAt(0, 0, true);
+  graph(); if (actx.state === 'suspended') await actx.resume();
+  audio.play().catch(() => toast('재생할 수 없는 파일이에요'));
+}
+function seekTo(g, play){
+  if (play === undefined) play = isPlaying();
+  const TL = timeline();
+  if (ps.mode === 'single'){ if (single.url) loadAt(0, g, play); return; }
+  if (!TL.items.length) return;
+  const i = Math.max(0, idxAt(TL.items, g)), it = TL.items[i];
+  loadAt(i, Math.min(Math.max(0, g - it.start), Math.max(0, tracks[i].dur - .05)), play);
+}
+function jump(dir){
+  const TL = timeline(), items = TL.items; if (!items.length) return;
+  const g = gTime(TL), c = Math.max(0, idxAt(items, g));
+  if (dir < 0 && g - items[c].start > 3) return seekTo(items[c].start);
+  const k = Math.max(0, Math.min(items.length - 1, c + dir));
+  seekTo(items[k].start + (ps.mode === 'single' ? .02 : 0));
+}
+$('#pPlay').onclick = togglePlay;
+$('#pPrev').onclick = () => jump(-1);
+$('#pNext').onclick = () => jump(1);
+const seek = $('#pSeek'); let seekHeld = false, seekPrev = 0;
+seek.addEventListener('pointerdown', () => { seekHeld = true; });
+seek.addEventListener('input', () => { seekHeld = true; seekPrev = seek.value / 1000 * timeline().total; });
+seek.addEventListener('change', () => { const g = seek.value / 1000 * timeline().total; seekHeld = false; seekTo(g); });
+['pointerup', 'pointercancel'].forEach(ev => seek.addEventListener(ev, () => { if (seekHeld){ seekHeld = false; seekTo(seek.value / 1000 * timeline().total); } }));
+
+/* ---------- analysis ---------- */
+const F = new Float32Array(1024), WV = new Float32Array(2048); let bassS = 0, bassRaw = 0, bassAvg = 0;
+function sample(t){
+  const live = analyser && isPlaying();
+  if (live){ analyser.getByteFrequencyData(freqB); analyser.getByteTimeDomainData(waveB); for (let i = 0; i < 1024; i++) F[i] = freqB[i] / 255; for (let i = 0; i < 2048; i++) WV[i] = (waveB[i] - 128) / 128; }
+  else { for (let i = 0; i < 1024; i++) F[i] = Math.max(0, .35 * Math.exp(-i / 200) * (.6 + .4 * Math.sin(t * 1.4 + i * .09))); for (let i = 0; i < 2048; i++) WV[i] = .15 * Math.sin(i * .045 + t * 4) * Math.sin(i * .006 + t * .8); }
+  let b = 0; for (let i = 1; i < 9; i++) b += F[i]; b /= 8; bassRaw = b; bassS += (b - bassS) * .3; bassAvg += (b - bassAvg) * .04;
+}
+function bars(n){
+  const out = new Array(n);
+  for (let i = 0; i < n; i++){
+    const a = Math.floor(2 + Math.pow(i / n, 1.7) * 430), b = Math.max(a + 1, Math.floor(2 + Math.pow((i + 1) / n, 1.7) * 430));
+    let s = 0; for (let j = a; j < b; j++) s += F[j];
+    out[i] = Math.min(1, (s / (b - a)) * (.75 + i / n * .9));
+  }
+  return out;
+}
+const SM = {};
+function smooth(key, n){ const raw = bars(n); let s = SM[key]; if (!s || s.length !== n) s = SM[key] = raw.slice(); for (let i = 0; i < n; i++){ const d = raw[i] - s[i]; s[i] += d * (d > 0 ? .5 : .12); } return s; }
+
+/* ---------- drawing helpers ---------- */
+const noise = document.createElement('canvas'); noise.width = noise.height = 200;
+(() => { const x = noise.getContext('2d'), d = x.createImageData(200, 200); for (let i = 0; i < d.data.length; i += 4){ const v = Math.random() * 255; d.data[i] = d.data[i+1] = d.data[i+2] = v; d.data[i+3] = 255; } x.putImageData(d, 0, 0); })();
+const fontStr = (w, px) => `${w} ${Math.max(1, px)}px "${ps.font}", "Paperlogy", "Pretendard Variable", sans-serif`;
+function text(t, x, y, font, color, align, sp){
+  ctx.font = font; ctx.fillStyle = color; ctx.textAlign = align || 'left';
+  if (sp && /[ㄱ-ㆎ가-힣]/.test(t)) sp *= .3;
+  if (sp && 'letterSpacing' in ctx){ ctx.letterSpacing = sp + 'px'; ctx.fillText(t, x, y); ctx.letterSpacing = '0px'; }
+  else ctx.fillText(t, x, y);
+}
+const tw = (t, sp) => ctx.measureText(t).width + (sp ? t.length * sp : 0);
+function fit(t, maxW){ t = String(t); if (maxW <= 0) return ''; if (ctx.measureText(t).width <= maxW) return t; let s = t; while (s.length > 1 && ctx.measureText(s + '…').width > maxW) s = s.slice(0, -1); return s.trimEnd() + '…'; }
+function drawBg(src, W, H, z, fx, fy){
+  const sw = src.videoWidth || src.width, sh = src.videoHeight || src.height; if (!sw || !sh) return;
+  const sc = Math.max(W / sw, H / sh) * z, w = sw * sc, h = sh * sc;
+  ctx.drawImage(src, (W - w) * clamp(fx, 0, 100) / 100, (H - h) * clamp(fy, 0, 100) / 100, w, h);
+}
+function gridPlan(n, w, maxH, fsz, maxCols, minCols){
+  for (let s = fsz; s >= fsz * .55; s *= .93){
+    const rowH = s * 1.85;
+    for (let c = Math.min(minCols, n); c <= maxCols; c++){ const rows = Math.ceil(n / c); if (rows * rowH <= maxH && w / c >= s * 11) return {cols: c, rows, rowH, fsz: s}; }
+  }
+  const cols = maxCols, rows = Math.ceil(n / cols), rowH = maxH / rows; return {cols, rows, rowH, fsz: rowH / 1.85};
+}
+function tickerPlan(items, maxW, f){
+  const S = ps.st.ticker, sep = S.sep && S.sep.trim() ? `  ${S.sep.trim()}  ` : '     ';
+  const lab = (it, k) => { const t = (S.num ? pad2(k + 1) + '  ' : '') + it.title + (S.artist && it.artist ? ' - ' + it.artist : ''); return S.upper ? t.toUpperCase() : t; };
+  const max = Math.max(1, Math.round(S.lines));
+  for (let s = f; ; s *= .93){
+    ctx.font = fontStr(600, s); const sw = ctx.measureText(sep).width, lines = []; let cur = [], cw = 0;
+    items.forEach((it, k) => {
+      const t = lab(it, k), w = Math.min(ctx.measureText(t).width, maxW);
+      if (cur.length && cw + sw + w > maxW){ lines.push({toks: cur, w: cw}); cur = []; cw = 0; }
+      cw += (cur.length ? sw : 0) + w; cur.push({k, t, w});
+    });
+    if (cur.length) lines.push({toks: cur, w: cw});
+    if (lines.length <= max || s < f * .6) return {lines, fsz: s, sw, sep, h: Math.min(max, lines.length) * s * 1.5};
+  }
+}
+
+/* ---------- layout (default anchors per template) ---------- */
+function layout(W, H, TL){
+  const u = Math.min(W, H) / 1000, port = H / W > 1.15, on = ps.on, st = ps.st, P = ps.preset, n = TL.items.length;
+  const pad = (port ? 64 : 70) * u, L = {u, port, pad};
+  L.tl = {x: pad, y: pad + 18 * u};
+  let ry = pad + 18 * u; ['tr', 'count', 'clock'].forEach(k => { L[k] = {x: W - pad, y: ry}; if (on[k]) ry += 32 * u; });
+  const topY = (on.tl || on.tr || on.count || on.clock) ? Math.max(pad + 46 * u, ry + 6 * u) : pad;
+  let yb = H - (on.ticker ? 34 * u : pad * .95);
+  L.spectrum = {x: W / 2, y: H, w: W, h: pad * .62 * st.spectrum.height / 100};
+  const tf = 23 * u * st.ticker.size / 100, tmw = W * st.ticker.width / 100;
+  L.ticker = {x: W / 2, y: H - 34 * u, plan: n ? tickerPlan(TL.items, tmw, tf) : null};
+  if (on.ticker && L.ticker.plan) yb -= L.ticker.plan.h + 20 * u;
+  const wh = 56 * u * st.wave.height / 100;
+  L.wave = {x: W / 2, y: yb, w: W * (port ? .7 : .4) * st.wave.width / 100, h: wh};
+  if (on.wave) yb -= wh + 22 * u;
+  const lf = (port ? 30 : 22) * u * st.list.size / 100;
+  let LP = null, lh = 0;
+  if (n){ if (st.list.mode === 'all'){ LP = gridPlan(n, W - 2 * pad, port ? H * .4 : H * .36, lf, port ? 2 : 4, (!port && n >= 5) ? 2 : 1); lh = LP.rows * LP.rowH; } else lh = 38 * u + lf * (1.75 + (st.list.artist ? 1.15 : 0)); }
+  L.list = {x: W / 2, y: yb, w: W - 2 * pad, lf, LP, h: lh};
+  if (on.list && n) yb -= lh + 30 * u;
+  const upTop = topY + 10 * u, upBot = yb, upH = Math.max(120 * u, upBot - upTop);
+  const tsz = (port ? 78 : 64) * u, asz = tsz * .43;
+  const TH = (st.title.label ? 39 * u : 0) + tsz * .82 + (st.title.artist ? asz * 1.55 : 0) + 8 * u, PH = 70 * u, NH = 40 * u;
+  const infoH = (on.title ? TH : 0) + (on.progress ? PH : 0) + (on.next ? NH : 0);
+  let cx, cy, cs, bx0, iw, iy, al;
+  if (P === 'wide'){
+    cs = Math.max(80 * u, Math.min(upH * .8, W * (port ? .5 : .24)));
+    bx0 = pad; iw = W * (port ? .86 : .58); iy = Math.max(upTop, upBot - infoH); al = 'left';
+    cx = port ? W / 2 : W - pad - cs / 2; cy = port ? upTop + cs / 2 + 20 * u : upBot - cs / 2;
+  } else if (!port && P === 'side'){
+    if (on.cover){ cs = Math.max(80 * u, Math.min(upH, W * .34)); cx = pad + cs / 2; cy = upTop + upH / 2; bx0 = pad + cs + 64 * u; iw = W - pad - bx0; iy = cy - infoH / 2; }
+    else { cs = Math.min(upH, W * .3); cx = W - pad - cs / 2; cy = upTop + upH / 2; bx0 = pad; iw = W * .6; iy = upTop + (upH - infoH) / 2; }
+    al = 'left';
+  } else {
+    const coverMax = W * (port ? .72 : P === 'minimal' ? .26 : .34);
+    cs = Math.max(80 * u, Math.min(upH - (infoH ? infoH + 30 * u : 0), coverMax));
+    const used = (on.cover ? cs : 0) + (infoH ? infoH + (on.cover ? 30 * u : 0) : 0), y0 = upTop + Math.max(0, (upH - used) / 2);
+    cx = W / 2; cy = on.cover ? y0 + cs / 2 : upTop + upH / 2; iw = W * (port ? .86 : .62); bx0 = (W - iw) / 2; iy = y0 + (on.cover ? cs + 30 * u : 0); al = 'center';
+  }
+  if (st.title.align !== 'auto') al = st.title.align;
+  const ax = al === 'left' ? bx0 : al === 'center' ? bx0 + iw / 2 : bx0 + iw;
+  L.cover = {x: cx, y: cy, cs};
+  L.title = {x: ax, y: iy, w: iw, align: al, tsz, asz};
+  L.progress = {x: ax, y: iy + (on.title ? TH : 0) + 30 * u, bw: Math.min(iw, 560 * u) * st.progress.width / 100, align: al};
+  L.next = {x: ax, y: iy + (on.title ? TH : 0) + (on.progress ? PH : 0) + 16 * u, w: iw, align: al};
+  L.eq = on.cover ? (!port && P === 'side' ? {x: cx + cs / 2 - 56 * u, y: cy - cs / 2 - 26 * u} : {x: cx, y: cy - cs / 2 - 30 * u}) : {x: bx0 + 56 * u, y: iy - 28 * u};
+  return L;
+}
+
+/* ---------- objects: each draws around its own anchor (0,0) and returns its box ---------- */
+let OB = {}, FW = 0, FH = 0, FU = 1;
+let sel = null, hover = null, drag = null, guides = [];
+function obj(k, ax, ay, fn, textual, isOn){
+  if (!(isOn === undefined ? ps.on[k] : isOn)) return;
+  const o = ps.o[k]; ax += o.dx * FW; ay += o.dy * FH;
+  const s = Math.max(.1, (o.s || 100) / 100), r = (o.r || 0) * Math.PI / 180;
+  ctx.save(); ctx.translate(ax, ay); if (r) ctx.rotate(r); if (s !== 1) ctx.scale(s, s);
+  const TS = ps.tshadow;
+  if (textual && TS.on){ ctx.shadowColor = col(TS.color, TS.amt / 100); ctx.shadowBlur = TS.blur * FU; ctx.shadowOffsetY = TS.dist * FU; }
+  let b = null; try { b = fn(); } catch(e){ console.error(e); }
+  ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+  if (b && !recording && !ps.lock){
+    const [x0, y0, x1, y1] = b;
+    if (sel === k){ ctx.lineWidth = 2 / s; ctx.strokeStyle = col(ps.colors.accent, 1); ctx.strokeRect(x0, y0, x1 - x0, y1 - y0); }
+    if ((drag ? drag.key : hover) === k){ ctx.setLineDash([5 / s, 4 / s]); ctx.lineWidth = 1.2 / s; ctx.strokeStyle = col(ps.colors.accent, .95); ctx.strokeRect(x0, y0, x1 - x0, y1 - y0); ctx.setLineDash([]); }
+  }
+  ctx.restore();
+  if (b) OB[k] = {ax, ay, s, r, b};
+}
+function aabb(k){
+  const o = OB[k]; if (!o) return null; const [x0, y0, x1, y1] = o.b, c = Math.cos(o.r), sn = Math.sin(o.r);
+  const pts = [[x0, y0], [x1, y0], [x1, y1], [x0, y1]].map(([x, y]) => [o.ax + (x * c - y * sn) * o.s, o.ay + (x * sn + y * c) * o.s]);
+  return {x0: Math.min(...pts.map(p => p[0])), y0: Math.min(...pts.map(p => p[1])), x1: Math.max(...pts.map(p => p[0])), y1: Math.max(...pts.map(p => p[1]))};
+}
+
+function oCover(cs, art, prev, fe){
+  const S = ps.st.cover, C = ps.colors, shape = S.shape, rad = shape === 'square' ? S.radius * FU : cs * .12, u = FU;
+  const path = () => { if (shape === 'circle'){ ctx.beginPath(); ctx.arc(0, 0, cs / 2, 0, Math.PI * 2); } else rr(-cs / 2, -cs / 2, cs, cs, rad); };
+  ctx.save(); if (shape === 'circle') ctx.rotate(spinA);
+  if (S.shadow > 0){ ctx.shadowColor = `rgba(0,0,0,${S.shadow / 100 * .9})`; ctx.shadowBlur = 50 * u; ctx.shadowOffsetY = 16 * u; }
+  path(); ctx.fillStyle = '#2a2a2e'; ctx.fill(); ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+  ctx.save(); path(); ctx.clip();
+  if (prev){ ctx.drawImage(prev, -cs / 2, -cs / 2, cs, cs); ctx.globalAlpha = fe; }
+  ctx.drawImage(art, -cs / 2 - .5, -cs / 2 - .5, cs + 1, cs + 1); ctx.globalAlpha = 1; ctx.restore();
+  if (shape === 'circle'){
+    ctx.strokeStyle = 'rgba(0,0,0,.22)'; for (let r = cs * .2; r < cs * .5; r += cs * .035){ ctx.lineWidth = .8 * u; ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.stroke(); }
+    ctx.fillStyle = C.bg; ctx.beginPath(); ctx.arc(0, 0, cs * .045, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = col(C.line, .7); ctx.lineWidth = 1.5 * u; ctx.stroke();
+  }
+  if (S.border > 0){ path(); ctx.strokeStyle = col(C.line, S.border / 100); ctx.lineWidth = 1.2 * u; ctx.stroke(); }
+  ctx.restore();
+  return [-cs / 2, -cs / 2, cs / 2, cs / 2];
+}
+function oTitle(T, it, ci, n){
+  const S = ps.st.title, C = ps.colors, u = FU, al = T.align, c0 = colorOf(S, C.text), a = S.a / 100, up = s => S.upper ? s.toUpperCase() : s;
+  let y = 0, mw = 60 * u;
+  if (S.label){ const lb = n ? `TRACK ${pad2(ci + 1)} / ${pad2(n)}` : 'PLAYLIST'; text(lb, 0, 13 * u, fontStr(600, 13 * u), col(C.accent, 1), al, 2.5 * u); mw = Math.max(mw, tw(lb, 2.5 * u)); y += 39 * u; }
+  const t = up(it ? (it.title || 'Untitled') : (ps.mode === 'files' ? '곡을 추가해 주세요' : '음원을 넣어 주세요'));
+  let s = T.tsz; ctx.font = fontStr(ps.weight, s);
+  while (ctx.measureText(t).width > T.w && s > T.tsz * .6){ s *= .95; ctx.font = fontStr(ps.weight, s); }
+  y += T.tsz * .82; const ft = fit(t, T.w); text(ft, 0, y, ctx.font, col(c0, a), al); mw = Math.max(mw, ctx.measureText(ft).width);
+  if (S.artist){ y += T.asz * 1.55; if (it && it.artist){ ctx.font = fontStr(400, T.asz); const fa = fit(up(it.artist), T.w); text(fa, 0, y, ctx.font, col(c0, a * .72), al); mw = Math.max(mw, ctx.measureText(fa).width); } }
+  const x0 = al === 'left' ? 0 : al === 'center' ? -mw / 2 : -mw;
+  return [x0 - 6 * u, -4 * u, x0 + mw + 6 * u, y + 10 * u];
+}
+function oProgress(P, it, g){
+  const S = ps.st.progress, C = ps.colors, u = FU, bw = P.bw, x0 = P.align === 'left' ? 0 : P.align === 'center' ? -bw / 2 : -bw, th = 3 * u * S.thick / 100, cc = colorOf(S, C.accent);
+  const d = it ? Math.max(.001, it.end - it.start) : 1, el = it ? clamp(g - it.start, 0, d) : 0, pr = el / d;
+  ctx.fillStyle = col(C.line, .22); rr(x0, -th / 2, bw, th, th / 2); ctx.fill();
+  ctx.fillStyle = col(cc, 1); rr(x0, -th / 2, Math.max(th, bw * pr), th, th / 2); ctx.fill();
+  ctx.fillStyle = col(C.line, 1); ctx.beginPath(); ctx.arc(x0 + bw * pr, 0, th * 1.8, 0, Math.PI * 2); ctx.fill();
+  if (S.times){ text(fmtTime(el), x0, 28 * u, fontStr(500, 12 * u), col(C.text, .62), 'left', 1 * u); text(fmtTime(d), x0 + bw, 28 * u, fontStr(500, 12 * u), col(C.text, .62), 'right', 1 * u); }
+  return [x0 - 8 * u, -12 * u, x0 + bw + 8 * u, S.times ? 34 * u : 12 * u];
+}
+function oNext(N, nx){
+  const S = ps.st.next, u = FU; if (!nx) return null;
+  ctx.font = fontStr(500, 14 * u);
+  const t = fit((S.label ? S.label + '  ·  ' : '') + nx.title + (nx.artist ? '  —  ' + nx.artist : ''), N.w);
+  text(t, 0, 14 * u, ctx.font, col(colorOf(S, ps.colors.text), S.a / 100), N.align, .5 * u);
+  const w = ctx.measureText(t).width, x0 = N.align === 'left' ? 0 : N.align === 'center' ? -w / 2 : -w;
+  return [x0 - 6 * u, -4 * u, x0 + w + 6 * u, 22 * u];
+}
+function oList(Ls, items, ci, g, dt, long){
+  if (!items.length) return null;
+  if (ps.st.list.mode === 'all' && Ls.LP){ drawGrid(Ls.LP, items, ci, -Ls.w / 2, -Ls.h, Ls.w, g, FU, long); return [-Ls.w / 2 - 12 * FU, -Ls.h, Ls.w / 2, 0]; }
+  drawWindow(items, ci, -Ls.w / 2, Ls.w / 2, -Ls.h, FU, dt, Ls.lf, long);
+  return [-Ls.w / 2, -Ls.h, Ls.w / 2, 0];
+}
+function drawGrid(LP, items, ci, x0, top, w, g, u, long){
+  const S = ps.st.list, C = ps.colors, cw = w / LP.cols, f = LP.fsz, dim = S.dim / 100, eq = smooth('eq', 6), hc = colorOf(S, C.accent);
+  items.forEach((it, k) => {
+    const c = Math.floor(k / LP.rows), r = k % LP.rows, x = x0 + c * cw, yT = top + r * LP.rowH, base = yT + LP.rowH * .5 + f * .36, cur = k === ci;
+    const a = cur ? 1 : dim * (k < ci ? .7 : 1);
+    if (cur){
+      rr(x - 10 * u, yT + 3 * u, cw - 14 * u, LP.rowH - 6 * u, 8 * u); ctx.fillStyle = col(hc, .16); ctx.fill();
+      const d = Math.max(.001, it.end - it.start), pr = clamp((g - it.start) / d, 0, 1);
+      ctx.fillStyle = col(hc, .9); ctx.fillRect(x, yT + LP.rowH - 9 * u, (cw - 34 * u) * pr, 2 * u);
+    }
+    if (a <= .005) return;
+    let tx = x;
+    if (S.num){
+      if (cur){ for (let j = 0; j < 3; j++){ const h = f * (.3 + .6 * Math.min(1, eq[j * 2] * 1.4)); ctx.fillStyle = col(hc, 1); rr(x + j * f * .32, base - h, f * .2, h, f * .08); ctx.fill(); } }
+      else text(pad2(k + 1), x, base, fontStr(600, f * .82), col(C.text, a * .8), 'left', 1 * u);
+      tx = x + f * 2.1;
+    }
+    let right = x + cw - 26 * u;
+    if (S.time){ const stp = fmtStamp(it.start, long); ctx.font = fontStr(500, f * .78); text(stp, right, base, ctx.font, col(cur ? hc : C.text, cur ? 1 : a * .75), 'right', 1 * u); right -= tw(stp, u) + f * .9; }
+    ctx.font = fontStr(cur ? 700 : 500, f); const tt = fit(it.title, right - tx);
+    text(tt, tx, base, ctx.font, col(C.text, a), 'left');
+    if (S.artist && it.artist){
+      const w0 = ctx.measureText(tt).width, rem = right - tx - w0 - f * .6;
+      if (rem > f * 2.5){ ctx.font = fontStr(400, f * .86); text(fit('·  ' + it.artist, rem), tx + w0 + f * .6, base, ctx.font, col(C.text, a * .62), 'left'); }
+    }
+  });
+}
+let wpos = 0;
+function drawWindow(items, ci, x0, x1, top, u, dt, f, long){
+  const S = ps.st.list, C = ps.colors, hc = colorOf(S, C.accent), vis = FH > FW ? 3 : 5, iw = (x1 - x0) / vis, cx = (x0 + x1) / 2, ly = top + 8 * u;
+  wpos += (Math.max(0, ci) - wpos) * Math.min(1, dt * 5);
+  ctx.fillStyle = col(C.line, .18); ctx.fillRect(x0, ly, x1 - x0, Math.max(1, u));
+  for (let k = Math.floor(wpos - vis / 2 - 1); k <= Math.ceil(wpos + vis / 2 + 1); k++){
+    if (k < 0 || k >= items.length) continue;
+    const d = k - wpos, x = cx + d * iw, edge = clamp(vis / 2 + .5 - Math.abs(d), 0, 1);
+    if (edge <= 0) continue;
+    const cur = k === ci, a = (cur ? 1 : S.dim / 100) * edge, it = items[k];
+    ctx.fillStyle = cur ? col(hc, edge) : col(C.line, .6 * edge); ctx.beginPath(); ctx.arc(x, ly, (cur ? 5 : 3) * u, 0, Math.PI * 2); ctx.fill();
+    if (a <= .005) continue;
+    const top1 = `${S.num ? pad2(k + 1) : ''}${S.num && S.time ? '  ·  ' : ''}${S.time ? fmtStamp(it.start, long) : ''}`;
+    if (top1) text(top1, x, ly + 30 * u, fontStr(600, f * .62), col(cur ? hc : C.text, cur ? 1 : a * .8), 'center', 1.5 * u);
+    ctx.font = fontStr(cur ? 700 : 500, f * (cur ? 1.08 : 1)); const ty = ly + 30 * u + f * 1.4;
+    text(fit(it.title, iw * .88), x, ty, ctx.font, col(C.text, a), 'center');
+    if (S.artist && it.artist){ ctx.font = fontStr(400, f * .8); text(fit(it.artist, iw * .88), x, ty + f * 1.15, ctx.font, col(C.text, a * .65), 'center'); }
+  }
+}
+function oTicker(plan, ci){
+  if (!plan || !plan.lines.length) return null;
+  const S = ps.st.ticker, C = ps.colors, f = plan.fsz, lh = f * 1.5, max = Math.max(1, Math.round(S.lines));
+  let L0 = 0;
+  if (plan.lines.length > max){ const li = Math.max(0, plan.lines.findIndex(l => l.toks.some(t => t.k === ci))); L0 = clamp(li - Math.floor((max - 1) / 2), 0, plan.lines.length - max); }
+  const lines = plan.lines.slice(L0, L0 + max), H0 = lines.length * lh, curC = colorOf(S, C.text), dim = S.dim / 100;
+  let mw = 0; ctx.font = fontStr(600, f); ctx.textAlign = 'left'; ctx.lineJoin = 'round';
+  lines.forEach((ln, i) => {
+    const y = -H0 + lh * i + f * 1.1; let x = -ln.w / 2; mw = Math.max(mw, ln.w);
+    ln.toks.forEach((tk, j) => {
+      if (j){ ctx.fillStyle = col(C.text, Math.max(.15, dim * .8)); ctx.fillText(plan.sep, x, y); x += plan.sw; }
+      const cur = tk.k === ci;
+      if (S.stroke){ ctx.save(); ctx.shadowColor = 'transparent'; ctx.lineWidth = f * .14; ctx.strokeStyle = col('#000000', cur ? .55 : .35 * Math.max(dim, .3)); ctx.strokeText(tk.t, x, y); ctx.restore(); }
+      if (cur && S.glow){ ctx.save(); ctx.shadowColor = col(C.accent, .95); ctx.shadowBlur = f * .9; ctx.shadowOffsetY = 0; }
+      ctx.fillStyle = cur ? col(curC, 1) : col(C.text, dim); ctx.fillText(tk.t, x, y);
+      if (cur && S.glow) ctx.restore();
+      x += tk.w;
+    });
+  });
+  return [-mw / 2 - 8 * FU, -H0 - 4 * FU, mw / 2 + 8 * FU, 4 * FU];
+}
+function oCornerText(k, align){
+  const S = ps.st[k], u = FU; let t = (k === 'tl' ? (S.text || ps.name) : S.text); if (!t) return null;
+  if (S.upper) t = t.toUpperCase();
+  ctx.font = fontStr(700, 22 * u); text(t, 0, 0, ctx.font, col(colorOf(S, ps.colors.text), S.a / 100), align, .6 * u);
+  const w = tw(t, .6 * u), x0 = align === 'left' ? 0 : -w;
+  return [x0 - 6 * u, -20 * u, x0 + w + 6 * u, 8 * u];
+}
+function oCount(n, total, long){
+  const S = ps.st.count, u = FU, t = `${n} TRACKS  ·  ${fmtStamp(total, long)}`;
+  text(t, 0, 0, fontStr(500, 13 * u), col(colorOf(S, ps.colors.text), S.a / 100), 'right', 2 * u);
+  const w = tw(t, 2 * u); return [-w - 6 * u, -14 * u, 6 * u, 6 * u];
+}
+function oClock(g, total, it){
+  const S = ps.st.clock, u = FU, el = it ? clamp(g - it.start, 0, it.end - it.start) : 0, d = it ? it.end - it.start : 0;
+  const t = S.mode === 'track' ? `${fmtTime(el)} / ${fmtTime(d)}` : S.mode === 'now' ? fmtTime(g) : `${fmtTime(g)} / ${fmtTime(total)}`;
+  ctx.font = fontStr(600, 18 * u); text(t, 0, 0, ctx.font, col(colorOf(S, ps.colors.text), S.a / 100), 'right', 1 * u);
+  const w = tw(t, u); return [-w - 6 * u, -18 * u, 6 * u, 6 * u];
+}
+function oWave(Wd){
+  const S = ps.st.wave, u = FU, w = Wd.w, h = Wd.h, c = colorOf(S, ps.colors.line), a = S.a / 100;
+  if (S.style === 'line'){
+    ctx.strokeStyle = col(c, a); ctx.lineWidth = 2 * u; ctx.lineJoin = 'round'; ctx.beginPath();
+    const n = 256; for (let i = 0; i < n; i++){ const v = WV[Math.floor(i * 2048 / n)], x = -w / 2 + w * i / (n - 1), y = -h / 2 + v * h * .9; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+    ctx.stroke(); return [-w / 2, -h, w / 2, 0];
+  }
+  const n = Math.max(40, Math.min(220, Math.round(w / (4.6 * u)))), v = smooth('wave' + n, n), bw = w / n;
+  ctx.fillStyle = col(c, a * .35);
+  for (let i = 0; i < n; i += 2) ctx.fillRect(-w / 2 + i * bw, -1 * u, Math.max(1, bw * .45), Math.max(1, u));
+  for (let i = 0; i < n; i++){
+    const val = S.style === 'mirror' ? v[Math.abs(Math.floor(n / 2) - i) * 2 % n] : v[i], bh = Math.max(1.5 * u, val * h), x = -w / 2 + i * bw;
+    ctx.fillStyle = col(c, a * (.55 + val * .45));
+    if (S.style === 'mirror') ctx.fillRect(x, -h / 2 - bh / 2, Math.max(1, bw * .45), bh); else ctx.fillRect(x, -bh, Math.max(1, bw * .45), bh);
+  }
+  return [-w / 2, -h, w / 2, 2 * u];
+}
+function oSpectrum(Sp){
+  const S = ps.st.spectrum, u = FU, nb = FH > FW ? 48 : 96, v = smooth('sp', nb), bw = Sp.w / nb, c = colorOf(S, ps.colors.line), a = S.a / 100;
+  for (let i = 0; i < nb; i++){
+    const val = S.style === 'mirror' ? v[Math.abs(Math.floor(nb / 2) - i) * 2 % nb] : v[i], h = Math.max(2 * u, val * Sp.h);
+    ctx.fillStyle = col(i % 7 === 0 ? ps.colors.accent : c, a * (.4 + val * .6)); rr(-Sp.w / 2 + i * bw + bw * .2, -h, bw * .6, h, bw * .2); ctx.fill();
+  }
+  return [-Sp.w / 2, -Sp.h, Sp.w / 2, 0];
+}
+function oRing(cs){
+  const S = ps.st.ring, C = ps.colors, u = FU, n = 90, v = smooth('ring', n), circle = ps.st.cover.shape === 'circle', R = (circle ? cs * .5 : cs * .5 * 1.08) + 14 * u;
+  ctx.lineCap = 'round'; ctx.strokeStyle = col(C.line, .25); ctx.lineWidth = u; ctx.beginPath(); ctx.arc(0, 0, R - 6 * u, 0, Math.PI * 2); ctx.stroke();
+  const fixed = S.c !== 'auto' ? colorOf(S, C.line) : null;
+  for (let side = -1; side <= 1; side += 2) for (let i = 0; i < n; i++){
+    const a = -Math.PI / 2 + side * (i + .5) / n * Math.PI, len = 3 * u + v[i] * 80 * u * S.height / 100, f = clamp((v[i] - .3) / .45, 0, 1);
+    ctx.strokeStyle = col(fixed || mixHex(C.line, C.accent, f), .5 + v[i] * .45); ctx.lineWidth = Math.max(1, (Math.PI * R / n) * .45);
+    ctx.beginPath(); ctx.moveTo(Math.cos(a) * R, Math.sin(a) * R); ctx.lineTo(Math.cos(a) * (R + len), Math.sin(a) * (R + len)); ctx.stroke();
+  }
+  ctx.lineCap = 'butt'; const e = R + 40 * u; return [-e, -e, e, e];
+}
+function oEq(){
+  const u = FU, w = 110 * u, h = 30 * u, n = 9, v = bars(14), pw = w / n * .46, c = colorOf(ps.st.eq, ps.colors.accent);
+  for (let i = 0; i < n; i++){ const val = v[[0, 2, 4, 6, 8, 10, 12, 5, 1][i]], bh = Math.max(pw, h * (.18 + .82 * Math.min(1, val * 1.3))); ctx.fillStyle = col(i % 4 === 0 ? ps.colors.line : c, .9); rr(-w / 2 + i * w / n + (w / n - pw) / 2, -bh / 2, pw, bh, pw / 2); ctx.fill(); }
+  return [-w / 2 - 4 * u, -h / 2 - 4 * u, w / 2 + 4 * u, h / 2 + 4 * u];
+}
+function oGlow(cs){
+  const S = ps.st.glow, c = colorOf(S, ps.colors.accent), r = cs * (.85 + bassS * .5) * S.amt / 100;
+  const gr = ctx.createRadialGradient(0, 0, cs * .2, 0, 0, Math.max(cs * .21, r)); gr.addColorStop(0, col(c, .28 + bassS * .25)); gr.addColorStop(1, col(c, 0));
+  ctx.fillStyle = gr; ctx.fillRect(-r, -r, r * 2, r * 2); const hb = cs * .35; return [-hb, -hb, hb, hb];
+}
+function oOrbit(cs){
+  const S = ps.st.orbit, u = FU, c = colorOf(S, ps.colors.line), a = S.a / 100;
+  [[.95, .3, .18, .7, 0], [1.08, .38, -.12, .4, 1], [.8, .22, .25, .55, 0]].forEach(([rx, ry, sp, aa, dash], i) => {
+    ctx.save(); ctx.rotate(-.32 + Math.sin(clock * sp) * .08); ctx.setLineDash(dash ? [6 * u, 10 * u] : []); ctx.strokeStyle = col(c, aa * a); ctx.lineWidth = 1.1 * u;
+    ctx.beginPath(); ctx.ellipse(0, 0, cs * rx, cs * ry, 0, 0, Math.PI * 2); ctx.stroke();
+    const ang = clock * (.6 + i * .25) + i * 2; ctx.fillStyle = i === 0 ? col(ps.colors.accent, 1) : col(c, .85 * a);
+    ctx.beginPath(); ctx.arc(Math.cos(ang) * cs * rx, Math.sin(ang) * cs * ry, (i === 0 ? 5 : 3) * u, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+  });
+  ctx.setLineDash([]); return [-cs * 1.08, -cs * .45, cs * 1.08, cs * .45];
+}
+function oSparkle(cs){
+  const S = ps.st.sparkle, u = FU, a = S.a / 100, c = S.c === 'auto' ? null : colorOf(S, ps.colors.accent);
+  [[.62, -.56, 26], [.74, -.4, 10], [-.64, .5, 12], [-.6, -.6, 8], [.58, .62, 7]].forEach(([dx, dy, r], i) => {
+    const s = (.55 + .45 * Math.sin(clock * 1.8 + i * 1.3)) * (1 + bassS * .3);
+    ctx.save(); ctx.shadowColor = col(ps.colors.accent, .9); ctx.shadowBlur = r * u;
+    ctx.fillStyle = c ? col(c, a) : i % 2 ? col(ps.colors.accent, a) : col(ps.colors.line, .95 * a); star4(dx * cs, dy * cs, r * u * s); ctx.fill(); ctx.restore();
+  });
+  return [-cs * .72, -cs * .72, cs * .8, cs * .72];
+}
+
+/* ---------- effects ---------- */
+const parts = Array.from({length: 330}, () => ({x: Math.random(), y: Math.random(), v: .008 + Math.random() * .025, r: .6 + Math.random() * 1.6, a: .12 + Math.random() * .45, ph: Math.random() * 6, q: Math.random()}));
+const embers = Array.from({length: 240}, () => newEmber(true));
+function newEmber(any){ return {x: Math.random(), y: any ? Math.random() : 1.05 + Math.random() * .1, vx: (Math.random() - .3) * .05, vy: .05 + Math.random() * .12, r: .8 + Math.random() * 1.8, ph: Math.random() * 6, life: Math.random(), streak: Math.random() < .25}; }
+const flakes = Array.from({length: 360}, () => ({x: Math.random(), y: Math.random(), v: .02 + Math.random() * .05, r: .8 + Math.random() * 2.4, ph: Math.random() * 6, a: .35 + Math.random() * .55}));
+const bokehs = Array.from({length: 26}, () => ({x: Math.random(), y: Math.random(), r: 30 + Math.random() * 90, vx: (Math.random() - .5) * .006, vy: (Math.random() - .5) * .006, a: .05 + Math.random() * .1, ph: Math.random() * 6}));
+let flashV = 0, lastFlash = 0, spinA = 0;
+function fxBack(W, H, u, dt){
+  const X = ps.fx, XS = ps.fxs, C = ps.colors;
+  if (X.lightleak){
+    const S = XS.lightleak, a = S.amt / 100, m = Math.max(W, H);
+    const light = (x, y, r, k) => { const gr = ctx.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, col(S.color, .5 * a * k)); gr.addColorStop(.5, col(S.color, .16 * a * k)); gr.addColorStop(1, col(S.color, 0)); ctx.fillStyle = gr; ctx.fillRect(x - r, y - r, r * 2, r * 2); };
+    obj('lightleak', W * .16, H * .18, () => {
+      ctx.globalCompositeOperation = 'screen';
+      const dx = Math.sin(clock * .07) * 60 * u, dy = Math.cos(clock * .05) * 40 * u, r = .7 * m * S.size / 100 * (1 + bassS * .08);
+      light(dx, dy, r, .9 + .1 * Math.sin(clock * .6)); ctx.globalCompositeOperation = 'source-over';
+      return [-70 * u, -70 * u, 70 * u, 70 * u];
+    }, false, true);
+    const o = OB.lightleak;
+    if (o && S.two){ ctx.save(); ctx.globalCompositeOperation = 'screen'; light(W - o.ax + Math.cos(clock * .06) * 50 * u, H - o.ay + Math.sin(clock * .08) * 40 * u, .55 * m * S.size / 100 * o.s, .7); ctx.restore(); }
+  }
+  if (X.bokeh){
+    const S = XS.bokeh, c = colorOf(S, C.accent), n = Math.round(10 * S.amt / 100);
+    ctx.save(); ctx.globalCompositeOperation = 'screen';
+    for (let i = 0; i < Math.min(n, bokehs.length); i++){
+      const b = bokehs[i]; b.x += b.vx * dt; b.y += b.vy * dt; if (b.x < -.1) b.x = 1.1; if (b.x > 1.1) b.x = -.1; if (b.y < -.1) b.y = 1.1; if (b.y > 1.1) b.y = -.1;
+      const r = b.r * u * S.size / 100 * (1 + bassS * .15), a = b.a * S.a / 100 * (.7 + .3 * Math.sin(clock * .8 + b.ph));
+      const gr = ctx.createRadialGradient(b.x * W, b.y * H, r * .2, b.x * W, b.y * H, r); gr.addColorStop(0, col(c, a)); gr.addColorStop(.75, col(c, a * .7)); gr.addColorStop(1, col(c, 0));
+      ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(b.x * W, b.y * H, r, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.restore();
+  }
+  if (X.particles){
+    const S = XS.particles, n = Math.min(parts.length, Math.round(110 * S.amt / 100)), dz = S.size / 100, dm = S.a / 100, dc = S.c === 'auto' ? null : colorOf(S, C.line);
+    for (let i = 0; i < n; i++){
+      const p = parts[i]; p.y -= p.v * dt * (1 + bassS * 3); p.x += Math.sin(clock * .5 + p.ph) * .0003;
+      if (p.y < -.02){ p.y = 1.02; p.x = Math.random(); }
+      const a = p.a * (.6 + .4 * Math.sin(clock * 2 + p.ph)) * dm;
+      if (p.q < .07){ ctx.fillStyle = col(dc || C.accent, a + .15); star4(p.x * W, p.y * H, (4 + p.r * 3) * u * dz); ctx.fill(); }
+      else { ctx.fillStyle = col(dc || C.line, a * .8); ctx.beginPath(); ctx.arc(p.x * W, p.y * H, p.r * u * dz, 0, Math.PI * 2); ctx.fill(); }
+    }
+  }
+  if (X.snow){
+    const S = XS.snow, n = Math.min(flakes.length, Math.round(120 * S.amt / 100));
+    for (let i = 0; i < n; i++){
+      const f = flakes[i]; f.y += f.v * dt * S.speed / 100; f.x += Math.sin(clock * .7 + f.ph) * .0005;
+      if (f.y > 1.03){ f.y = -.03; f.x = Math.random(); }
+      ctx.fillStyle = col(S.color, f.a); ctx.beginPath(); ctx.arc(f.x * W, f.y * H, f.r * u * S.size / 100, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+  if (X.embers){
+    const S = XS.embers, n = Math.min(embers.length, Math.round(70 * S.amt / 100)), sp = S.speed / 100, sz = S.size / 100;
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < n; i++){
+      const e = embers[i]; e.y -= e.vy * dt * sp * (1 + bassS * 2); e.x += (e.vx + Math.sin(clock * 1.3 + e.ph) * .015) * dt * sp; e.life += dt * .3;
+      if (e.y < -.05 || e.x < -.05 || e.x > 1.05) Object.assign(e, newEmber(false));
+      const fl = .5 + .5 * Math.sin(clock * 9 + e.ph * 3), a = (.35 + .65 * fl) * clamp(1.15 - e.y * .2, .3, 1), x = e.x * W, y = e.y * H, r = e.r * u * sz;
+      if (e.streak){ ctx.strokeStyle = col(S.color, a * .8); ctx.lineWidth = r * .8; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - e.vx * 900 * u * sz, y + e.vy * 380 * u * sz); ctx.stroke(); }
+      const gr = ctx.createRadialGradient(x, y, 0, x, y, r * 3); gr.addColorStop(0, col('#ffffff', a * .9)); gr.addColorStop(.3, col(S.color, a)); gr.addColorStop(1, col(S.color, 0));
+      ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(x, y, r * 3, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.lineCap = 'butt'; ctx.restore();
+  }
+  if (X.letterbox){ const h = H * XS.letterbox.size / 100; ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, h); ctx.fillRect(0, H - h, W, h); }
+}
+function fxFront(W, H, u, dt, now){
+  const X = ps.fx, XS = ps.fxs, C = ps.colors;
+  if (X.flash){
+    if (bassRaw > bassAvg * 1.35 + .06 && now - lastFlash > .2 && isPlaying()){ flashV = 1; lastFlash = now; }
+    if (flashV > .01){ ctx.fillStyle = col(XS.flash.color, flashV * XS.flash.amt / 100 * .4); ctx.fillRect(0, 0, W, H); }
+  }
+  flashV *= Math.exp(-dt * 7);
+  if (X.scan){ ctx.fillStyle = `rgba(0,0,0,${XS.scan.amt / 100 * .35})`; const step = Math.max(3, Math.round(4 * u)), off = XS.scan.move ? (clock * 18 * u) % step : 0; for (let y = off - step; y < H; y += step) ctx.fillRect(0, y, W, Math.max(1, step / 2.5));
+    if (XS.scan.move){ const by = ((clock * .12) % 1.2 - .1) * H, gr = ctx.createLinearGradient(0, by - 60 * u, 0, by + 60 * u); gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(.5, `rgba(255,255,255,${XS.scan.amt / 100 * .06})`); gr.addColorStop(1, 'rgba(255,255,255,0)'); ctx.fillStyle = gr; ctx.fillRect(0, by - 60 * u, W, 120 * u); } }
+  if (X.frame){ const S = XS.frame, m = 30 * u * S.inset / 100; ctx.strokeStyle = col(colorOf(S, C.line), S.a / 100 * (.8 + .2 * Math.sin(clock * 1.2))); ctx.lineWidth = 1.2 * u; ctx.strokeRect(m, m, W - 2 * m, H - 2 * m); }
+  if (X.brackets){
+    const S = XS.brackets, g = 26 * u * S.inset / 100, l = 40 * u * (S.pulse ? 1 + bassS * .45 : 1); ctx.strokeStyle = col(colorOf(S, C.line), S.a / 100); ctx.lineWidth = 2 * u; ctx.beginPath();
+    [[g, g, 1, 1], [W - g, g, -1, 1], [g, H - g, 1, -1], [W - g, H - g, -1, -1]].forEach(([x, y, sx, sy]) => { ctx.moveTo(x + sx * l, y); ctx.lineTo(x, y); ctx.lineTo(x, y + sy * l); }); ctx.stroke();
+  }
+  if (X.vignette){
+    obj('vignette', W / 2, H / 2, () => {
+      const m = Math.max(W, H), gr = ctx.createRadialGradient(0, 0, Math.min(W, H) * .35, 0, 0, m * .75);
+      gr.addColorStop(0, col(C.bg, 0)); gr.addColorStop(1, col(mixHex(C.bg, '#000000', .5), XS.vignette.amt / 100 * .9)); ctx.fillStyle = gr; ctx.fillRect(-m * 2, -m * 2, m * 4, m * 4);
+      return [-50 * u, -50 * u, 50 * u, 50 * u];
+    }, false, true);
+  }
+  if (X.grain){
+    const p = ctx.createPattern(noise, 'repeat');
+    if (p){
+      if (p.setTransform && typeof DOMMatrix !== 'undefined') p.setTransform(new DOMMatrix().translate(Math.random() * 200, Math.random() * 200).scale(u * 1.2));
+      ctx.globalCompositeOperation = 'overlay'; ctx.globalAlpha = .12 * XS.grain.amt / 100; ctx.fillStyle = p; ctx.fillRect(0, 0, W, H);
+      ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+    }
+  }
+}
+
+/* ---------- frame ---------- */
+// solid background: the base colour with two soft, slowly drifting glows
+function colorBg(W, H, drift){
+  const C = ps.colors, m = Math.max(W, H);
+  ctx.fillStyle = mixHex(C.bg, '#0d0d11', .4); ctx.fillRect(0, 0, W, H);
+  [[.28 + .06 * Math.sin(clock * .05) * drift, .3 + .05 * Math.cos(clock * .04) * drift, .75, C.accent, .16], [.8 + .05 * Math.cos(clock * .045) * drift, .85 + .04 * Math.sin(clock * .05) * drift, .6, C.line, .05]].forEach(([x, y, r, c, a]) => {
+    const gr = ctx.createRadialGradient(x * W, y * H, 0, x * W, y * H, r * m); gr.addColorStop(0, col(c, a)); gr.addColorStop(1, col(c, 0)); ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H);
+  });
+}
+let lastT = performance.now() / 1000, clock = 0, lastIdx = -2, prevVis = null, curVis = null, fadeT = 0;
+let shownPlay = null, shownRow = null;
+function bgSrc(v){
+  switch (ps.bgMode){
+    case 'coverBlur': return v.blur;
+    case 'cover': return soft(v.art);
+    case 'image': return bgImgC ? soft(bgImgC) : null;
+    case 'video': return bgReady ? bgv : v.blur;
+    default: return null;
+  }
+}
+function frame(){
+  const W = cv.width, H = cv.height, u = Math.min(W, H) / 1000; FW = W; FH = H; FU = u;
+  const now = performance.now() / 1000, dt = Math.min(.1, now - lastT); lastT = now; clock += dt;
+  sample(now);
+  const TL = timeline(), items = TL.items, n = items.length, C = ps.colors, X = ps.fx, XS = ps.fxs, long = TL.total >= 3600;
+  const playing = isPlaying(), g = seekHeld ? seekPrev : gTime(TL), ci = idxAt(items, g), it = items[ci] || null;
+  const vis = {art: artOf(it), blur: blurOf(it)};
+  if (ci !== lastIdx){ prevVis = lastIdx === -2 ? null : curVis; fadeT = now; lastIdx = ci; if (Math.abs(wpos - ci) > 4) wpos = Math.max(0, ci); }
+  curVis = vis;
+  const fa = Math.min(1, (now - fadeT) / .7), fe = fa * fa * (3 - 2 * fa);
+  if (playing) spinA += dt * .25;
+  if (ps.bgMode === 'video' && bgReady){ if (playing && bgv.paused) bgv.play().catch(() => {}); else if (!playing && !bgv.paused && !recording) bgv.pause(); }
+  OB = {};
+
+  ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none'; ctx.textBaseline = 'alphabetic'; ctx.shadowBlur = 0; ctx.shadowColor = 'transparent';
+  // background
+  ctx.fillStyle = mixHex(C.bg, '#0d0d11', .55); ctx.fillRect(0, 0, W, H);
+  const src0 = ps.bgMode === 'color' ? null : bgSrc(vis);
+  if (src0){
+    const dr = XS.bgZoom.drift / 100, pu = XS.bgZoom.pulse / 100;
+    const z = (ps.bgMode === 'coverBlur' ? 1.1 : 1) + (X.bgZoom ? .06 + Math.sin(clock * .05) * .025 * dr + bassS * .035 * pu : 0);
+    const fx = ps.bgX + (X.bgZoom ? Math.sin(clock * .037) * 12 * dr : 0), fy = ps.bgY + (X.bgZoom ? Math.cos(clock * .029) * 10 * dr : 0);
+    const src = src0, crossOk = ps.bgMode === 'coverBlur' || ps.bgMode === 'cover';
+    const psrc = prevVis && fe < 1 && crossOk ? bgSrc(prevVis) : null;
+    if (ps.bgMode === 'coverBlur') ctx.filter = 'saturate(.8)';
+    if (psrc && psrc !== src){ drawBg(psrc, W, H, z, fx, fy); ctx.globalAlpha = fe; }
+    drawBg(src, W, H, z, fx, fy);
+    ctx.globalAlpha = 1; ctx.filter = 'none';
+    ctx.fillStyle = col(C.bg, ps.bgDim / 100); ctx.fillRect(0, 0, W, H);
+  } else colorBg(W, H, X.bgZoom ? XS.bgZoom.drift / 100 : .4);
+  // shake
+  ctx.save();
+  if (X.shake && playing){ const sh = Math.max(0, bassS - .3) * XS.shake.amt / 100 * 30 * u; ctx.translate((Math.random() - .5) * sh, (Math.random() - .5) * sh); }
+  fxBack(W, H, u, dt);
+
+  const L = layout(W, H, TL), Oc = ps.o.cover, beat = X.beat ? 1 + bassS * .04 * XS.beat.amt / 100 : 1;
+  const ca = {x: L.cover.x + Oc.dx * W, y: L.cover.y + Oc.dy * H, cs: L.cover.cs * (Oc.s || 100) / 100 * beat};
+  const nx = items[ci + 1] || null;
+  obj('spectrum', L.spectrum.x, L.spectrum.y, () => oSpectrum(L.spectrum));
+  obj('wave', L.wave.x, L.wave.y, () => oWave(L.wave));
+  obj('glow', ca.x, ca.y, () => oGlow(ca.cs));
+  obj('orbit', ca.x, ca.y, () => oOrbit(ca.cs));
+  obj('ring', ca.x, ca.y, () => oRing(ca.cs));
+  obj('cover', L.cover.x, L.cover.y, () => oCover(L.cover.cs * beat, vis.art, prevVis && fe < 1 ? prevVis.art : null, fe));
+  obj('sparkle', ca.x, ca.y, () => oSparkle(ca.cs));
+  obj('eq', L.eq.x, L.eq.y, oEq);
+  obj('title', L.title.x, L.title.y, () => oTitle(L.title, it, ci, n), true);
+  obj('progress', L.progress.x, L.progress.y, () => it ? oProgress(L.progress, it, g) : null);
+  obj('next', L.next.x, L.next.y, () => oNext(L.next, nx), true);
+  obj('list', L.list.x, L.list.y, () => oList(L.list, items, ci, g, dt, long), true);
+  obj('ticker', L.ticker.x, L.ticker.y, () => oTicker(L.ticker.plan, ci), true);
+  obj('tl', L.tl.x, L.tl.y, () => oCornerText('tl', 'left'), true);
+  obj('tr', L.tr.x, L.tr.y, () => oCornerText('tr', 'right'), true);
+  obj('count', L.count.x, L.count.y, () => n ? oCount(n, TL.total, long) : null, true);
+  obj('clock', L.clock.x, L.clock.y, () => oClock(g, TL.total, it), true);
+  ctx.restore();
+
+  fxFront(W, H, u, dt, now);
+  if (!recording){
+    if (ps.grid){
+      ctx.strokeStyle = 'rgba(255,255,255,.14)'; ctx.lineWidth = 1; ctx.beginPath();
+      for (let i = 1; i < 12; i++){ const x = Math.round(W * i / 12) + .5, y = Math.round(H * i / 12) + .5; ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.moveTo(0, y); ctx.lineTo(W, y); }
+      ctx.stroke(); ctx.strokeStyle = 'rgba(255,255,255,.32)'; ctx.beginPath(); ctx.moveTo(W / 2 + .5, 0); ctx.lineTo(W / 2 + .5, H); ctx.moveTo(0, H / 2 + .5); ctx.lineTo(W, H / 2 + .5); ctx.stroke();
+    }
+    if (drag && guides.length){
+      ctx.strokeStyle = '#ff4fa3'; ctx.lineWidth = 1; ctx.beginPath();
+      guides.forEach(gd => { if (gd.x != null){ ctx.moveTo(Math.round(gd.x) + .5, 0); ctx.lineTo(Math.round(gd.x) + .5, H); } else { ctx.moveTo(0, Math.round(gd.y) + .5); ctx.lineTo(W, Math.round(gd.y) + .5); } });
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+
+  // UI
+  if (!seekHeld) seek.value = TL.total ? Math.round(g / TL.total * 1000) : 0;
+  $('#pTime').textContent = fmtTime(g) + ' / ' + fmtTime(TL.total);
+  if (shownPlay !== playing){ shownPlay = playing; $('#pPlay .ic-play').style.display = playing ? 'none' : ''; $('#pPlay .ic-pause').style.display = playing ? '' : 'none'; $('#pPlay').setAttribute('aria-label', playing ? '일시정지' : '재생'); }
+  const rowKey = ps.mode === 'files' ? curId : null;
+  if (shownRow !== rowKey){ shownRow = rowKey; $$('.ptr', view).forEach(r => r.classList.toggle('cur', r.dataset.ptid === rowKey)); }
+  if (recording){
+    $('#pRecTime').textContent = fmtTime(g) + ' / ' + fmtTime(TL.total);
+    $('#pRecBar').style.width = (TL.total ? g / TL.total * 100 : 0).toFixed(1) + '%';
+    $('#pRecTrack').textContent = it ? `${pad2(ci + 1)} / ${pad2(n)} · ${it.title}` : '';
+  }
+}
+
+/* ---------- moving objects on the canvas ---------- */
+function cpt(e){ const r = cv.getBoundingClientRect(); return {x: (e.clientX - r.left) / r.width * cv.width, y: (e.clientY - r.top) / r.height * cv.height}; }
+function hitObj(pt){
+  const keys = Object.keys(OB).filter(k => !ps.pin[k]).map(k => ({k, a: aabb(k)})).sort((p, q) => (p.a.x1 - p.a.x0) * (p.a.y1 - p.a.y0) - (q.a.x1 - q.a.x0) * (q.a.y1 - q.a.y0));
+  for (const {k} of keys){
+    const o = OB[k], dx = pt.x - o.ax, dy = pt.y - o.ay, c = Math.cos(o.r), s = Math.sin(o.r);
+    const x = (dx * c + dy * s) / o.s, y = (-dx * s + dy * c) / o.s, [x0, y0, x1, y1] = o.b;
+    if (x >= x0 && x <= x1 && y >= y0 && y <= y1) return k;
+  }
+  return null;
+}
+cv.addEventListener('pointerdown', e => {
+  if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
+  if (ps.lock || recording) return;
+  const pt = cpt(e), k = hitObj(pt); sel = k; selUI(); if (!k) return;
+  if (M.EDITORS.playlist) M.EDITORS.playlist.checkpoint();
+  drag = {key: k, sx: pt.x, sy: pt.y, ox: ps.o[k].dx, oy: ps.o[k].dy, box: aabb(k)};
+  cv.setPointerCapture(e.pointerId); $('#pWrap').classList.add('grabbing');
+  const row = $(`[data-pobj="${k}"],[data-pfx="${k}"]`, view); if (row) row.classList.add('open');
+});
+cv.addEventListener('pointermove', e => {
+  const pt = cpt(e), W = cv.width, H = cv.height;
+  if (!drag){ hover = ps.lock ? null : hitObj(pt); $('#pWrap').classList.toggle('move', !!hover); return; }
+  let dx = pt.x - drag.sx, dy = pt.y - drag.sy; guides = [];
+  if (ps.snap && drag.box){
+    const b = drag.box, thr = Math.min(W, H) * .012;
+    const tx = [W / 2, W / 3, W * 2 / 3, W * .05, W * .95], ty = [H / 2, H / 3, H * 2 / 3, H * .06, H * .94];
+    if (ps.grid) for (let i = 1; i < 12; i++){ tx.push(W * i / 12); ty.push(H * i / 12); }
+    Object.keys(OB).forEach(k => { if (k === drag.key) return; const o = aabb(k); tx.push(o.x0, (o.x0 + o.x1) / 2, o.x1); ty.push(o.y0, (o.y0 + o.y1) / 2, o.y1); });
+    const best = (vals, ts) => { let m = null; vals.forEach(v => ts.forEach(t => { const d = t - v; if (Math.abs(d) < thr && (!m || Math.abs(d) < Math.abs(m.d))) m = {d, t}; })); return m; };
+    const bx = best([b.x0 + dx, (b.x0 + b.x1) / 2 + dx, b.x1 + dx], tx), by = best([b.y0 + dy, (b.y0 + b.y1) / 2 + dy, b.y1 + dy], ty);
+    if (bx){ dx += bx.d; guides.push({x: bx.t}); }
+    if (by){ dy += by.d; guides.push({y: by.t}); }
+  }
+  ps.o[drag.key].dx = drag.ox + dx / W; ps.o[drag.key].dy = drag.oy + dy / H;
+});
+const endDrag = () => { if (drag){ drag = null; guides = []; $('#pWrap').classList.remove('grabbing'); syncUI(); } };
+cv.addEventListener('pointerup', endDrag); cv.addEventListener('pointercancel', endDrag);
+cv.addEventListener('pointerleave', () => { if (!drag){ hover = null; $('#pWrap').classList.remove('move'); } });
+cv.addEventListener('wheel', e => {
+  if (ps.lock || recording) return; const k = hover || hitObj(cpt(e)); if (!k) return; e.preventDefault();
+  ps.o[k].s = Math.round(clamp(ps.o[k].s * (1 - e.deltaY * .0012), 30, 300)); selUI(); syncOuts();
+}, {passive: false});
+view.addEventListener('click', e => {
+  const b = e.target.closest('[data-palign]'); if (!b) return;
+  const bx = sel && aabb(sel);
+  if (!bx){ toast('먼저 영상에서 정렬할 오브젝트를 클릭해 주세요'); return; }
+  if (ps.pin[sel]){ toast('고정된 오브젝트예요 · 고정을 풀면 정렬할 수 있어요'); return; }
+  const W = cv.width, H = cv.height, a = b.dataset.palign; let dx = 0, dy = 0;
+  if (a === 'left') dx = W * .05 - bx.x0; else if (a === 'right') dx = W * .95 - bx.x1; else if (a === 'hcenter') dx = W / 2 - (bx.x0 + bx.x1) / 2;
+  else if (a === 'top') dy = H * .06 - bx.y0; else if (a === 'bottom') dy = H * .94 - bx.y1; else if (a === 'vcenter') dy = H / 2 - (bx.y0 + bx.y1) / 2;
+  ps.o[sel].dx += dx / W; ps.o[sel].dy += dy / H; syncOuts();
+});
+function selUI(){
+  $$('[data-palign]', view).forEach(b => b.disabled = !sel || ps.lock);
+  const show = !!sel && !ps.lock && !!ps.o[sel]; $('#pSelBox').hidden = !show;
+  if (show){
+    const o = ps.o[sel]; $('#pSelName').textContent = NAME(sel);
+    if (document.activeElement !== $('#pSelS')) $('#pSelS').value = o.s; $('#pSelSOut').textContent = Math.round(o.s) + '%';
+    if (document.activeElement !== $('#pSelR')) $('#pSelR').value = o.r || 0; $('#pSelROut').textContent = Math.round(o.r || 0) + '°';
+  }
+}
+$('#pSelS').addEventListener('input', () => { if (sel){ ps.o[sel].s = +$('#pSelS').value; selUI(); syncOuts(); } });
+$('#pSelR').addEventListener('input', () => { if (sel){ ps.o[sel].r = +$('#pSelR').value; selUI(); syncOuts(); } });
+function lockUI(){
+  const b = $('#pLock'); b.classList.toggle('unlocked', !ps.lock); b.querySelector('span').textContent = ps.lock ? '오브젝트 잠금' : '오브젝트 이동 중';
+  $('#pGrid').classList.toggle('on', ps.grid); $('#pSnap').classList.toggle('on', ps.snap);
+  if (ps.lock){ hover = null; $('#pWrap').classList.remove('move'); }
+  selUI();
+}
+$('#pLock').onclick = () => { ps.lock = !ps.lock; lockUI(); toast(ps.lock ? '오브젝트를 잠갔어요' : '이제 오브젝트를 끌어서 옮기고 휠로 크기를 바꿀 수 있어요'); };
+$('#pGrid').onclick = () => { ps.grid = !ps.grid; lockUI(); };
+$('#pSnap').onclick = () => { ps.snap = !ps.snap; lockUI(); toast(ps.snap ? '자석 맞춤을 켰어요' : '자석 맞춤을 껐어요'); };
+
+/* ---------- object + effect panels ---------- */
+const RG = (path, lab, min, max, step, fmt) => `<div class="range"><span class="lbl">${lab}</span><input type="range" min="${min}" max="${max}" step="${step}" data-pbind="${path}"><output data-pout="${path}" data-fmt="${fmt}"></output></div>`;
+const SELR = (path, lab, opts) => `<div class="range"><span class="lbl">${lab}</span><select class="sm" data-pbind="${path}" style="grid-column:2 / -1">${opts.map(([v, t]) => `<option value="${v}">${t}</option>`).join('')}</select></div>`;
+const COLS = (path, lab, auto) => SELR(path + '.c', lab || '색', [...(auto ? [['auto', auto]] : []), ['text', '글자색'], ['accent', '포인트색'], ['line', '라인색'], ['custom', '직접 고르기']]) + `<div class="range"><span class="lbl">직접 고른 색</span><div class="color"><input type="color" data-pbind="${path}.color" aria-label="직접 고른 색"><span data-pout="${path}.color" data-fmt="hex"></span></div></div>`;
+const CPK = (path, lab) => `<div class="range"><span class="lbl">${lab}</span><div class="color"><input type="color" data-pbind="${path}" aria-label="${lab}"><span data-pout="${path}" data-fmt="hex"></span></div></div>`;
+const SWR = (path, lab) => `<div class="sec-h" style="margin:2px 0 8px"><span style="font-weight:500;font-size:11px;color:var(--muted)">${lab}</span><label class="sw"><input type="checkbox" data-pbind="${path}" aria-label="${lab}"><span></span></label></div>`;
+const TXT = (path, lab, ph, max) => `<div class="field full" style="margin-bottom:8px"><label>${lab}</label><input type="text" data-pbind="${path}" maxlength="${max || 60}" placeholder="${ph || ''}"></div>`;
+const OBJ_UI = {
+  cover: SELR('st.cover.shape', '모양', [['square', '사각형'], ['rounded', '둥근 사각형'], ['circle', '원형 (회전)']]) + RG('st.cover.radius', '모서리', 0, 60, 1, 'int') + RG('st.cover.shadow', '그림자', 0, 100, 1, 'pct') + RG('st.cover.border', '테두리', 0, 100, 1, 'pct'),
+  title: SELR('st.title.align', '정렬', [['auto', '템플릿에 맞게'], ['left', '왼쪽'], ['center', '가운데'], ['right', '오른쪽']]) + SWR('st.title.label', 'TRACK 번호 줄') + SWR('st.title.artist', '아티스트 줄') + SWR('st.title.upper', '영문 대문자') + COLS('st.title', '글자 색', '자동') + RG('st.title.a', '진하기', 10, 100, 1, 'pct'),
+  progress: SWR('st.progress.times', '시간 표시') + RG('st.progress.width', '길이', 30, 200, 1, 'pct') + RG('st.progress.thick', '두께', 50, 300, 5, 'pct') + COLS('st.progress', '진행 색', '자동'),
+  next: TXT('st.next.label', '앞 글자', '비우면 안 보여요', 20) + COLS('st.next', '색', '자동') + RG('st.next.a', '진하기', 10, 100, 1, 'pct'),
+  list: SELR('st.list.mode', '보기', [['all', '전체 목록'], ['window', '흐르는 목록']]) + RG('st.list.dim', '다른 곡 진하기', 0, 100, 1, 'pct') + RG('st.list.size', '글자 크기', 60, 160, 1, 'pct') + SWR('st.list.num', '번호') + SWR('st.list.time', '시작 시간') + SWR('st.list.artist', '아티스트') + COLS('st.list', '강조 색', '자동'),
+  ticker: TXT('st.ticker.sep', '구분 기호', '예: | · ✦ /', 4) + RG('st.ticker.lines', '최대 줄 수', 1, 4, 1, 'int') + RG('st.ticker.width', '줄 너비', 30, 100, 1, 'pct') + RG('st.ticker.size', '글자 크기', 50, 200, 1, 'pct') + RG('st.ticker.dim', '다른 곡 진하기', 0, 100, 1, 'pct') + SWR('st.ticker.num', '번호') + SWR('st.ticker.artist', '아티스트') + SWR('st.ticker.upper', '영문 대문자') + SWR('st.ticker.glow', '지금 곡 빛나게') + SWR('st.ticker.stroke', '글자 외곽선') + COLS('st.ticker', '지금 곡 색', '자동'),
+  tl: TXT('st.tl.text', '문구', '비우면 플레이리스트 이름', 60) + SWR('st.tl.upper', '영문 대문자') + COLS('st.tl', '색', '자동') + RG('st.tl.a', '진하기', 10, 100, 1, 'pct'),
+  tr: TXT('st.tr.text', '문구', '비우면 안 보여요', 60) + SWR('st.tr.upper', '영문 대문자') + COLS('st.tr', '색', '자동') + RG('st.tr.a', '진하기', 10, 100, 1, 'pct'),
+  count: COLS('st.count', '색', '자동') + RG('st.count.a', '진하기', 10, 100, 1, 'pct'),
+  clock: SELR('st.clock.mode', '보여 줄 시간', [['total', '지금 / 전체 길이'], ['now', '지금 시간만'], ['track', '지금 곡 시간']]) + COLS('st.clock', '색', '자동') + RG('st.clock.a', '진하기', 10, 100, 1, 'pct'),
+  wave: SELR('st.wave.style', '모양', [['bars', '막대'], ['mirror', '가운데 대칭'], ['line', '선 (파형)']]) + RG('st.wave.width', '너비', 30, 250, 1, 'pct') + RG('st.wave.height', '높이', 30, 300, 1, 'pct') + COLS('st.wave', '색', '자동') + RG('st.wave.a', '진하기', 10, 100, 1, 'pct'),
+  spectrum: SELR('st.spectrum.style', '모양', [['mirror', '가운데 대칭'], ['left', '왼쪽부터']]) + RG('st.spectrum.height', '높이', 30, 300, 1, 'pct') + COLS('st.spectrum', '색', '자동') + RG('st.spectrum.a', '진하기', 10, 100, 1, 'pct'),
+  ring: RG('st.ring.height', '길이', 20, 250, 1, 'pct') + COLS('st.ring', '색', '자동 (라인 → 포인트)'),
+  eq: COLS('st.eq', '색', '자동'),
+  glow: RG('st.glow.amt', '크기', 30, 250, 1, 'pct') + COLS('st.glow', '색', '자동'),
+  orbit: COLS('st.orbit', '색', '자동') + RG('st.orbit.a', '진하기', 10, 100, 1, 'pct'),
+  sparkle: COLS('st.sparkle', '색', '자동 (라인 + 포인트)') + RG('st.sparkle.a', '진하기', 10, 100, 1, 'pct')
+};
+const FX_UI = {
+  particles: RG('fxs.particles.amt', '양', 0, 300, 5, 'pct') + RG('fxs.particles.size', '크기', 40, 250, 5, 'pct') + RG('fxs.particles.a', '진하기', 5, 100, 1, 'pct') + COLS('fxs.particles', '색', '자동 (라인 + 포인트)'),
+  embers: RG('fxs.embers.amt', '양', 0, 340, 5, 'pct') + RG('fxs.embers.size', '크기', 40, 250, 5, 'pct') + RG('fxs.embers.speed', '속도', 20, 300, 5, 'pct') + CPK('fxs.embers.color', '색'),
+  snow: RG('fxs.snow.amt', '양', 0, 300, 5, 'pct') + RG('fxs.snow.size', '크기', 40, 250, 5, 'pct') + RG('fxs.snow.speed', '속도', 20, 300, 5, 'pct') + CPK('fxs.snow.color', '색'),
+  bokeh: RG('fxs.bokeh.amt', '양', 10, 260, 5, 'pct') + RG('fxs.bokeh.size', '크기', 40, 250, 5, 'pct') + RG('fxs.bokeh.a', '진하기', 10, 200, 5, 'pct') + COLS('fxs.bokeh', '색', '자동'),
+  lightleak: RG('fxs.lightleak.amt', '세기', 5, 100, 1, 'pct') + RG('fxs.lightleak.size', '퍼지는 범위', 30, 200, 1, 'pct') + SWR('fxs.lightleak.two', '반대쪽에 두 번째 빛') + CPK('fxs.lightleak.color', '색'),
+  flash: RG('fxs.flash.amt', '세기', 5, 100, 1, 'pct') + CPK('fxs.flash.color', '색'),
+  shake: RG('fxs.shake.amt', '세기', 5, 200, 5, 'pct'),
+  beat: RG('fxs.beat.amt', '세기', 10, 300, 5, 'pct'),
+  bgZoom: RG('fxs.bgZoom.drift', '천천히 흐르기', 0, 200, 5, 'pct') + RG('fxs.bgZoom.pulse', '비트에 커지기', 0, 300, 5, 'pct'),
+  scan: RG('fxs.scan.amt', '진하기', 5, 100, 1, 'pct') + SWR('fxs.scan.move', '천천히 흐르기'),
+  letterbox: RG('fxs.letterbox.size', '두께', 2, 25, .5, 'int'),
+  brackets: COLS('fxs.brackets', '색', '자동') + RG('fxs.brackets.a', '진하기', 10, 100, 1, 'pct') + RG('fxs.brackets.inset', '안쪽 여백', 30, 400, 5, 'pct') + SWR('fxs.brackets.pulse', '비트에 맞춰 늘었다 줄기'),
+  frame: COLS('fxs.frame', '색', '자동') + RG('fxs.frame.a', '진하기', 5, 100, 1, 'pct') + RG('fxs.frame.inset', '안쪽 여백', 30, 400, 5, 'pct'),
+  vignette: RG('fxs.vignette.amt', '세기', 5, 100, 1, 'pct'),
+  grain: RG('fxs.grain.amt', '세기', 5, 100, 1, 'pct')
+};
+const SVG_PIN = '<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5 13.5 6l-2.5 1-2.5 3.5.5 2.5L3 7.5l2.5.5L9 5.5z"/><path d="M5.5 10.5 2.5 13.5"/></svg>';
+const SVG_RST = '<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 8a5.5 5.5 0 1 0 1.8-4.1"/><path d="M2.5 2.5v3h3"/></svg>';
+const ADJ = k => `<button class="adj" data-padj="${k}">조정 <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m2 3.5 3 3 3-3"/></svg></button>`;
+const posSub = k => `<div class="sep"></div><div class="dsub-h"><span>위치 · 크기</span></div>` + RG(`o.${k}.dx`, '가로', -.5, .5, .005, 'off') + RG(`o.${k}.dy`, '세로', -.5, .5, .005, 'off') + RG(`o.${k}.s`, '크기', 30, 300, 1, 'pct') + RG(`o.${k}.r`, '회전', -180, 180, 1, 'deg') + `<button class="link" data-preset-pos="${k}" style="margin-bottom:4px">위치 초기화</button>`;
+$('#pObjList').innerHTML = `<div class="dlist">${OBJ.map(([k, n]) => `<div class="ditem" data-pobj="${k}"><div class="drow"><span class="dname"><b>${n}</b></span>
+  <button class="pin" data-ppin="${k}" title="고정" aria-label="${n} 고정">${SVG_PIN}</button><button class="rst" data-preset-pos="${k}" title="위치 초기화" aria-label="${n} 위치 초기화">${SVG_RST}</button>${ADJ(k)}
+  <label class="sw"><input type="checkbox" data-pbind="on.${k}" aria-label="${n}"><span></span></label></div><div class="dsub np">${OBJ_UI[k] || ''}${posSub(k)}</div></div>`).join('')}</div>`;
+$('#pFxList').innerHTML = `<div class="dlist">${FXL.map(([k, n, d]) => { const mv = MOVE_FX.includes(k); return `<div class="ditem" data-pfx="${k}"><div class="drow"><span class="dname"><b>${n}</b><small style="display:block">${d}${mv ? ' · 끌어서 옮길 수 있어요' : ''}</small></span>${mv ? `<button class="pin" data-ppin="${k}" title="고정" aria-label="${n} 고정">${SVG_PIN}</button><button class="rst" data-preset-pos="${k}" title="위치 초기화" aria-label="${n} 위치 초기화">${SVG_RST}</button>` : ''}${FX_UI[k] ? ADJ(k) : ''}
+  <label class="sw"><input type="checkbox" data-pbind="fx.${k}" aria-label="${n}"><span></span></label></div>${FX_UI[k] ? `<div class="dsub np">${FX_UI[k]}${mv ? posSub(k) : ''}</div>` : ''}</div>`; }).join('')}</div>`;
+view.addEventListener('click', e => {
+  const a = e.target.closest('[data-padj]'); if (a){ a.closest('.ditem').classList.toggle('open'); return; }
+  const rp = e.target.closest('[data-preset-pos]'); if (rp){ const k = rp.dataset.presetPos; if (M.EDITORS.playlist) M.EDITORS.playlist.checkpoint(); ps.o[k] = {dx:0, dy:0, s:100, r:0}; syncUI(); toast(NAME(k) + ' 위치를 처음으로 되돌렸어요'); return; }
+  const pn = e.target.closest('[data-ppin]'); if (pn){ const k = pn.dataset.ppin; ps.pin[k] = !ps.pin[k]; syncUI(); toast(NAME(k) + (ps.pin[k] ? ' 고정했어요 · 끌어도 움직이지 않아요' : ' 고정을 풀었어요')); return; }
+  const nm = e.target.closest('#pObjList .dname, #pFxList .dname'); if (nm && !ps.lock){ const row = nm.closest('[data-pobj],[data-pfx]'), k = row.dataset.pobj || row.dataset.pfx; if (ps.o[k]){ sel = k; selUI(); } }
+});
+$('#pPosReset').onclick = () => { if (M.EDITORS.playlist) M.EDITORS.playlist.checkpoint(); OBJ.forEach(([k]) => ps.o[k] = {dx:0, dy:0, s:100, r:0}); MOVE_FX.forEach(k => ps.o[k] = {dx:0, dy:0, s:100, r:0}); syncUI(); toast('모든 오브젝트 위치를 처음으로 되돌렸어요 · Ctrl+Z로 되돌릴 수 있어요'); };
+$('#pObjOn').onclick = () => { if (M.EDITORS.playlist) M.EDITORS.playlist.checkpoint(); OBJ.forEach(([k]) => ps.on[k] = true); syncUI(); toast('오브젝트를 모두 켰어요 · Ctrl+Z로 되돌릴 수 있어요'); };
+$('#pObjOff').onclick = () => { if (M.EDITORS.playlist) M.EDITORS.playlist.checkpoint(); OBJ.forEach(([k]) => ps.on[k] = false); sel = null; syncUI(); toast('오브젝트를 모두 껐어요 · Ctrl+Z로 되돌릴 수 있어요'); };
+$('#pFxOn').onclick = () => { if (M.EDITORS.playlist) M.EDITORS.playlist.checkpoint(); FXL.forEach(([k]) => ps.fx[k] = true); syncUI(); toast('효과를 모두 켰어요'); };
+$('#pFxOff').onclick = () => { if (M.EDITORS.playlist) M.EDITORS.playlist.checkpoint(); FXL.forEach(([k]) => ps.fx[k] = false); syncUI(); toast('효과를 모두 껐어요'); };
+view.addEventListener('click', e => {
+  const b = e.target.closest('[data-ppreset]'); if (!b) return;
+  if (M.EDITORS.playlist) M.EDITORS.playlist.checkpoint();
+  applyPreset(ps, b.dataset.ppreset); sel = null; syncUI();
+  toast(`'${PRESETS[ps.preset].name}' 템플릿을 적용했어요` + (b.dataset.ppreset === 'wide' && !bgImg ? ' · 배경에 이미지를 올리면 화면에 꽉 차게 나와요' : ''));
+});
+
+/* ---------- track list UI ---------- */
+const SVG_UP = '<svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m4 10 4-4 4 4"/></svg>';
+const SVG_DN = '<svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m4 6 4 4 4-4"/></svg>';
+const SVG_X = '<svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m4 4 8 8m0-8-8 8"/></svg>';
+const SVG_NOTE = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6 12.5V3.5l7-1.5v9"/><circle cx="4.5" cy="12.5" r="1.8"/><circle cx="11.5" cy="11" r="1.8"/></svg>';
+function renderTrackList(){
+  const el = $('#pTrackList'); shownRow = undefined;
+  if (!tracks.length){ el.innerHTML = '<div class="sets-empty">아직 곡이 없어요 · 위에 노래 파일을 넣어 주세요</div>'; return; }
+  el.innerHTML = `<div class="ptl">${tracks.map((t, i) => `<div class="ptr" data-ptid="${t.id}">
+    <button class="ptn" data-pplay="${i}" title="이 곡부터 재생" aria-label="${i + 1}번 곡 재생">${pad2(i + 1)}</button>
+    <span class="ptimg">${t.thumb ? `<img src="${t.thumb}" alt="">` : SVG_NOTE}</span>
+    <span class="ptf"><input type="text" data-ptf="title" value="${esc(t.title)}" aria-label="제목" maxlength="120"><input type="text" class="ar" data-ptf="artist" value="${esc(t.artist)}" placeholder="아티스트" aria-label="아티스트" maxlength="120"></span>
+    <span class="ptx"><span class="ptb"><button data-pmove="-1" title="위로" aria-label="위로">${SVG_UP}</button><button data-pmove="1" title="아래로" aria-label="아래로">${SVG_DN}</button><button data-pdel title="빼기" aria-label="목록에서 빼기">${SVG_X}</button></span><small>${fmtTime(t.dur)}</small></span>
+  </div>`).join('')}</div>`;
+}
+function tracksChanged(){ renderTrackList(); syncUI(); loadFonts(); }
+$('#pTrackList').addEventListener('input', e => {
+  const inp = e.target.closest('[data-ptf]'); if (!inp) return;
+  const t = tracks.find(x => x.id === inp.closest('.ptr').dataset.ptid); if (!t) return;
+  t[inp.dataset.ptf] = inp.value; updateStamps(); loadFonts();
+});
+$('#pTrackList').addEventListener('click', e => {
+  const row = e.target.closest('.ptr'); if (!row) return;
+  const i = tracks.findIndex(x => x.id === row.dataset.ptid); if (i < 0) return;
+  if (e.target.closest('[data-pplay]')){ loadAt(i, 0, true); return; }
+  const mv = e.target.closest('[data-pmove]');
+  if (mv){ const j = i + +mv.dataset.pmove; if (j < 0 || j >= tracks.length) return; [tracks[i], tracks[j]] = [tracks[j], tracks[i]]; tracksChanged(); return; }
+  if (e.target.closest('[data-pdel]')){
+    const [t] = tracks.splice(i, 1);
+    if (curId === t.id) stopAudio();
+    URL.revokeObjectURL(t.url); M.STORE.del(t.id); tracksChanged(); toast(`'${t.title}'을(를) 목록에서 뺐어요`);
+  }
+});
+async function addFiles(list){
+  list = [...list].filter(isAudio);
+  if (!list.length) return toast('음악 파일을 넣어 주세요');
+  if (ps.mode !== 'files'){ stopAudio(); ps.mode = 'files'; }
+  toast(`${list.length}곡을 불러오는 중이에요…`);
+  let ok = 0;
+  for (const f of list){
+    try { const t = await makeTrack(f, f.name, 'pl-' + (++uid)); tracks.push(t); ok++; M.STORE.put(t.id, f, f.name); renderTrackList(); }
+    catch(e){ console.error(e); }
+  }
+  tracksChanged();
+  toast(ok === list.length ? `${ok}곡을 추가했어요` : `${ok}곡을 추가했어요 · ${list.length - ok}곡은 읽지 못했어요`);
+}
+{ const i = $('#pDropFiles input'); i.addEventListener('change', () => { const fs = [...i.files]; i.value = ''; if (fs.length) addFiles(fs); }); }
+$('#pSortName').onclick = () => { tracks.sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true})); tracksChanged(); toast('파일 이름순으로 정렬했어요'); };
+$('#pClear').onclick = () => {
+  if (!tracks.length) return;
+  const b = $('#pClear');
+  if (!b.dataset.armed){ b.dataset.armed = '1'; b.textContent = '정말 지울까요?'; setTimeout(() => { delete b.dataset.armed; b.textContent = '모두 지우기'; }, 3000); return; }
+  stopAudio(); tracks.splice(0).forEach(t => { URL.revokeObjectURL(t.url); M.STORE.del(t.id); }); delete b.dataset.armed; b.textContent = '모두 지우기'; tracksChanged(); toast('곡 목록을 비웠어요');
+};
+$('#pFromCover').onclick = () => { if (M.AU && M.AU.file) addFiles([M.AU.file]); else toast('앨범 커버 탭에 불러온 MP3가 없어요'); };
+
+/* single long file */
+async function loadSingle(f, quiet){
+  if (!isAudio(f)) return toast('음악 파일을 넣어 주세요');
+  stopAudio(); if (single.url) URL.revokeObjectURL(single.url);
+  const t = await makeTrack(f, f.name, 'pl-single');
+  Object.assign(single, {url: t.url, name: f.name, dur: t.dur, title: t.title, artist: t.artist, art: t.art, blur: t.blur});
+  ps.mode = 'single'; $('#pSingleName').textContent = f.name; syncUI(); loadFonts();
+  if (!quiet){ M.STORE.put('pl-single', f, f.name).then(ok => { if (!ok) toast('파일이 너무 커서 자동 저장은 안 돼요 · 다음에 다시 넣어 주세요'); }); toast('긴 음원을 불러왔어요 · 이제 타임스탬프를 적어 주세요'); }
+}
+{ const i = $('#pDropSingle input'); i.addEventListener('change', () => { const f = i.files[0]; i.value = ''; if (f) loadSingle(f); }); }
+$('#pStampIn').addEventListener('input', () => { ps.singleText = $('#pStampIn').value; stampStat(); updateStamps(); loadFonts(); });
+function stampStat(){ const n = parseStamps(ps.singleText).length; $('#pStampStat').textContent = n ? `${n}곡` : ''; }
+$('#pMarkNow').onclick = () => {
+  if (!single.url) return toast('먼저 긴 음원을 넣어 주세요');
+  const t = curId === 'single' ? audio.currentTime : 0, ta = $('#pStampIn');
+  const line = fmtStamp(t, (single.dur || 0) >= 3600) + ' ';
+  const v = ta.value.replace(/\s+$/, ''); ta.value = (v ? v + '\n' : '') + line; ps.singleText = ta.value;
+  ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); stampStat(); updateStamps();
+};
+$('#pStampFile').addEventListener('change', async e => { const f = e.target.files[0]; e.target.value = ''; if (!f) return; ps.singleText = (await f.text()).trim(); $('#pStampIn').value = ps.singleText; stampStat(); updateStamps(); toast('타임스탬프를 불러왔어요'); });
+
+/* ---------- timestamps output ---------- */
+function stampLines(){
+  const TL = timeline(), items = TL.items; if (!items.length) return {text: '', items, starts: []};
+  let starts = items.map(i => i.start);
+  const recOk = ps.mode === 'files' && recStamps && recSig === sig() && recStamps.length === items.length && recStamps.every(v => v != null);
+  if (recOk && ps.stampSrc === 'rec') starts = recStamps.slice();
+  starts[0] = 0;
+  const long = TL.total >= 3600;
+  const label = it => { const a = String(it.artist || '').trim(), t = String(it.title || '').trim(); return ps.stampFmt === 't' || !a ? t : ps.stampFmt === 'ta' ? `${t} - ${a}` : `${a} - ${t}`; };
+  const txt = items.map((it, k) => `${fmtStamp(starts[k], long)} ${ps.stampNum ? pad2(k + 1) + '. ' : ''}${label(it)}`).join('\n');
+  return {text: txt, items, starts, recOk, total: TL.total};
+}
+function updateStamps(){
+  const S = stampLines(), out = $('#pStampOut');
+  out.value = S.text || '';
+  out.placeholder = '곡을 넣으면 여기에 타임스탬프가 만들어져요';
+  $('#pStampSrcSeg').hidden = !S.recOk;
+  const w = [];
+  if (S.items.length && S.items.length < 3) w.push('유튜브 챕터로 나오려면 3곡 이상이어야 해요.');
+  if (S.items.length) for (let k = 0; k < S.items.length; k++){ const end = k + 1 < S.items.length ? S.starts[k + 1] : S.total; if (end - S.starts[k] < 10){ w.push(`${k + 1}번 곡 구간이 10초보다 짧아서 유튜브 챕터로는 안 나올 수 있어요.`); break; } }
+  $('#pStampWarn').hidden = !w.length; $('#pStampWarn').textContent = w.join(' ');
+  $('#pStampNote').textContent = ps.mode === 'single' ? '긴 음원에 적은 타임스탬프를 그대로 써요.'
+    : S.recOk && ps.stampSrc === 'rec' ? '마지막으로 저장한 영상에서 곡이 실제로 바뀐 시간이에요. 영상과 딱 맞아요.'
+    : '곡 길이와 곡 사이 쉼으로 계산한 시간이에요. 영상을 저장하면 실제 영상 기준 시간으로 자동으로 바뀌어요.';
+}
+async function copyStamps(){
+  const t = stampLines().text; if (!t) return toast('아직 타임스탬프가 없어요 · 곡을 먼저 넣어 주세요');
+  try { await navigator.clipboard.writeText(t); }
+  catch(e){ const ta = $('#pStampOut'); ta.value = t; ta.select(); try { document.execCommand('copy'); } catch(err){ return toast('복사하지 못했어요 · 타임스탬프 탭에서 직접 복사해 주세요'); } }
+  toast('타임스탬프를 복사했어요 · 유튜브 설명란에 붙여 넣으세요');
+}
+$('#pCopyStamps').onclick = copyStamps; $('#pCopyStamps2').onclick = copyStamps;
+$('#pSaveStamps').onclick = () => { const t = stampLines().text; if (!t) return toast('저장할 타임스탬프가 없어요'); download(new Blob([t + '\n'], {type: 'text/plain'}), (ps.name || 'playlist').replace(/[\\/:*?"<>|]+/g, '_') + ' 타임스탬프.txt'); };
+
+/* ---------- fonts ---------- */
+function loadFonts(){
+  if (!document.fonts) return;
+  const txt = tracks.map(t => t.title + t.artist).join('') + ps.singleText + ps.name + ps.st.tl.text + ps.st.tr.text + ps.st.ticker.sep + 'TRACKS NEXT PLAYLIST 0123456789:·/|abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  ['400', '500', '600', '700', ps.weight].forEach(w => document.fonts.load(`${w} 40px "${ps.font}"`, txt.slice(0, 5000)).catch(() => {}));
+}
+function fillFonts(){ const cur = ps.font; $('#pFont').innerHTML = (M.FONTS || []).map(([f,, lab]) => `<option value="${esc(f)}">${esc(lab || f)}</option>`).join(''); if (!(M.FONTS || []).some(f => f[0] === cur)) ps.font = PDEF.font; $('#pFont').value = ps.font; }
+document.addEventListener('mmc-fonts', fillFonts);
+$('[data-fontin="p"]').addEventListener('change', async e => { const f = e.target.files[0]; e.target.value = ''; if (!f || !M.addUserFont) return; try { const name = await M.addUserFont(f); fillFonts(); ps.font = name; syncUI(); loadFonts(); toast('폰트를 추가하고 플레이리스트 글자에 적용했어요'); } catch(err){ toast('폰트 파일을 읽을 수 없어요'); } });
+
+/* ---------- UI binding ---------- */
+const PF = {pct: v => Math.round(v) + '%', hex: v => String(v).toUpperCase(), sec: v => (+v).toFixed(1) + '초', int: v => String(Math.round(v * 10) / 10), off: v => (v > 0 ? '+' : '') + Math.round(v * 100), deg: v => Math.round(v) + '°'};
+function syncOuts(){
+  $$('[data-pbind]', view).forEach(el => { if (el.type !== 'range' || document.activeElement === el) return; const v = getP(el.dataset.pbind); el.value = v ?? ''; });
+  $$('[data-pout]', view).forEach(o => o.textContent = (PF[o.dataset.fmt] || (v => v))(getP(o.dataset.pout)));
+  if (M.refreshResets) M.refreshResets(view, pDef, getP);
+}
+function syncUI(){
+  $$('[data-pbind]', view).forEach(el => { const v = getP(el.dataset.pbind); if (el.type === 'checkbox') el.checked = !!v; else if (document.activeElement !== el || el.type === 'range' || el.type === 'color') el.value = v ?? ''; });
+  $$('[data-pout]', view).forEach(o => o.textContent = (PF[o.dataset.fmt] || (v => v))(getP(o.dataset.pout)));
+  $$('[data-pset]', view).forEach(b => b.classList.toggle('on', String(getP(b.dataset.pset)) === b.dataset.val));
+  $$('[data-ppreset]', view).forEach(b => b.classList.toggle('on', ps.preset === b.dataset.ppreset));
+  $$('[data-pobj]', view).forEach(d => d.classList.toggle('is-on', !!ps.on[d.dataset.pobj]));
+  $$('[data-pfx]', view).forEach(d => d.classList.toggle('is-on', !!ps.fx[d.dataset.pfx]));
+  $$('[data-ppin]', view).forEach(b => { const on = !!ps.pin[b.dataset.ppin]; b.classList.toggle('pinned', on); b.title = on ? '고정 풀기' : '고정'; });
+  $('#pFilesBox').hidden = ps.mode !== 'files'; $('#pSingleBox').hidden = ps.mode !== 'single';
+  $('#pDropCover').hidden = ps.coverSrc !== 'upload';
+  $('#pDropBg').hidden = ps.bgMode !== 'image'; $('#pDropBgV').hidden = ps.bgMode !== 'video';
+  $('#pTShadowBox').hidden = !ps.tshadow.on;
+  $('#pModeNote').textContent = ps.mode === 'files' ? '곡 파일을 순서대로 이어서 재생해요. 타임스탬프는 곡 길이로 자동으로 만들어져요.' : '여러 곡이 이미 하나로 합쳐진 긴 음원일 때예요. 적은 타임스탬프 시간마다 아래 목록과 제목이 바뀌어요.';
+  if (document.activeElement !== $('#pStampIn')) $('#pStampIn').value = ps.singleText;
+  $('#pRes').value = ps.res; $('#pFps').value = String(ps.fps); $('#pQual').value = String(ps.qual);
+  const TL = timeline();
+  $('#pTotal').textContent = tracks.length ? `${tracks.length}곡 · ${fmtStamp(TL.total, TL.total >= 3600)}` : '';
+  $('#pChip').textContent = ps.mode === 'files' ? (tracks.length ? `${tracks.length}곡 · ${fmtTime(TL.total)}` : '곡 없음') : (single.url ? `${TL.items.length}곡 · ${fmtTime(TL.total)}` : '음원 없음');
+  stampStat(); updateStamps(); lockUI();
+  if (M.refreshResets) M.refreshResets(view, pDef, getP);
+}
+view.addEventListener('input', e => {
+  const el = e.target, p = el.dataset && el.dataset.pbind; if (!p) return;
+  setP(p, el.type === 'checkbox' ? el.checked : el.type === 'range' ? parseFloat(el.value) : el.value);
+  if (p === 'bgBlur') softCache = new WeakMap();
+  if (el.type === 'range'){ syncOuts(); selUI(); } else syncUI();
+  if (p === 'font' || p === 'weight' || p === 'name' || /\.(text|sep|label)$/.test(p)) loadFonts();
+});
+view.addEventListener('click', e => {
+  const b = e.target.closest('[data-pset]'); if (!b) return;
+  const key = b.dataset.pset, val = b.dataset.val;
+  if (key === 'mode' && ps.mode !== val){ stopAudio(); recStamps = null; }
+  setP(key, val);
+  if (key === 'coverSrc') refreshDefault();
+  syncUI();
+});
+$('#pRes').onchange = () => { ps.res = $('#pRes').value; setSize(false); };
+$('#pFps').onchange = () => { ps.fps = +$('#pFps').value; };
+$('#pQual').onchange = () => { ps.qual = +$('#pQual').value; };
+$('#pRefreshCover').onclick = () => { refreshDefault(); toast('기본 커버를 다시 가져왔어요'); };
+$('#pColorsFromCover').onclick = () => { Object.assign(ps.colors, {bg: CS.cover.bg, text: CS.cover.text, line: CS.cover.deco, accent: CS.cover.accent}); syncUI(); toast('앨범 커버의 색을 가져왔어요'); };
+{ const i = $('#pDropCover input'); i.addEventListener('change', () => { const f = i.files[0]; i.value = ''; if (isImage(f)) loadCoverImg(f); else if (f) toast('이미지 파일을 넣어 주세요'); }); }
+{ const i = $('#pDropBg input'); i.addEventListener('change', () => { const f = i.files[0]; i.value = ''; if (isImage(f)) loadBgImg(f); else if (f) toast('이미지 파일을 넣어 주세요'); }); }
+{ const i = $('#pDropBgV input'); i.addEventListener('change', () => { const f = i.files[0]; i.value = ''; if (isVideo(f)) loadBgVideo(f); else if (f) toast('영상 파일을 넣어 주세요'); }); }
+if (M.attachResets) M.attachResets(view, 'data-pbind', pDef, (p, v) => { setP(p, v); if (p === 'bgBlur') softCache = new WeakMap(); }, () => syncUI());
+
+// drops on this page stay here
+view.addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); });
+view.addEventListener('drop', e => {
+  e.preventDefault(); e.stopPropagation();
+  const fs = [...((e.dataTransfer && e.dataTransfer.files) || [])]; if (!fs.length) return;
+  const au = fs.filter(isAudio);
+  if (au.length){ if (ps.mode === 'single' && au.length === 1) loadSingle(au[0]); else addFiles(au); return; }
+  const f = fs[0];
+  if (isImage(f)) loadBgImg(f);
+  else if (isVideo(f)) loadBgVideo(f);
+  else if (/\.(txt|lrc)$/i.test(f.name)) f.text().then(t => { ps.singleText = t.trim(); syncUI(); toast('타임스탬프를 불러왔어요'); });
+  else toast('음악, 이미지, 영상, 타임스탬프 텍스트 파일만 넣을 수 있어요');
+});
+document.addEventListener('keydown', e => {
+  if (view.hidden || recording || e.code !== 'Space') return;
+  const tg = e.target, tag = tg && tg.tagName;
+  if (tg && (tg.isContentEditable || tag === 'TEXTAREA' || tag === 'SELECT' || tag === 'BUTTON' || (tag === 'INPUT' && !['range', 'checkbox'].includes(tg.type)))) return;
+  e.preventDefault(); togglePlay();
+});
+
+/* ---------- my playlist sets ---------- */
+const PSET_KEY = 'mmc-playlist-sets', PSKIP = new Set(['mode', 'gap', 'split', 'singleText', 'name', 'stampFmt', 'stampNum', 'stampSrc', 'res', 'fps', 'qual', 'lock', 'grid', 'snap']);
+const pLoadSets = () => { const a = M.STORE.read(PSET_KEY); return Array.isArray(a) ? a : []; };
+const pStoreSets = a => { if (!M.STORE.write(PSET_KEY, a)) toast('이 브라우저에서는 저장이 막혀 있어요 · 파일로 내보내기를 써 주세요'); };
+const pSnapshot = () => { const o = {}; Object.keys(ps).forEach(k => { if (!PSKIP.has(k)) o[k] = clone(ps[k]); }); return o; };
+function pApplySnapshot(d){
+  if (!d || typeof d !== 'object') return;
+  Object.keys(PDEF).forEach(k => {
+    if (PSKIP.has(k)) return;
+    const def = PDEF[k];
+    if (!(k in d)){ ps[k] = clone(def); return; }
+    if (def && typeof def === 'object'){ ps[k] = clone(def); M.deepAssign(ps[k], d[k]); }
+    else if (typeof d[k] === typeof def) ps[k] = d[k];
+  });
+  if (!PRESETS[ps.preset]) ps.preset = ps.preset === 'poster' ? 'wide' : 'side';
+  if (!(M.FONTS || []).some(f => f[0] === ps.font)) ps.font = PDEF.font;
+  softCache = new WeakMap(); sel = null; refreshDefault(); syncUI(); loadFonts();
+}
+function pRenderSets(){
+  const sets = pLoadSets(), el = $('#pSetList');
+  if (!sets.length){ el.innerHTML = '<div class="sets-empty">아직 저장한 세트가 없어요</div>'; return; }
+  el.innerHTML = sets.map((s, i) => `<div class="setrow"><b title="${esc(s.name)}">${esc(s.name)}</b>
+    <button class="btn sm" data-papply="${i}" style="height:24px">적용</button><button class="x" data-pdelset="${i}" aria-label="삭제">×</button></div>`).join('');
+}
+$('#pSaveSet').onclick = () => {
+  const sets = pLoadSets(), name = $('#pSetName').value.trim() || '플레이리스트 세트 ' + (sets.length + 1);
+  const entry = {name, data: pSnapshot()}, ex = sets.findIndex(s => s.name === name);
+  if (ex >= 0) sets[ex] = entry; else sets.unshift(entry);
+  pStoreSets(sets); pRenderSets(); $('#pSetName').value = '';
+  toast(ex >= 0 ? `'${name}' 세트를 덮어썼어요` : `'${name}' 세트를 저장했어요`);
+};
+$('#pSetName').addEventListener('keydown', e => { if (e.key === 'Enter') $('#pSaveSet').click(); });
+$('#pSetList').addEventListener('click', e => {
+  const a = e.target.closest('[data-papply]'), d = e.target.closest('[data-pdelset]'), sets = pLoadSets();
+  if (a){ const s = sets[+a.dataset.papply]; if (s){ if (M.EDITORS.playlist) M.EDITORS.playlist.checkpoint(); pApplySnapshot(s.data); toast(`'${s.name}' 세트를 적용했어요`); } }
+  if (d){ const s = sets.splice(+d.dataset.pdelset, 1)[0]; pStoreSets(sets); pRenderSets(); if (s) toast(`'${s.name}' 세트를 지웠어요`); }
+});
+$('#pExportSets').onclick = () => {
+  const sets = pLoadSets();
+  download(new Blob([JSON.stringify({app:'momo-music-cloud', kind:'playlist-sets', version:1, sets: sets.length ? sets : [{name:'현재 플레이리스트', data: pSnapshot()}]}, null, 2)], {type:'application/json'}), 'momo-playlist-sets.json');
+};
+$('#pInSets').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  try {
+    const j = JSON.parse(await f.text()), inc = (Array.isArray(j) ? j : Array.isArray(j.sets) ? j.sets : []).filter(s => s && s.name && s.data);
+    if (!inc.length) return toast('불러올 플레이리스트 세트가 없어요');
+    const sets = pLoadSets(); inc.forEach(s => { const i = sets.findIndex(x => x.name === s.name); if (i >= 0) sets[i] = s; else sets.push(s); });
+    pStoreSets(sets); pRenderSets(); toast(`플레이리스트 세트 ${inc.length}개를 불러왔어요`);
+  } catch(err){ toast('세트 파일을 읽지 못했어요'); }
+});
+$('#pFullReset').onclick = () => {
+  if (M.EDITORS.playlist) M.EDITORS.playlist.checkpoint();
+  const keep = new Set([...PSKIP, 'coverSrc', 'bgMode']), pre = ps.preset;
+  Object.keys(PDEF).forEach(k => { if (!keep.has(k)) ps[k] = clone(PDEF[k]); });
+  const bgm = ps.bgMode; applyPreset(ps, pre); ps.bgMode = bgm;
+  Object.assign(ps.colors, {bg: CS.cover.bg, accent: CS.cover.accent});
+  softCache = new WeakMap(); sel = null; syncUI(); loadFonts();
+  toast(`'${PRESETS[ps.preset].name}' 처음 상태로 되돌렸어요 · Ctrl+Z로 되돌릴 수 있어요`);
+};
+pRenderSets();
+
+/* ---------- size / loop ---------- */
+function setSize(full){ const [w, h] = ps.res.split('x').map(Number), sc = full ? 1 : .5; cv.width = Math.round(w * sc); cv.height = Math.round(h * sc); $('#pWrap').style.setProperty('--ar', (w / h).toFixed(4)); }
+let running = false;
+function loop(){ if (!running) return; frame(); requestAnimationFrame(loop); }
+function enter(){ fillFonts(); refreshDefault(); syncUI(); loadFonts(); if (!running){ running = true; lastT = performance.now() / 1000; requestAnimationFrame(loop); } }
+function leave(){ if (recording) return; running = false; audio.pause(); clearGap(); bgv.pause(); }
+$$('.nav-item').forEach(n => n.addEventListener('click', () => (n.dataset.view === 'playlist' ? enter() : leave())));
+
+/* ---------- record ---------- */
+const MIMES = ['video/mp4;codecs=avc1.640028,mp4a.40.2', 'video/mp4;codecs=avc1.42E01E,mp4a.40.2', 'video/mp4;codecs=avc1,mp4a', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm', 'video/mp4'];
+function recListenUI(){ $('#pRecListen').textContent = recListen ? '🔊 소리 듣는 중 · 눌러서 끄기' : '🔇 소리 꺼짐 · 눌러서 듣기'; }
+async function startRecord(){
+  if (ps.mode === 'files' ? !tracks.length : !single.url) return toast(ps.mode === 'files' ? '먼저 곡을 넣어 주세요' : '먼저 음원을 넣어 주세요');
+  if (!window.MediaRecorder || !cv.captureStream) return toast('이 브라우저에서는 영상 저장이 안 돼요 · 크롬이나 엣지를 써 주세요');
+  graph(); if (actx.state === 'suspended') await actx.resume();
+  stopAudio(); refreshDefault(); loadFonts(); if (document.fonts) await document.fonts.ready;
+  sel = null; hover = null; setSize(true);
+  recStream = cv.captureStream(ps.fps);
+  dest.stream.getAudioTracks().forEach(tr => recStream.addTrack(tr));
+  const mime = MIMES.find(t => MediaRecorder.isTypeSupported(t)) || '';
+  try { rec = new MediaRecorder(recStream, mime ? {mimeType: mime, videoBitsPerSecond: ps.qual * 1e6, audioBitsPerSecond: 192000} : {}); }
+  catch(e){ setSize(false); return toast('녹화를 시작할 수 없어요'); }
+  recChunks = []; recCancel = false; recStamps = ps.mode === 'files' ? new Array(tracks.length).fill(null) : null;
+  const mySig = sig();
+  rec.ondataavailable = e => { if (e.data && e.data.size) recChunks.push(e.data); };
+  rec.onstop = () => {
+    recording = false; $('#pRecOv').hidden = true; setSize(false); applySpeaker();
+    recStream.getVideoTracks().forEach(tr => tr.stop());
+    if (recCancel){ recStamps = null; toast('녹화를 취소했어요'); return; }
+    const type = (rec.mimeType || mime || 'video/webm').split(';')[0], ext = type.includes('mp4') ? 'mp4' : 'webm';
+    download(new Blob(recChunks, {type}), (ps.name || 'playlist').replace(/[\\/:*?"<>|]+/g, '_') + '.' + ext);
+    if (ps.mode === 'files' && recStamps && recStamps.every(v => v != null)){ recSig = mySig; ps.stampSrc = 'rec'; }
+    syncUI();
+    toast((ext === 'mp4' ? '영상을 MP4로 저장했어요' : '영상을 WEBM으로 저장했어요') + ' · 타임스탬프 탭에서 영상 기준 시간을 복사하세요');
+  };
+  clock = 0; lastIdx = -2; wpos = 0;
+  if (bgReady){ try { bgv.currentTime = 0; } catch(e){} }
+  await loadAt(0, 0, false);
+  recording = true; $('#pRecOv').hidden = false; recListen = false; recListenUI(); applySpeaker();
+  if (!running){ running = true; requestAnimationFrame(loop); }
+  rec.start(1000); recT0 = performance.now();
+  try { await audio.play(); } catch(e){ recCancel = true; rec.stop(); toast('음악을 재생할 수 없어요'); }
+}
+function stopRecord(cancel){ if (!rec || rec.state === 'inactive') return; recCancel = !!cancel; audio.pause(); clearGap(); rec.stop(); }
+$('#pRecord').onclick = startRecord;
+$('#pRecListen').onclick = () => { recListen = !recListen; recListenUI(); applySpeaker(); };
+$('#pRecCancel').onclick = () => stopRecord(true);
+
+/* ---------- init + autosave + undo ---------- */
+setSize(false); fillFonts(); renderTrackList(); syncUI(); frame();
+(async () => {
+  try { await M.ready; } catch(e){}
+  const S = M.STORE, saved = S.read('mmc-pl-state');
+  const cov = await S.get('pl-cover'); if (cov) await loadCoverImg(M.fileOf(cov), true);
+  const bgi = await S.get('pl-bg'); if (bgi) await loadBgImg(M.fileOf(bgi), true);
+  const bgvf = await S.get('pl-bgv'); if (bgvf) loadBgVideo(M.fileOf(bgvf), true);
+  if (saved){
+    if ((saved.v === 2 || saved.v === 3) && saved.ps){
+      M.deepAssign(ps, saved.ps);
+      if (saved.v === 2){ // earlier look: enlarged cover background, sparks, preset words
+        ps.bgMode = ps.bgMode === 'image' && bgImg ? 'image' : ps.bgMode === 'video' ? 'video' : 'color';
+        ps.fx.embers = false; if (ps.st.tr.text === 'PLAYLIST') ps.st.tr.text = '';
+        if (saved.ps.preset === 'poster'){ ps.preset = 'wide'; ps.on.tr = false; ps.on.wave = false; }
+      }
+      if (!PRESETS[ps.preset]) ps.preset = 'side';
+    }
+    else if (saved.ps){ ['mode', 'gap', 'split', 'singleText', 'name', 'stampFmt', 'stampNum', 'res', 'fps', 'qual', 'coverSrc', 'trackArt', 'font', 'weight'].forEach(k => { if (k in saved.ps) ps[k] = saved.ps[k]; }); if (saved.ps.colors) M.deepAssign(ps.colors, saved.ps.colors); }
+    ps.lock = true;
+    for (const m of (saved.tracks || [])){
+      const r = await S.get(m.id); if (!r) continue;
+      try { tracks.push(await makeTrack(r.blob, m.name || r.name, m.id, m)); } catch(e){}
+    }
+    const sg = await S.get('pl-single');
+    if (sg){ const keepMode = ps.mode; await loadSingle(M.fileOf(sg), true); ps.mode = keepMode; }
+  }
+  setSize(false); fillFonts(); refreshDefault(); renderTrackList(); syncUI();
+  M.autosave('mmc-pl-state', () => ({v: 3, ps, tracks: tracks.map(t => ({id: t.id, name: t.name, title: t.title, artist: t.artist, dur: t.dur}))}));
+  const TRANS = ['lock', 'grid', 'snap', 'res', 'fps', 'qual', 'singleText', 'mode'];
+  const ph = M.makeHistory(() => { const o = {}; Object.keys(ps).forEach(k => { if (!TRANS.includes(k)) o[k] = ps[k]; }); return o; },
+    d => { Object.keys(d).forEach(k => { ps[k] = d[k]; }); softCache = new WeakMap(); syncUI(); selUI(); }, () => !!drag || recording);
+  M.EDITORS.playlist = {
+    undo: ph.undo, redo: ph.redo, checkpoint: ph.checkpoint,
+    nudge(dx, dy){ if (ps.lock || !sel || ps.pin[sel]) return false; ps.o[sel].dx += dx * .001; ps.o[sel].dy += dy * .001 * cv.width / cv.height; syncOuts(); return true; },
+    rotate(deg){ if (ps.lock || !sel || ps.pin[sel]) return false; ps.o[sel].r = M.normDeg((ps.o[sel].r || 0) + deg); selUI(); syncOuts(); return true; },
+    remove(){ if (ps.lock || !sel || ps.pin[sel]) return null; const name = NAME(sel); if (MOVE_FX.includes(sel)) ps.fx[sel] = false; else ps.on[sel] = false; sel = null; hover = null; syncUI(); return name; }
   };
 })();
 })();
