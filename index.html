@@ -954,8 +954,9 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                 </div>
               </div>
               <div class="sec">
-                <div class="sec-h"><h3>오브젝트</h3><button class="link" id="tResetAll">전체 위치 초기화</button></div>
-                <p class="note">썸네일 위 "오브젝트 잠금"을 풀면 끌어서 옮기고 휠로 크기를 바꿀 수 있어요.</p>
+                <div class="sec-h"><h3>오브젝트</h3><div style="display:flex;gap:10px"><button class="link" id="tResetAll">위치 초기화</button><button class="link" id="tAllOn">모두 켜기</button><button class="link" id="tAllOff">모두 끄기</button></div></div>
+                <p class="note">썸네일 위 "오브젝트 잠금"을 풀면 끌어서 옮기고 휠로 크기를 바꿀 수 있어요. 모두 켜기 · 끄기는 제목 · 부제 · 커버는 그대로 두고 장식과 배경 꾸밈에만 적용돼요.</p>
+                <div class="inline-btns" style="margin:-2px 0 10px"><button class="btn sm" id="tFullReset">전체 초기화 (색 포함)</button></div>
 <div class="selbox" id="tSelBox" hidden>
                   <div class="selbox-h"><span>선택: <b id="tSelName"></b></span><small>방향키 이동 · [ ] 회전 · Delete 지우기</small></div>
                   <div class="range"><span class="lbl">회전</span><input type="range" id="tRot" min="-180" max="180" step="1" aria-label="회전"><output id="tRotOut"></output><button class="rv show" id="tRotReset" title="회전 처음 값으로" aria-label="회전 처음 값으로"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2.5 8a5.5 5.5 0 1 0 1.8-4.1"/><path d="M2.5 2.5v3h3"/></svg></button></div>
@@ -3988,6 +3989,22 @@ const setTRot = v => { if (!sel || !tb.o[sel]) return; if (sel === 'cover') tb.t
 $('#tRot').addEventListener('input', () => setTRot(+$('#tRot').value));
 $('#tRotReset').addEventListener('click', () => setTRot(0));
 $('#tResetAll').onclick = () => { tb.o = presetO(tb.preset); syncUI(); sched(); toast('모든 위치를 처음으로 되돌렸어요'); };
+// all decorations on / off (title, subtitle and cover stay as they are)
+const DECO_ALL = OBJ.map(o => o[0]).filter(k => !['title', 'sub', 'cover', 'badge'].includes(k)).concat(FIX.map(f => f[0]));
+const setAllDeco = v => { if (M.EDITORS.thumb) M.EDITORS.thumb.checkpoint(); DECO_ALL.forEach(k => { tb.on[k] = v; }); if (!v) sel = null; syncUI(); sched(); toast(v ? '장식을 모두 켰어요 · Ctrl+Z로 되돌릴 수 있어요' : '장식을 모두 껐어요 · Ctrl+Z로 되돌릴 수 있어요'); };
+$('#tAllOn').onclick = () => setAllDeco(true);
+$('#tAllOff').onclick = () => setAllDeco(false);
+// full reset: layout defaults + colours + text style + decoration words (keeps the title, subtitle, song and cover image)
+$('#tFullReset').onclick = () => {
+  if (M.EDITORS.thumb) M.EDITORS.thumb.checkpoint();
+  const keep = {title: tb.title, sub: tb.sub, songName: tb.songName, coverSrc: tb.coverSrc, lock: tb.lock, grid: tb.grid, snap: tb.snap, safe: tb.safe, preset: tb.preset};
+  Object.keys(TDEF).forEach(k => { tb[k] = JSON.parse(JSON.stringify(TDEF[k])); });
+  Object.assign(tb, keep); tb.pin = {};
+  tb.colors.bg = CS.cover.bg; tb.colors.accent = CS.cover.accent;
+  applyPresetTo(tb, keep.preset);
+  sel = null; hover = null; refreshCover(); syncUI(); loadFonts(); sched();
+  toast(`'${PRESETS[tb.preset].name}' 처음 상태로 되돌렸어요 (색 포함) · Ctrl+Z로 되돌릴 수 있어요`);
+};
 $('#tCsAccent').onclick = () => { tb.cshadow.color = tb.colors.accent; tb.cshadow.on = true; syncUI(); sched(); toast('그림자를 포인트색으로 바꿨어요'); };
 $('#tCsBg').onclick = () => { tb.cshadow.color = tb.colors.bg; tb.cshadow.on = true; syncUI(); sched(); toast('그림자를 배경색으로 바꿨어요'); };
 /* ---------- my thumbnail sets ---------- */
