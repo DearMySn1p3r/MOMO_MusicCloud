@@ -693,14 +693,9 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                 </div>
               </div>
               <div class="sec">
-                <div class="sec-h"><h3>화면 문구</h3></div>
-                <p class="note">비워 두면 그 문구는 사라져요. (효과 탭의 "HUD 문구"를 켜야 보여요)</p>
-                <div class="grid2">
-                  <div class="field full"><label>왼쪽 위</label><input type="text" data-vbind="labels.tl" maxlength="40"></div>
-                  <div class="field full"><label>싱크율 라벨</label><input type="text" data-vbind="labels.tr" maxlength="30"></div>
-                  <div class="field full"><label>왼쪽 아래</label><input type="text" data-vbind="labels.bl" maxlength="60"></div>
-                  <div class="field full"><label>커버 아래 (미니멀 템플릿)</label><input type="text" data-vbind="labels.cap" maxlength="60"></div>
-                </div>
+                <div class="sec-h"><h3>세부 글씨</h3><button class="link" id="vTxResetAll">모두 처음으로</button></div>
+                <p class="note">이름을 누르면 문구 · 크기 · 진하기 · 색을 고칠 수 있어요. 싱크율은 효과 탭의 "싱크율", 위·아래 문구는 "HUD 문구"가 켜져 있어야 보여요.</p>
+                <div id="vTxList"></div>
               </div>
               <div class="sec">
                 <div class="sec-h"><h3>배치</h3><button class="link" id="vResetAll">전체 위치 초기화</button></div>
@@ -2295,7 +2290,17 @@ const FX = [
 ];
 const OBJ = [['cover','커버'],['title','제목 · 아티스트'],['lyrics','가사'],['progress','재생 바'],['eq','미니 이퀄라이저'],['sync','싱크율'],['time','시간 (HUD)'],['spectrum','스펙트럼'],['sparkle','반짝이'],['glow','비트 글로우'],['orbit','회전 궤도'],['reticle','조준점'],['globe','지구본']];
 const FX_MOVE = new Set(['spectrum','sparkle','glow','orbit','reticle','globe','eq','sync']);
+// detail texts: [key, name, label path (editable words), maxlength]
+const TXK = [['tl','왼쪽 위 문구','labels.tl',40],['tr','싱크율 라벨','labels.tr',30],['sv','싱크율 숫자'],['sub','아티스트 줄'],['time','시간 (HUD)'],['prog','재생 바 시간'],['bl','왼쪽 아래 문구','labels.bl',60],['cap','커버 아래 문구','labels.cap',60]];
+const TXD = {
+  tl:{on:true, size:100, a:85, upper:true, c:'text'}, tr:{on:true, size:100, a:55, upper:true, c:'text'},
+  sv:{on:true, size:100, a:95, c:'text', mode:'live', val:98.6, dec:1, suffix:'%'},
+  sub:{on:true, size:100, a:70, upper:false, c:'text', show:'auto'},
+  time:{on:true, size:100, a:95, c:'text'}, prog:{on:true, size:100, a:58, c:'text'},
+  bl:{on:true, size:100, a:50, upper:true, c:'text'}, cap:{on:true, size:100, a:50, upper:true, c:'text'}
+};
 const vs = {
+  tx:JSON.parse(JSON.stringify(TXD)),
   res:'1920x1080', fps:30, template:'minimal', coverSrc:'cover', coverShape:'square', bgMode:'cover', bgDim:62,
   colors:{bg:CS.cover.bg, text:CS.cover.text, line:CS.cover.deco, accent:CS.cover.accent},
   labels:{tl:'Now Playing', tr:'Sync Rate', bl:'Audio Online · MMC-001', cap:'Artwork // MMC-001'}, font:'Paperlogy', titleSize:100, showTitle:true, sens:100, speed:100, lyricSize:100, lyricOffset:0,
@@ -2308,6 +2313,26 @@ const getV = p => p.split('.').reduce((o, k) => o == null ? o : o[k], vs);
 // video song info: what was typed / read from the song first, then the album-cover page (without its placeholder text)
 const PLACEHOLDER = {title:'Untitled Track', artist:'Artist Name', album:'Album Title'};
 const VM = () => { const o = {}; ['title', 'artist', 'album', 'year'].forEach(k => { const own = String(vs.meta[k] || '').trim(), c = String(CS.meta[k] || '').trim(); o[k] = own || (c && c !== PLACEHOLDER[k] ? c : ''); }); return o; };
+{ // detail-text editor rows
+  const rng = (k, lbl, key, min, max, step, fmt) => `<div class="range"><span class="lbl">${lbl}</span><input type="range" min="${min}" max="${max}" step="${step}" data-vbind="tx.${k}.${key}"><output data-vout="tx.${k}.${key}" data-fmt="${fmt}"></output></div>`;
+  const body = ([k,, lab, max]) => {
+    const d = TXD[k]; let h = '';
+    if (lab) h += `<div class="field full" style="margin-bottom:10px"><label>문구 <small style="color:var(--faint)">(비우면 안 보여요)</small></label><input type="text" data-vbind="${lab}" maxlength="${max}"></div>`;
+    if (k === 'sv') h += `<div class="grid2" style="margin-bottom:8px">
+        <div class="field"><label>숫자</label><select data-vbind="tx.sv.mode"><option value="live">음악에 반응</option><option value="fixed">고정 값</option></select></div>
+        <div class="field"><label>소수점</label><select data-vbind="tx.sv.dec"><option value="0">없음</option><option value="1">1자리</option><option value="2">2자리</option></select></div>
+        <div class="field full"><label>뒤에 붙는 글자</label><input type="text" data-vbind="tx.sv.suffix" maxlength="8" placeholder="예: % · BPM"></div>
+      </div>` + rng('sv', '고정 값', 'val', 0, 100, 0.1, 'int');
+    if (k === 'sub') h += `<div class="field full" style="margin-bottom:8px"><label>보여 줄 내용</label><select data-vbind="tx.sub.show"><option value="auto">자동 (템플릿에 맞게)</option><option value="artist">아티스트만</option><option value="artistAlbum">아티스트 · 앨범</option><option value="artistYear">아티스트 · 연도</option><option value="album">앨범만</option></select></div>`;
+    h += rng(k, '크기', 'size', 40, 250, 1, 'pct') + rng(k, '진하기', 'a', 5, 100, 1, 'pct');
+    h += `<div class="grid2"><div class="field"><label>색</label><select data-vbind="tx.${k}.c"><option value="text">글자색</option><option value="accent">포인트색</option><option value="line">라인색</option></select></div>`;
+    if ('upper' in d) h += `<div class="field"><label>영문 대문자</label><label class="sw" style="margin-top:6px"><input type="checkbox" data-vbind="tx.${k}.upper"><span></span></label></div>`;
+    return h + '</div>';
+  };
+  $('#vTxList').innerHTML = `<div class="dlist">${TXK.map(r => `<div class="ditem" data-vtx="${r[0]}"><div class="drow"><span class="dname" role="button" tabindex="0"><b>${r[1]}</b></span>
+    <label class="sw"><input type="checkbox" data-vbind="tx.${r[0]}.on" aria-label="${r[1]}"><span></span></label></div><div class="txbody" hidden style="padding:10px 2px 6px">${body(r)}</div></div>`).join('')}</div>`;
+  $('#vTxList').addEventListener('click', e => { const n = e.target.closest('.dname'); if (!n) return; const b = n.closest('.ditem').querySelector('.txbody'); b.hidden = !b.hidden; n.closest('.ditem').classList.toggle('open', !b.hidden); });
+}
 function metaFromSong(tag, fileName){
   const T = (tag && tag.text) || {}, base = String(fileName || '').replace(/\.[^.]+$/, '');
   let title = String(T.TIT2 || '').trim(), artist = String(T.TPE1 || '').trim();
@@ -2646,6 +2671,7 @@ let lastT = performance.now() / 1000, clock = 0;
 function chamfer(x, y, w, h, c){ ctx.beginPath(); ctx.moveTo(x + c, y); ctx.lineTo(x + w, y); ctx.lineTo(x + w, y + h - c); ctx.lineTo(x + w - c, y + h); ctx.lineTo(x, y + h); ctx.lineTo(x, y + c); ctx.closePath(); }
 function text(t, x, y, font, color, align, sp){
   ctx.font = font; ctx.fillStyle = color; ctx.textAlign = align || 'left';
+  if (sp && /[ㄱ-ㆎ가-힣]/.test(t)) sp *= .3; // wide tracking looks broken on Hangul
   if (sp && 'letterSpacing' in ctx){ ctx.letterSpacing = sp + 'px'; ctx.fillText(t, x, y); ctx.letterSpacing = '0px'; }
   else ctx.fillText(t, x, y);
 }
@@ -2847,24 +2873,32 @@ function frame(){
 
   // titles / lyrics / data
   const ts = vs.titleSize / 100, LB = vs.labels;
+  // detail-text settings (size / strength / colour / uppercase)
+  const X = k => vs.tx[k] || TXD[k], tz = k => (X(k).size || 100) / 100, tu = (k, s) => X(k).upper ? String(s).toUpperCase() : String(s);
+  const tc = (k, mul = 1) => { const o = X(k); return col(o.c === 'accent' ? C.accent : o.c === 'line' ? C.line : C.text, (o.a ?? 100) / 100 * mul); };
   const T = L.title;
   if (vs.showTitle){
     rb('title');
-    if (L.tlAboveTitle && FXo.hud && LB.tl){
-      ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(T.x + 4 * u, T.y - T.size * ts - 18 * u, 3.5 * u * (.75 + .25 * Math.sin(t * 4)), 0, Math.PI * 2); ctx.fill();
-      text(LB.tl.toUpperCase(), T.x + 16 * u, T.y - T.size * ts - 14 * u, fontStr(600, 12 * u), col(C.text, .8), 'left', 2 * u);
+    if (L.tlAboveTitle && FXo.hud && LB.tl && X('tl').on){
+      const z = tz('tl');
+      ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(T.x + 4 * u, T.y - T.size * ts - 18 * u, 3.5 * u * z * (.75 + .25 * Math.sin(t * 4)), 0, Math.PI * 2); ctx.fill();
+      text(tu('tl', LB.tl), T.x + 16 * u, T.y - T.size * ts - 14 * u, fontStr(600, 12 * u * z), tc('tl', .94), 'left', 2 * u * z);
     }
     ctx.font = fontStr(700, T.size * ts);
     const maxW = T.w || (L.port ? W * .84 : W * .8);
     text(fit(m.title || 'Untitled', maxW), T.x, T.y, ctx.font, col(C.text, 1), T.align);
-    ctx.font = fontStr(400, T.size * ts * .42);
-    text(fit([m.artist, T.align === 'left' ? m.album : m.year].filter(Boolean).join('  ·  '), maxW), T.x, T.y + T.size * ts * .78, ctx.font, col(C.text, .7), T.align);
+    if (X('sub').on){
+      const sm = X('sub').show || 'auto';
+      const parts = sm === 'artist' ? [m.artist] : sm === 'artistAlbum' ? [m.artist, m.album] : sm === 'artistYear' ? [m.artist, m.year] : sm === 'album' ? [m.album] : [m.artist, T.align === 'left' ? m.album : m.year];
+      ctx.font = fontStr(400, T.size * ts * .42 * tz('sub'));
+      text(fit(tu('sub', parts.filter(Boolean).join('  ·  ')), maxW), T.x, T.y + T.size * ts * (.36 + .42 * tz('sub')), ctx.font, tc('sub'), T.align);
+    }
     re();
   }
-  if (L.time){
-    rb('time');
-    text(fmtTime(cur), L.time.x, L.time.y, fontStr(300, 44 * u), col(C.text, .95), 'right', 1 * u);
-    text('/ ' + fmtTime(dur), L.time.x, L.time.y + 26 * u, fontStr(500, 12 * u), col(C.text, .5), 'right', 1.5 * u);
+  if (L.time && X('time').on){
+    rb('time'); const z = tz('time');
+    text(fmtTime(cur), L.time.x, L.time.y, fontStr(300, 44 * u * z), tc('time'), 'right', 1 * u);
+    text('/ ' + fmtTime(dur), L.time.x, L.time.y + 26 * u * z, fontStr(500, 12 * u * z), tc('time', .53), 'right', 1.5 * u);
     re();
   }
   if (FXo.sync && L.sync){
@@ -2872,10 +2906,12 @@ function frame(){
     const S = L.sync, r = 19 * u, right = S.align === 'right', cx = right ? S.x - r : S.x + r, tx = right ? S.x - r * 2 - 14 * u : S.x + r * 2 + 14 * u;
     ctx.lineCap = 'round';
     ctx.strokeStyle = col(C.line, .18); ctx.lineWidth = 3 * u; ctx.beginPath(); ctx.arc(cx, S.y, r, 0, Math.PI * 2); ctx.stroke();
-    ctx.strokeStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(cx, S.y, r, -Math.PI / 2, -Math.PI / 2 + syncS / 100 * Math.PI * 2); ctx.stroke(); ctx.lineCap = 'butt';
+    const SV = X('sv'), svV = Math.max(0, Math.min(100, SV.mode === 'fixed' ? +SV.val || 0 : syncS));
+    ctx.strokeStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(cx, S.y, r, -Math.PI / 2, -Math.PI / 2 + svV / 100 * Math.PI * 2); ctx.stroke(); ctx.lineCap = 'butt';
     ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(cx, S.y, 3 * u, 0, Math.PI * 2); ctx.fill();
-    if (LB.tr) text(LB.tr.toUpperCase(), tx, S.y - 6 * u, fontStr(600, 10.5 * u), col(C.text, .55), right ? 'right' : 'left', 2 * u);
-    text(syncS.toFixed(1) + '%', tx, S.y + 17 * u, fontStr(600, 20 * u), col(C.text, .95), right ? 'right' : 'left');
+    const zl = tz('tr'), zv = tz('sv');
+    if (LB.tr && X('tr').on) text(tu('tr', LB.tr), tx, S.y - 6 * u * (X('sv').on ? Math.max(1, zv) : 0) + (X('sv').on ? 0 : 4 * u), fontStr(600, 10.5 * u * zl), tc('tr'), right ? 'right' : 'left', 2 * u * zl);
+    if (SV.on) text(svV.toFixed(Math.max(0, Math.min(2, +SV.dec || 0))) + (SV.suffix || ''), tx, S.y + 17 * u * zv, fontStr(600, 20 * u * zv), tc('sv'), right ? 'right' : 'left');
     re();
   }
   if (FXo.eq && L.eq){
@@ -2898,31 +2934,30 @@ function frame(){
       ctx.fillStyle = col(C.accent, 1); ctx.fillRect(P.x, P.y - 1 * u, P.w * prog, 2.5 * u);
       ctx.beginPath(); ctx.moveTo(xp - 6 * u, P.y - 22 * u); ctx.lineTo(xp + 6 * u, P.y - 22 * u); ctx.lineTo(xp, P.y - 13 * u); ctx.closePath(); ctx.fill();
       ctx.fillRect(xp - .75 * u, P.y - 13 * u, 1.5 * u, 15 * u);
-      text(fmtTime(cur), P.x, P.y + 26 * u, fontStr(500, 11 * u), col(C.text, .55), 'left', 1.5 * u);
-      text(fmtTime(dur), x1, P.y + 26 * u, fontStr(500, 11 * u), col(C.text, .55), 'right', 1.5 * u);
+      if (X('prog').on){ const z = tz('prog'); text(fmtTime(cur), P.x, P.y + (14 + 12 * z) * u, fontStr(500, 11 * u * z), tc('prog', .95), 'left', 1.5 * u); text(fmtTime(dur), x1, P.y + (14 + 12 * z) * u, fontStr(500, 11 * u * z), tc('prog', .95), 'right', 1.5 * u); }
     } else {
       ctx.lineCap = 'round'; ctx.lineWidth = 2.5 * u;
       ctx.strokeStyle = col(C.line, .22); ctx.beginPath(); ctx.moveTo(P.x, P.y); ctx.lineTo(x1, P.y); ctx.stroke();
       ctx.strokeStyle = col(C.accent, 1); ctx.beginPath(); ctx.moveTo(P.x, P.y); ctx.lineTo(Math.max(P.x + .1, xp), P.y); ctx.stroke(); ctx.lineCap = 'butt';
       ctx.fillStyle = col(C.line, 1); ctx.beginPath(); ctx.arc(xp, P.y, 6 * u, 0, Math.PI * 2); ctx.fill();
-      text(fmtTime(cur), P.x, P.y + 28 * u, fontStr(500, 12 * u), col(C.text, .6), 'left', 1 * u);
-      text(fmtTime(dur), x1, P.y + 28 * u, fontStr(500, 12 * u), col(C.text, .6), 'right', 1 * u);
+      if (X('prog').on){ const z = tz('prog'); text(fmtTime(cur), P.x, P.y + (15 + 13 * z) * u, fontStr(500, 12 * u * z), tc('prog'), 'left', 1 * u); text(fmtTime(dur), x1, P.y + (15 + 13 * z) * u, fontStr(500, 12 * u * z), tc('prog'), 'right', 1 * u); }
     }
     re();
   }
   if (FXo.hud){
     const g = 56 * u;
-    if (LB.tl && L.tl){
-      ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(g + 4 * u, g - 4 * u, 3.5 * u * (.75 + .25 * Math.sin(t * 4)), 0, Math.PI * 2); ctx.fill();
-      text(LB.tl.toUpperCase(), g + 16 * u, g, fontStr(600, 12 * u), col(C.text, .85), 'left', 2 * u);
+    if (LB.tl && L.tl && X('tl').on){
+      const z = tz('tl');
+      ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(g + 4 * u, g - 4 * u * z, 3.5 * u * z * (.75 + .25 * Math.sin(t * 4)), 0, Math.PI * 2); ctx.fill();
+      text(tu('tl', LB.tl), g + 16 * u, g, fontStr(600, 12 * u * z), tc('tl'), 'left', 2 * u * z);
     }
-    if (LB.bl && L.bl){
-      const bx = L.frame ? L.frame + 50 * u : g, by = L.blY || (H - g + 6 * u);
-      text(LB.bl.toUpperCase(), bx, by, fontStr(500, 11 * u), col(C.text, .5), 'left', 2 * u);
+    if (LB.bl && L.bl && X('bl').on){
+      const z = tz('bl'), bx = L.frame ? L.frame + 50 * u : g, by = L.blY || (H - g + 6 * u);
+      text(tu('bl', LB.bl), bx, by, fontStr(500, 11 * u * z), tc('bl'), 'left', 2 * u * z);
     }
-    if (L.capOk && LB.cap && vs.coverShape !== 'circle'){
-      const x = cvr.x - cvr.s / 2, y = FXo.ring ? cvr.y + cvr.s * .54 + 104 * u : cvr.y + cvr.s / 2 + 34 * u;
-      text(LB.cap.toUpperCase(), FXo.ring ? cvr.x : x, y, fontStr(500, 11 * u), col(C.text, .5), FXo.ring ? 'center' : 'left', 2 * u);
+    if (L.capOk && LB.cap && X('cap').on && vs.coverShape !== 'circle'){
+      const z = tz('cap'), x = cvr.x - cvr.s / 2, y = FXo.ring ? cvr.y + cvr.s * .54 + 104 * u : cvr.y + cvr.s / 2 + (24 + 10 * z) * u;
+      text(tu('cap', LB.cap), FXo.ring ? cvr.x : x, y, fontStr(500, 11 * u * z), tc('cap'), FXo.ring ? 'center' : 'left', 2 * u * z);
     }
   }
 
@@ -3136,12 +3171,13 @@ $('#vFxList').innerHTML = `<div class="dlist">${FX.map(([k, n, d]) => `
   <div class="ditem" data-vfx="${k}"><div class="drow"><span class="dname"><b>${n}</b><small>${d}</small></span>${FX_MOVE.has(k) ? vRowBtns(k, n) : ''}
   <label class="sw"><input type="checkbox" data-vbind="fx.${k}" aria-label="${n}"><span></span></label></div></div>`).join('')}</div>`;
 $('#vFont').innerHTML = (M.FONTS || []).map(([f,, lab]) => `<option value="${f}">${lab || f}</option>`).join('');
-const VFMT = {pct: v => Math.round(v) + '%', hex: v => String(v).toUpperCase(), sec: v => (v > 0 ? '+' : '') + (+v).toFixed(1) + 's'};
+const VFMT = {int: v => String(Math.round(v * 10) / 10), pct: v => Math.round(v) + '%', hex: v => String(v).toUpperCase(), sec: v => (v > 0 ? '+' : '') + (+v).toFixed(1) + 's'};
 function syncUI(){
   $$('[data-vbind]', view).forEach(el => { const v = getV(el.dataset.vbind); if (el.type === 'checkbox') el.checked = !!v; else if (document.activeElement !== el || el.type === 'range' || el.type === 'color') el.value = v ?? ''; });
   $$('[data-vout]', view).forEach(o => { const f = VFMT[o.dataset.fmt] || (v => v); o.textContent = f(getV(o.dataset.vout)); });
   $$('[data-vset]', view).forEach(b => b.classList.toggle('on', String(getV(b.dataset.vset)) === b.dataset.val));
   $$('[data-vfx]', view).forEach(d => d.classList.toggle('is-on', !!vs.fx[d.dataset.vfx]));
+  $$('[data-vtx]', view).forEach(d => d.classList.toggle('is-on', !!(vs.tx[d.dataset.vtx] || {}).on));
   if (typeof pinUI === 'function') pinUI();
   $('#vDropCover').hidden = vs.coverSrc !== 'upload';
   $('#vDropBg').hidden = vs.bgMode !== 'video';
@@ -3152,7 +3188,8 @@ function syncUI(){
 }
 view.addEventListener('input', e => {
   const el = e.target, p = el.dataset && el.dataset.vbind; if (!p) return;
-  const v = el.type === 'checkbox' ? el.checked : el.type === 'range' ? parseFloat(el.value) : el.value;
+  let v = el.type === 'checkbox' ? el.checked : el.type === 'range' ? parseFloat(el.value) : el.value;
+  if (p === 'tx.sv.dec') v = +v;
   setV(p, v); syncUI(); if (p === 'font' || p.startsWith('labels.') || p.startsWith('meta.')) loadFonts();
 });
 $('#vMetaFromSong').onclick = async () => {
@@ -3200,6 +3237,7 @@ view.addEventListener('drop', e => {
 });
 
 if (M.attachResets) M.attachResets(view, 'data-vbind', vDef, (p, v) => setV(p, v), p => { syncUI(); if (p === 'font') loadFonts(); });
+$('#vTxResetAll').onclick = () => { vs.tx = JSON.parse(JSON.stringify(TXD)); ['tl', 'tr', 'bl', 'cap'].forEach(k => vs.labels[k] = VDEF.labels[k]); syncUI(); loadFonts(); toast('세부 글씨를 모두 처음으로 되돌렸어요'); };
 setSize(false); syncUI(); lockUI(); refreshCover(); frame();
 (async () => {
   try { await M.ready; } catch(e){}
