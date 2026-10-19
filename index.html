@@ -2870,10 +2870,14 @@ function frame(){
     const n = 90, v = smoothBars('ring', n), R = L.frame ? L.scaleR + 34 * u : (circle ? cs * .5 : cs * .5 * 1.08) + 14 * u;
     ctx.save(); ctx.translate(cvr.x, cvr.y); ctx.lineCap = 'round';
     ctx.strokeStyle = col(C.line, .25); ctx.lineWidth = 1 * u; ctx.beginPath(); ctx.arc(0, 0, R - 6 * u, 0, Math.PI * 2); ctx.stroke();
+    // colour follows a slowly eased copy of the levels and blends line → accent, so it shifts gently instead of flickering
+    let cv = WSM.ringCol; if (!cv || cv.length !== n) cv = WSM.ringCol = v.slice();
+    for (let i = 0; i < n; i++) cv[i] += (v[i] - cv[i]) * .06;
+    const ringCol = i => { const c = cv[Math.max(0, i - 1)] * .25 + cv[i] * .5 + cv[Math.min(n - 1, i + 1)] * .25, f = Math.max(0, Math.min(1, (c - .3) / .45)); return {hex: mixHex(C.line, C.accent, f * f * (3 - 2 * f)), a: .5 + c * .45}; };
     for (let side = -1; side <= 1; side += 2){
       for (let i = 0; i < n; i++){
         const a = -Math.PI / 2 + side * (i + .5) / n * Math.PI, len = 3 * u + v[i] * (L.frame ? 40 : 80) * u * k * rh0;
-        ctx.strokeStyle = col(v[i] > .55 ? C.accent : C.line, .45 + v[i] * .55); ctx.lineWidth = Math.max(1, (Math.PI * R / n) * .45);
+        const rc = ringCol(i); ctx.strokeStyle = col(rc.hex, rc.a); ctx.lineWidth = Math.max(1, (Math.PI * R / n) * .45);
         ctx.beginPath(); ctx.moveTo(Math.cos(a) * R, Math.sin(a) * R); ctx.lineTo(Math.cos(a) * (R + len), Math.sin(a) * (R + len)); ctx.stroke();
       }
     }
