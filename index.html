@@ -508,6 +508,10 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                 </label>
               </div>
               <div class="sec">
+                <div class="sec-h"><h3>제목 · 아티스트 색</h3></div>
+                <div class="range"><span class="lbl">제목 색</span><select class="sm" data-bind="text.tcol.title.c" style="grid-column:2 / -1"><option value="auto">자동 (글자색)</option><option value="accent">포인트색</option><option value="line">라인색</option><option value="custom">직접 고르기</option></select></div><div class="range"><span class="lbl">직접 고른 색</span><div class="color"><input type="color" data-bind="text.tcol.title.color" aria-label="제목 색 직접 고른 색"><span data-out="text.tcol.title.color" data-fmt="hex"></span></div></div><div class="range"><span class="lbl">아티스트 색</span><select class="sm" data-bind="text.tcol.sub.c" style="grid-column:2 / -1"><option value="auto">자동 (글자색)</option><option value="accent">포인트색</option><option value="line">라인색</option><option value="custom">직접 고르기</option></select></div><div class="range"><span class="lbl">직접 고른 색</span><div class="color"><input type="color" data-bind="text.tcol.sub.color" aria-label="아티스트 색 직접 고른 색"><span data-out="text.tcol.sub.color" data-fmt="hex"></span></div></div>
+              </div>
+              <div class="sec">
                 <div class="sec-h"><h3>텍스트 그림자</h3><label class="sw"><input type="checkbox" data-bind="text.shadow"><span></span></label></div>
                 <div class="fold-body" data-fold="text.shadow">
                   <div class="range"><span class="lbl">색</span><div class="color"><input type="color" data-bind="text.shadowColor" aria-label="그림자 색"><span data-out="text.shadowColor" data-fmt="hex"></span></div></div>
@@ -713,6 +717,7 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                   <div class="field full"><label>굵기</label><select data-vbind="titleWeight"><option value="500">Medium</option><option value="600">SemiBold</option><option value="700">Bold</option><option value="800">ExtraBold</option><option value="900">Black</option></select></div>
                 </div>
                 <div class="range"><span class="lbl">제목 크기</span><input type="range" min="50" max="160" step="1" data-vbind="titleSize"><output data-vout="titleSize" data-fmt="pct"></output></div>
+                <div class="range"><span class="lbl">제목 색</span><select class="sm" data-vbind="tcol.title.c" style="grid-column:2 / -1"><option value="auto">자동 (글자색)</option><option value="accent">포인트색</option><option value="line">라인색</option><option value="custom">직접 고르기</option></select></div><div class="range"><span class="lbl">직접 고른 색</span><div class="color"><input type="color" data-vbind="tcol.title.color" aria-label="제목 색 직접 고른 색"><span data-vout="tcol.title.color" data-fmt="hex"></span></div></div><div class="range"><span class="lbl">아티스트 색</span><select class="sm" data-vbind="tcol.sub.c" style="grid-column:2 / -1"><option value="auto">자동 (글자색)</option><option value="accent">포인트색</option><option value="line">라인색</option><option value="custom">직접 고르기</option></select></div><div class="range"><span class="lbl">직접 고른 색</span><div class="color"><input type="color" data-vbind="tcol.sub.color" aria-label="아티스트 색 직접 고른 색"><span data-vout="tcol.sub.color" data-fmt="hex"></span></div></div>
                 <div class="sec-h" style="margin:4px 0 8px"><span>텍스트 그림자</span><label class="sw"><input type="checkbox" data-vbind="tshadow.on" aria-label="텍스트 그림자"><span></span></label></div>
                 <div id="vTShadowBox">
                   <div class="range"><span class="lbl">색</span><div class="color"><input type="color" data-vbind="tshadow.color" aria-label="그림자 색"><span data-vout="tshadow.color" data-fmt="hex"></span></div></div>
@@ -892,6 +897,7 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                   <div class="field"><label>글자</label><div class="color"><input type="color" data-tbind="colors.text"><span data-tout="colors.text" data-fmt="hex"></span></div></div>
                   <div class="field"><label>외곽선</label><div class="color"><input type="color" data-tbind="strokeColor"><span data-tout="strokeColor" data-fmt="hex"></span></div></div>
                 </div>
+                <div class="range"><span class="lbl">제목 색</span><select class="sm" data-tbind="tcol.title.c" style="grid-column:2 / -1"><option value="auto">자동 (글자색)</option><option value="accent">포인트색</option><option value="line">라인색</option><option value="custom">직접 고르기</option></select></div><div class="range"><span class="lbl">직접 고른 색</span><div class="color"><input type="color" data-tbind="tcol.title.color" aria-label="제목 색 직접 고른 색"><span data-tout="tcol.title.color" data-fmt="hex"></span></div></div><div class="range"><span class="lbl">부제 색</span><select class="sm" data-tbind="tcol.sub.c" style="grid-column:2 / -1"><option value="auto">자동 (글자색)</option><option value="accent">포인트색</option><option value="line">라인색</option><option value="custom">직접 고르기</option></select></div><div class="range"><span class="lbl">직접 고른 색</span><div class="color"><input type="color" data-tbind="tcol.sub.color" aria-label="부제 색 직접 고른 색"><span data-tout="tcol.sub.color" data-fmt="hex"></span></div></div>
                 <div class="sec-h" style="margin:4px 0 8px"><span>그림자</span><label class="sw"><input type="checkbox" data-tbind="shadow"><span></span></label></div>
                 <div class="fold-body" id="tShadowBox">
                   <div class="range"><span class="lbl">색</span><div class="color"><input type="color" data-tbind="shadowColor" aria-label="그림자 색"><span data-tout="shadowColor" data-fmt="hex"></span></div></div>
@@ -1096,7 +1102,7 @@ function defaultDesign(){
 }
 const DEFAULT_COVER = {bg:'#2b2b31', text:'#f7f5f2', deco:'#ffffff', accent:'#f4a3c6', zoom:1, ox:0, oy:0, adjustOn:false,
   bright:100, contrast:100, sat:100, gray:0, blur:0, opacity:100, tintOn:false, tint:'#f4a3c6', tintAmt:30, tintMode:'soft-light'};
-const DEFAULT_TEXT = {layout:'bl', titleFont:'Paperlogy', titleWeight:'700', titleCase:'none', titleSize:96, titleTrack:-3, artistScale:28, lineGap:100, rot:0,
+const DEFAULT_TEXT = {tcol:{title:{c:'auto', color:'#ffffff'}, sub:{c:'auto', color:'#ffffff'}}, layout:'bl', titleFont:'Paperlogy', titleWeight:'700', titleCase:'none', titleSize:96, titleTrack:-3, artistScale:28, lineGap:100, rot:0,
   infoFont:'Paperlogy', infoWeight:'500', infoCase:'upper', infoSize:13, infoTrack:6, shadow:false, shadowColor:'#000000', shadowAmt:45, shadowBlur:24, shadowDist:4};
 const DEFAULT_SHOW = {track:false, genre:false, artist:true, feat:true, album:true, year:true, label:false, catalog:false, bpm:false, key:false, duration:false, copyright:false};
 const clone = o => JSON.parse(JSON.stringify(o));
@@ -1655,6 +1661,7 @@ function render(ctx, S, preview){
   ctx.restore();
 }
 
+const pickTC = (o, C, def) => !o || o.c === 'auto' || !o.c ? def : o.c === 'accent' ? C.accent : o.c === 'line' ? (C.deco || C.line) : o.c === 'text' ? C.text : (o.color || def);
 function drawTextBlock(ctx, S){
   const u = S / 1000, T = state.text, M = state.meta, SH = state.show, C = state.cover, D = state.design;
   const L = T.layout, align = L === 'tr' ? 'right' : (L === 'bc' || L === 'center') ? 'center' : 'left';
@@ -1669,12 +1676,12 @@ function drawTextBlock(ctx, S){
   const kick = [SH.track && M.track ? `TRACK ${pad2(M.track)}${M.trackTotal ? ' / ' + pad2(M.trackTotal) : ''}` : '', SH.genre && M.genre ? M.genre : ''].filter(Boolean).join('   ·   ');
   if (kick) items.push({t: iU(kick), f: iF, w: iW, s: isz, sp: iSp, c: C.accent, a: 1, gap: 0, lh: isz * LH(1.05, .2)});
   setFont(ctx, tW, tsz, tF);
-  wrap(ctx, tU(M.title || 'Untitled'), maxW, tSp, 3).forEach((t, i) => items.push({t, f: tF, w: tW, s: tsz, sp: tSp, c: C.text, a: 1, gap: i === 0 && items.length ? isz * .8 * lg : 0, lh: tsz * LH(.88, .12)}));
+  wrap(ctx, tU(M.title || 'Untitled'), maxW, tSp, 3).forEach((t, i) => items.push({t, f: tF, w: tW, s: tsz, sp: tSp, c: pickTC(T.tcol && T.tcol.title, C, C.text), a: 1, gap: i === 0 && items.length ? isz * .8 * lg : 0, lh: tsz * LH(.88, .12)}));
   if (SH.artist && M.artist){
     const at = M.artist + (SH.feat && M.feat ? ` (feat. ${M.feat})` : '');
     const aw = String(Math.min(+tW, 500));
     setFont(ctx, aw, asz, tF);
-    wrap(ctx, tU(at), maxW, aSp, 2).forEach((t, i) => items.push({t, f: tF, w: aw, s: asz, sp: aSp, c: C.text, a: .9, gap: i === 0 ? asz * .3 * lg : 0, lh: asz * LH(1.02, .14)}));
+    wrap(ctx, tU(at), maxW, aSp, 2).forEach((t, i) => items.push({t, f: tF, w: aw, s: asz, sp: aSp, c: pickTC(T.tcol && T.tcol.sub, C, C.text), a: .9, gap: i === 0 ? asz * .3 * lg : 0, lh: asz * LH(1.02, .14)}));
   }
   const rows = [
     [SH.album && M.album, SH.year && M.year].filter(Boolean).join('  —  '),
@@ -2430,6 +2437,7 @@ const vs = {
   dust:{amt:100, stars:100, size:100, a:100, c:'auto', color:'#ffffff'},
   bgTone:'calm', waveSize:100, ringSize:100, waveEase:0, waveTint:'auto',
   shadow:{on:true, color:'#000000', amt:55, blur:50, dist:14},
+  tcol:{title:{c:'auto', color:'#ffffff'}, sub:{c:'auto', color:'#ffffff'}},
   titleWeight:'700', tshadow:{on:false, color:'#000000', amt:45, blur:24, dist:4}
 };
 const getV = p => p.split('.').reduce((o, k) => o == null ? o : o[k], vs);
@@ -3074,12 +3082,13 @@ function frame(){
     const maxW = T.w || (L.port ? W * .84 : W * .8);
     const TS = vs.tshadow || {}; ctx.save();
     if (TS.on){ ctx.shadowColor = col(TS.color || '#000000', (TS.amt ?? 45) / 100); ctx.shadowBlur = (TS.blur ?? 24) * u; ctx.shadowOffsetY = (TS.dist ?? 4) * u; }
-    text(fit(m.title || 'Untitled', maxW), T.x, T.y, ctx.font, col(C.text, 1), T.align);
+    const vPick = (o, def) => !o || !o.c || o.c === 'auto' ? def : o.c === 'accent' ? C.accent : o.c === 'line' ? C.line : o.c === 'text' ? C.text : (o.color || def);
+    text(fit(m.title || 'Untitled', maxW), T.x, T.y, ctx.font, col(vPick(vs.tcol && vs.tcol.title, C.text), 1), T.align);
     if (X('sub').on){
       const sm = X('sub').show || 'auto';
       const parts = sm === 'artist' ? [m.artist] : sm === 'artistAlbum' ? [m.artist, m.album] : sm === 'artistYear' ? [m.artist, m.year] : sm === 'album' ? [m.album] : [m.artist, T.align === 'left' ? m.album : m.year];
       ctx.font = fontStr(400, T.size * ts * .42 * tz('sub'));
-      text(fit(tu('sub', parts.filter(Boolean).join('  ·  ')), maxW), T.x, T.y + T.size * ts * (.36 + .42 * tz('sub')), ctx.font, tc('sub'), T.align);
+      text(fit(tu('sub', parts.filter(Boolean).join('  ·  ')), maxW), T.x, T.y + T.size * ts * (.36 + .42 * tz('sub')), ctx.font, vs.tcol && vs.tcol.sub && vs.tcol.sub.c && vs.tcol.sub.c !== 'auto' ? col(vPick(vs.tcol.sub, C.text), (X('sub').a ?? 70) / 100) : tc('sub'), T.align);
     }
     ctx.restore();
     re();
@@ -3596,6 +3605,7 @@ const tb = {
   title:null, sub:null, songName:'', badge:'', font:'Paperlogy', weight:'800', align:'left', tracking:-2, lineH:104, maxLines:3, stroke:0, strokeColor:'#000000', shadow:true, shadowColor:'#000000', shadowAmt:35, shadowBlur:30, shadowDist:4, glow:false,
   cshadow:{on:true, color:'#000000', amt:42, blur:70, dist:26}, coverMat:false, pfx:{color:'#ffffff', a:7, border:22, borderColor:'#ffffff', radius:39, blur:55, shadow:22, shadowColor:'#46234a'},
   tx:{header:{size:100, a:100, c:'auto', upper:true}, tags:{size:100, a:100, c:'auto', upper:true}, side:{size:100, a:100, c:'auto', upper:true}, percent:{a:100, c:'auto', upper:true}, progress:{a:100, c:'auto'}, barcode:{a:100, c:'auto', upper:true}, bignum:{a:10, c:'auto'}, target:{a:100, c:'auto'}},
+  tcol:{title:{c:'auto', color:'#ffffff'}, sub:{c:'auto', color:'#ffffff'}},
   catalog:'', sideText:'', lockText:'', lockSub:'', dust:{amt:100, stars:100, size:100, a:100, c:'auto', color:'#ffffff'},
   tagText:'OFFICIAL AUDIO · HQ', headL:'', headR:'', pctLabel:'SYNC RATE', pct:100, prog:40, bignumText:'01',
   on:{title:true, sub:true, badge:true, cover:true},
@@ -3771,6 +3781,7 @@ function fitTitle(text, base, maxW, maxH){
   lines = lines.map(l => ellipsize(l, maxW));
   return {lines, size, lhPx};
 }
+const pickTC2 = (o, def) => !o || !o.c || o.c === 'auto' ? def : o.c === 'accent' ? tb.colors.accent : o.c === 'line' ? tb.colors.line : o.c === 'text' ? tb.colors.text : (o.color || def);
 function paintText(str, x, y, font, color, strokeW, ls = 0){
   ctx.font = font; ctx.textAlign = tb.align; ctx.textBaseline = 'alphabetic'; setLS(ls);
   if (strokeW > 0){ ctx.save(); ctx.lineJoin = 'round'; ctx.miterLimit = 2; ctx.lineWidth = strokeW * 2; ctx.strokeStyle = tb.strokeColor; ctx.strokeText(str, x, y); ctx.restore(); }
@@ -3922,7 +3933,7 @@ function draw(preview = true){
     const lastBase = bottom - size * .2, firstBase = lastBase - (lines.length - 1) * lhPx, blockTop = firstBase - size * .82;
     const x0 = anchorX(x, wmax);
     rotAt(x0 + wmax / 2, (blockTop + bottom) / 2, p.r || 0, () => {
-      lines.forEach((l, i) => paintText(l, x, firstBase + i * lhPx, fs(tb.weight, size), tb.colors.text, tb.stroke * u * p.s / 100, ls));
+      lines.forEach((l, i) => paintText(l, x, firstBase + i * lhPx, fs(tb.weight, size), pickTC2(tb.tcol && tb.tcol.title, tb.colors.text), tb.stroke * u * p.s / 100, ls));
       if (on.accentBar){ const bw = 44 * u * p.s / 100, bh = 4 * u * p.s / 100; rr(anchorX(x, bw), blockTop - barH + bh, bw, bh, bh / 2); ctx.fillStyle = col(C.accent, 1); ctx.fill(); }
     });
     boxes.title = {x0: x0 - 6, y0: blockTop - barH, x1: x0 + wmax + 6, y1: bottom};
@@ -3933,7 +3944,7 @@ function draw(preview = true){
     let t = subText().replace(/\s*\n\s*/g, ' '); ctx.font = fs(500, sz); setLS(sz * .01);
     while (ctx.measureText(t).width > maxW && sz > 42 * u * p.s / 100 * .75){ sz *= .95; ctx.font = fs(500, sz); setLS(sz * .01); }
     t = ellipsize(t, maxW); const w = ctx.measureText(t).width, y = y0 + sz * .85; setLS(0);
-    { const bx0 = anchorX(x, w); rotAt(bx0 + w / 2, y0 + sz * .58, p.r || 0, () => paintText(t, x, y, fs(500, sz), col(tb.colors.text, .82), tb.stroke * .6 * u * p.s / 100, sz * .01)); }
+    { const bx0 = anchorX(x, w); rotAt(bx0 + w / 2, y0 + sz * .58, p.r || 0, () => paintText(t, x, y, fs(500, sz), col(pickTC2(tb.tcol && tb.tcol.sub, tb.colors.text), .82), tb.stroke * .6 * u * p.s / 100, sz * .01)); }
     const x0 = anchorX(x, w); boxes.sub = {x0: x0 - 6, y0, x1: x0 + w + 6, y1: y0 + sz * 1.15};
   }
   if (on.vignette){ const g = ctx.createRadialGradient(W / 2, H / 2, H * .45, W / 2, H / 2, W * .72); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.34)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
