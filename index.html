@@ -728,15 +728,9 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                 <div class="sec-h"><h3>움직임</h3></div>
                 <div class="range"><span class="lbl">반응 강도</span><input type="range" min="0" max="200" step="5" data-vbind="sens"><output data-vout="sens" data-fmt="pct"></output></div>
                 <div class="range"><span class="lbl">속도</span><input type="range" min="20" max="200" step="5" data-vbind="speed"><output data-vout="speed" data-fmt="pct"></output></div>
-                <div class="range"><span class="lbl">아래 음파</span><input type="range" min="0" max="150" step="5" data-vbind="waveH"><output data-vout="waveH" data-fmt="pct"></output></div>
-                <div class="range"><span class="lbl">둥근 음파</span><input type="range" min="0" max="150" step="5" data-vbind="ringH"><output data-vout="ringH" data-fmt="pct"></output></div>
-                <div class="range"><span class="lbl">부드럽게</span><input type="range" min="0" max="100" step="5" data-vbind="waveSmooth"><output data-vout="waveSmooth" data-fmt="pct"></output></div>
-                <div class="field" style="margin:4px 0 6px"><label>음파 색</label></div>
-                <div class="seg txt">
-                  <button data-vset="waveColor" data-val="mono">흰색 톤</button>
-                  <button data-vset="waveColor" data-val="line">라인색</button>
-                  <button data-vset="waveColor" data-val="accent">포인트색</button>
-                </div>
+                <div class="range"><span class="lbl">아래 음파</span><input type="range" min="0" max="150" step="5" data-vbind="waveSize"><output data-vout="waveSize" data-fmt="pct"></output></div>
+                <div class="range"><span class="lbl">둥근 음파</span><input type="range" min="0" max="150" step="5" data-vbind="ringSize"><output data-vout="ringSize" data-fmt="pct"></output></div>
+                <div class="range"><span class="lbl">부드럽게</span><input type="range" min="0" max="100" step="5" data-vbind="waveEase"><output data-vout="waveEase" data-fmt="pct"></output></div>
               </div>
             </div>
 
@@ -2350,7 +2344,7 @@ const vs = {
   off:Object.fromEntries(OBJ.map(([k]) => [k, {dx:0, dy:0}])),
   lockObj:true, grid:false, snap:true, pin:{}, rot:Object.fromEntries(OBJ.map(([k]) => [k, 0])),
   meta:{title:'', artist:'', album:'', year:''},
-  bgTone:'calm', waveH:55, ringH:60, waveSmooth:60, waveColor:'mono'
+  bgTone:'calm', waveSize:100, ringSize:100, waveEase:0, waveTint:'auto'
 };
 const getV = p => p.split('.').reduce((o, k) => o == null ? o : o[k], vs);
 // video song info: what was typed / read from the song first, then the album-cover page (without its placeholder text)
@@ -2463,8 +2457,9 @@ function sample(t){
 // smoothed bars: rise quickly, fall slowly, and blend with neighbours so waves move gently
 const WSM = {};
 function smoothBars(key, n){
-  const raw = bars(n), sm = (vs.waveSmooth ?? 60) / 100;
+  const raw = bars(n), sm = (vs.waveEase ?? 0) / 100;
   let s = WSM[key]; if (!s || s.length !== n) s = WSM[key] = raw.slice();
+  if (sm <= 0){ WSM[key] = raw.slice(); return raw; }
   const att = .6 - sm * .42, rel = .3 - sm * .24;
   for (let i = 0; i < n; i++){ const d = raw[i] - s[i]; s[i] += d * (d > 0 ? att : rel); }
   if (sm <= 0) return s.slice();
@@ -2797,7 +2792,7 @@ function frame(){
   else if (vs.bgMode === 'video' && bgReady) drawFit(bgv, W, H, 1);
   ctx.filter = 'none';
   if (vs.bgMode !== 'color'){ ctx.fillStyle = col(bgC, vs.bgDim / 100); ctx.fillRect(0, 0, W, H); }
-  const WC = vs.waveColor === 'accent' ? C.accent : vs.waveColor === 'line' ? C.line : '#ffffff', wh = (vs.waveH ?? 55) / 100, rh0 = (vs.ringH ?? 60) / 100;
+  const wh = (vs.waveSize ?? 100) / 100, rh0 = (vs.ringSize ?? 100) / 100;
 
   const cvr = L.cover, beat = FXo.beat ? 1 + bassS * .045 * k : 1, cs = cvr.s * beat, circle = vs.coverShape === 'circle';
 
@@ -2849,7 +2844,7 @@ function frame(){
     const Mt = L.meters, n = 22, v = smoothBars('meters', n), rh = (Mt.y1 - Mt.y0) / n;
     for (let i = 0; i < n; i++){
       const y = Mt.y0 + i * rh + rh * .3, len = Math.max(3 * u, v[n - 1 - i] * 110 * u * k * wh);
-      ctx.fillStyle = col(WC, .25 + v[n - 1 - i] * .45);
+      ctx.fillStyle = col(v[n - 1 - i] > .6 ? C.accent : C.line, .35 + v[n - 1 - i] * .5);
       ctx.fillRect(Mt.x0, y, len, rh * .4); ctx.fillRect(Mt.x1 - len, y, len, rh * .4);
     }
   }
@@ -2863,36 +2858,25 @@ function frame(){
     const under = (x0, x1, y0) => tb.some(K => x1 > K.x0 && x0 < K.x1 && y0 < K.y1 && S.y > K.y0);
     for (let i = 0; i < S.n; i++){
       const val = S.mirror ? v[Math.abs(Math.floor(S.n / 2) - i) * 2 % S.n] : v[i];
-      const h = Math.max(2 * u, Math.min(S.h, val * S.h * k * wh)), x = S.x + i * bw + bw * .2, w = Math.max(1, bw * (S.thin ? .35 : .5));
-      ctx.fillStyle = col(WC, (S.alpha || .6) * (.35 + val * .45) * (under(x, x + w, S.y - h) ? .3 : 1));
-      rr(x, S.y - h, w, h, Math.min(w / 2, bw * .25)); ctx.fill();
+      const h = Math.max(2 * u, val * S.h * k * wh), x = S.x + i * bw + bw * .2, w = Math.max(1, bw * (S.thin ? .35 : .6));
+      ctx.fillStyle = col(i % 7 === 0 ? C.accent : C.line, (S.alpha || .6) * (.5 + val * .6) * (under(x, x + w, S.y - h) ? .35 : 1));
+      rr(x, S.y - h, w, h, bw * .2); ctx.fill();
     }
     re();
   }
 
   // ring spectrum around cover
   if (FXo.ring && !L.frame){
-    // soft round wave: smoothed bars mirrored left/right + a flowing contour through the tips
-    const n = 64, v = smoothBars('ring', n), R = (circle ? cs * .5 : cs * .5 * 1.08) + 16 * u, maxL = 48 * u * k * rh0;
-    // taper both ends so the top and bottom meet smoothly
-    const val = i => v[i] * (.55 + .45 * Math.sin(Math.PI * (i + .5) / n));
+    const n = 90, v = smoothBars('ring', n), R = L.frame ? L.scaleR + 34 * u : (circle ? cs * .5 : cs * .5 * 1.08) + 14 * u;
     ctx.save(); ctx.translate(cvr.x, cvr.y); ctx.lineCap = 'round';
-    ctx.strokeStyle = col(WC, .14); ctx.lineWidth = 1 * u; ctx.beginPath(); ctx.arc(0, 0, R - 7 * u, 0, Math.PI * 2); ctx.stroke();
-    const tips = [];
+    ctx.strokeStyle = col(C.line, .25); ctx.lineWidth = 1 * u; ctx.beginPath(); ctx.arc(0, 0, R - 6 * u, 0, Math.PI * 2); ctx.stroke();
     for (let side = -1; side <= 1; side += 2){
       for (let i = 0; i < n; i++){
-        const a = -Math.PI / 2 + side * (i + .5) / n * Math.PI, vv = val(i), len = 2.5 * u + vv * maxL;
-        ctx.strokeStyle = col(WC, .22 + vv * .5); ctx.lineWidth = Math.max(1, (Math.PI * R / n) * .32);
+        const a = -Math.PI / 2 + side * (i + .5) / n * Math.PI, len = 3 * u + v[i] * (L.frame ? 40 : 80) * u * k * rh0;
+        ctx.strokeStyle = col(v[i] > .55 ? C.accent : C.line, .45 + v[i] * .55); ctx.lineWidth = Math.max(1, (Math.PI * R / n) * .45);
         ctx.beginPath(); ctx.moveTo(Math.cos(a) * R, Math.sin(a) * R); ctx.lineTo(Math.cos(a) * (R + len), Math.sin(a) * (R + len)); ctx.stroke();
-        if (side === 1) tips.push([a, R + len + 7 * u]);
       }
     }
-    // contour: right half then mirrored left half, drawn as one smooth closed curve
-    const pts = tips.map(([a, r]) => [Math.cos(a) * r, Math.sin(a) * r]);
-    const all = pts.concat(pts.slice().reverse().map(([x, y]) => [-x, y]));
-    ctx.beginPath();
-    all.forEach((p, i) => { const q = all[(i + 1) % all.length], mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2; if (i === 0) ctx.moveTo(mx, my); else ctx.quadraticCurveTo(p[0], p[1], mx, my); });
-    ctx.closePath(); ctx.strokeStyle = col(WC, .28); ctx.lineWidth = 1.2 * u; ctx.stroke();
     ctx.restore(); ctx.lineCap = 'butt';
   }
 
