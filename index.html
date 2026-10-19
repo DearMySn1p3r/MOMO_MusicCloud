@@ -796,6 +796,7 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
           <b>영상 녹화 중</b>
           <p id="vRecTime">0:00 / 0:00</p>
           <div class="rec-bar"><i id="vRecBar"></i></div>
+          <button class="btn sm" id="vRecListen" style="margin:2px auto 8px">🔇 소리 꺼짐 · 눌러서 듣기</button>
           <small>곡 길이만큼 걸려요. 이 탭을 닫거나 다른 탭으로 옮기면 영상이 끊길 수 있어요.</small>
           <button class="btn sm" id="vRecCancel">취소</button>
         </div>
@@ -2443,7 +2444,10 @@ audio.addEventListener('pause', () => { $('#vPlay .ic-play').style.display = '';
 audio.addEventListener('ended', () => { if (recording) stopRecord(false); if (tap.on) endTap(true); });
 const seek = $('#vSeek');
 seek.addEventListener('input', () => { if (audio.duration) audio.currentTime = seek.value / 1000 * audio.duration; });
-if (M.bindVol) M.bindVol('v', g => { vVolLevel = g; if (vGain) vGain.gain.value = g; });
+if (M.bindVol) M.bindVol('v', g => { vVolLevel = g; applySpeaker(); });
+// while saving a video the speakers stay quiet (the saved file still gets the full sound)
+var recListen = false;
+function applySpeaker(){ if (!vGain) return; vGain.gain.value = (recording && !recListen) ? 0 : vVolLevel; }
 
 /* audio analysis buffers */
 const F = new Float32Array(1024), Wv = new Float32Array(2048);
@@ -3233,7 +3237,8 @@ $$('.nav-item').forEach(n => n.addEventListener('click', () => (n.dataset.view =
 $('#vRefreshCover').onclick = () => { refreshCover(); toast('커버를 다시 가져왔어요'); };
 
 /* ---------- record ---------- */
-let recording = false, rec = null, recChunks = [], recCancel = false, recStream = null;
+var recording = false; // var: read by applySpeaker() before this line runs
+let rec = null, recChunks = [], recCancel = false, recStream = null;
 const MIMES = ['video/mp4;codecs=avc1.640028,mp4a.40.2', 'video/mp4;codecs=avc1.42E01E,mp4a.40.2', 'video/mp4;codecs=avc1,mp4a', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm', 'video/mp4'];
 async function startRecord(){
   syncSource();
@@ -3252,7 +3257,7 @@ async function startRecord(){
   recChunks = []; recCancel = false;
   rec.ondataavailable = e => { if (e.data && e.data.size) recChunks.push(e.data); };
   rec.onstop = () => {
-    recording = false; $('#vRecOv').hidden = true; setSize(false);
+    recording = false; $('#vRecOv').hidden = true; setSize(false); applySpeaker();
     recStream.getVideoTracks().forEach(tr => tr.stop());
     if (recCancel){ toast('녹화를 취소했어요'); return; }
     const type = (rec.mimeType || mime || 'video/webm').split(';')[0], ext = type.includes('mp4') ? 'mp4' : 'webm';
@@ -3263,12 +3268,15 @@ async function startRecord(){
   audio.pause(); audio.currentTime = 0; if (bgReady){ bgv.currentTime = 0; bgv.play().catch(() => {}); }
   lyrIdx = -1; clock = 0;
   recording = true; $('#vRecOv').hidden = false;
+  recListen = false; recListenUI(); applySpeaker();
   if (!running){ running = true; requestAnimationFrame(loop); }
   rec.start(500);
   try { await audio.play(); } catch(e){ recCancel = true; rec.stop(); toast('음악을 재생할 수 없어요'); }
 }
 function stopRecord(cancel){ if (!rec || rec.state === 'inactive') return; recCancel = !!cancel; audio.pause(); rec.stop(); }
 $('#vRecord').onclick = startRecord;
+function recListenUI(){ $('#vRecListen').textContent = recListen ? '🔊 소리 듣는 중 · 눌러서 끄기' : '🔇 소리 꺼짐 · 눌러서 듣기'; }
+$('#vRecListen').onclick = () => { recListen = !recListen; recListenUI(); applySpeaker(); };
 $('#vRecCancel').onclick = () => stopRecord(true);
 
 /* ---------- UI ---------- */
