@@ -2500,7 +2500,10 @@ function refreshCover(){
   } else { try { M.render(s, 1000, false); } catch(e){ console.error(e); } }
   const b = blur.getContext('2d'); b.clearRect(0, 0, 240, 240);
   b.filter = 'blur(12px)'; b.drawImage(snap, -30, -30, 300, 300); b.filter = 'none';
+  // average colour of the cover: used under the picture instead of black, so nothing dark peeks out at the edges
+  try { const a = document.createElement('canvas'); a.width = a.height = 1; const ax = a.getContext('2d'); ax.drawImage(snap, 0, 0, 1, 1); const d = ax.getImageData(0, 0, 1, 1).data; coverAvg = '#' + [d[0], d[1], d[2]].map(v => v.toString(16).padStart(2, '0')).join(''); } catch(e){ coverAvg = vs.colors.bg; }
 }
+var coverAvg = coverAvg || '#333333';
 const bgv = document.createElement('video'); bgv.muted = true; bgv.loop = true; bgv.playsInline = true; let bgReady = false, bgUrl = null;
 bgv.addEventListener('loadeddata', () => { bgReady = true; bgv.play().catch(() => {}); });
 function loadBgVideo(f){
@@ -2920,7 +2923,7 @@ function frame(){
     else { ctx.shadowColor = col(SH.color || '#000000', SH.amt / 100); ctx.shadowBlur = (SH.blur ?? 50) * u; ctx.shadowOffsetY = (SH.dist ?? 14) * u; } }
   if (circle){
     ctx.translate(cvr.x, cvr.y); if (FXo.spin) ctx.rotate(t * .25);
-    ctx.beginPath(); ctx.arc(0, 0, cs / 2, 0, Math.PI * 2); ctx.fillStyle = '#000'; ctx.fill(); ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+    ctx.beginPath(); ctx.arc(0, 0, cs / 2 - 2 * u, 0, Math.PI * 2); ctx.fillStyle = coverAvg; ctx.fill(); ctx.shadowBlur = 0; ctx.shadowOffsetY = 0; ctx.shadowColor = 'transparent';
     ctx.save(); ctx.clip(); ctx.drawImage(snap, -cs / 2, -cs / 2, cs, cs); ctx.restore();
     ctx.strokeStyle = col('#000000', .25); for (let r = cs * .2; r < cs * .5; r += cs * .035){ ctx.lineWidth = .8 * u; ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.stroke(); }
     ctx.fillStyle = C.bg; ctx.beginPath(); ctx.arc(0, 0, cs * .045, 0, Math.PI * 2); ctx.fill();
@@ -2928,8 +2931,8 @@ function frame(){
     ctx.strokeStyle = col(C.line, .4); ctx.lineWidth = 1.2 * u; ctx.beginPath(); ctx.arc(0, 0, cs / 2, 0, Math.PI * 2); ctx.stroke();
   } else {
     const x = cvr.x - cs / 2, y = cvr.y - cs / 2;
-    rr(x, y, cs, cs, 8 * u); ctx.fillStyle = '#000'; ctx.fill(); ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
-    ctx.save(); rr(x, y, cs, cs, 8 * u); ctx.clip(); ctx.drawImage(snap, x, y, cs, cs); ctx.restore();
+    const ins = 2 * u; rr(x + ins, y + ins, cs - ins * 2, cs - ins * 2, 7 * u); ctx.fillStyle = coverAvg; ctx.fill(); ctx.shadowBlur = 0; ctx.shadowOffsetY = 0; ctx.shadowColor = 'transparent';
+    ctx.save(); rr(x, y, cs, cs, 8 * u); ctx.clip(); ctx.drawImage(snap, x - .5, y - .5, cs + 1, cs + 1); ctx.restore();
     ctx.strokeStyle = col(C.line, .35); ctx.lineWidth = 1.2 * u; rr(x, y, cs, cs, 8 * u); ctx.stroke();
     if ((L.coverBrackets || L.frame) && FXo.hud){
       const g = 14 * u, l = 22 * u; ctx.strokeStyle = col(C.line, .6); ctx.lineWidth = 2 * u; ctx.beginPath();
