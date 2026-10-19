@@ -3581,10 +3581,12 @@ const PRESETS = {
 // minimal sizing: words and decorations a little smaller, the cover only slightly
 const MINI = n => n === 'panel' ? 1 : (n === 'cover' || n === 'ring' || n === 'glow' || n === 'orbit') ? .93 : .84;
 const presetO = k => { const P = PRESETS[k] || PRESETS.left, o = JSON.parse(JSON.stringify(BASE_O)); Object.keys(P.o).forEach(n => Object.assign(o[n], P.o[n])); Object.keys(o).forEach(n => { o[n].s = Math.round(o[n].s * MINI(n)); }); return o; };
+const panelDefaults = st => st === 'card' ? {color:'#ffffff', a:80, border:95, borderColor:'#ffffff', radius:39, blur:55, shadow:22, shadowColor:'#46234a'} : {color:'#ffffff', a:7, border:22, borderColor:'#ffffff', radius:39, blur:55, shadow:22, shadowColor:'#46234a'};
 function applyPresetTo(t, k){
   const P = PRESETS[k] || PRESETS.left;
   t.preset = k; t.align = P.align; t.o = presetO(k); t.tilt = P.tilt || 0; t.bgDim = P.bgDim ?? 30; t.wash = P.wash || 'dark'; t.panelStyle = P.panelStyle || 'glass';
   t.cshadow = Object.assign({on:true, color:'#000000', amt:42, blur:70, dist:26}, P.cshadow || {}); t.coverMat = !!P.coverMat;
+  t.pfx = panelDefaults(t.panelStyle);
   t.colors.text = (P.colors && P.colors.text) || '#ffffff'; t.colors.line = (P.colors && P.colors.line) || '#ffffff'; t.shadow = P.shadow ?? true;
   DECO_KEYS.forEach(n => { t.on[n] = !!P.on[n]; }); t.on.title = t.on.sub = t.on.cover = true;
 }
@@ -3592,7 +3594,7 @@ const tb = {
   v:4, preset:'left', bgMode:'cover', bgDim:30, wash:'dark', panelStyle:'glass', coverSrc:'cover', coverShape:'square', tilt:0,
   colors:{bg:CS.cover.bg, text:'#ffffff', accent:CS.cover.accent, line:'#ffffff'},
   title:null, sub:null, songName:'', badge:'', font:'Paperlogy', weight:'800', align:'left', tracking:-2, lineH:104, maxLines:3, stroke:0, strokeColor:'#000000', shadow:true, shadowColor:'#000000', shadowAmt:35, shadowBlur:30, shadowDist:4, glow:false,
-  cshadow:{on:true, color:'#000000', amt:42, blur:70, dist:26}, coverMat:false,
+  cshadow:{on:true, color:'#000000', amt:42, blur:70, dist:26}, coverMat:false, pfx:{color:'#ffffff', a:7, border:22, borderColor:'#ffffff', radius:39, blur:55, shadow:22, shadowColor:'#46234a'},
   tx:{header:{size:100, a:100, c:'auto', upper:true}, tags:{size:100, a:100, c:'auto', upper:true}, side:{size:100, a:100, c:'auto', upper:true}, percent:{a:100, c:'auto', upper:true}, progress:{a:100, c:'auto'}, barcode:{a:100, c:'auto', upper:true}, bignum:{a:10, c:'auto'}, target:{a:100, c:'auto'}},
   catalog:'', sideText:'', lockText:'', lockSub:'', dust:{amt:100, stars:100, size:100, a:100, c:'auto', color:'#ffffff'},
   tagText:'OFFICIAL AUDIO · HQ', headL:'', headR:'', pctLabel:'SYNC RATE', pct:100, prog:40, bignumText:'01',
@@ -3823,12 +3825,14 @@ function draw(preview = true){
   // panel (glass for Y2K, card for the player) — sits behind the cover and the words
   if (on.panel){
     const p = O.panel, k = p.s / 100, pw = p.w / 100 * W * k, ph = p.h / 100 * H * k, px = p.x / 100 * W, py = p.y / 100 * H, rad = 28 * u * 1.4;
+    const PF = tb.pfx || {}, prad = (PF.radius ?? 39) * u * (tb.panelStyle === 'card' ? 1 : .8);
     if (tb.panelStyle === 'card'){
-      ctx.save(); ctx.shadowColor = 'rgba(70,35,70,.22)'; ctx.shadowBlur = 80; ctx.shadowOffsetY = 30; rr(px, py, pw, ph, rad); ctx.fillStyle = 'rgba(255,255,255,.8)'; ctx.fill(); ctx.restore();
-      rr(px, py, pw, ph, rad); ctx.strokeStyle = 'rgba(255,255,255,.95)'; ctx.lineWidth = 2; ctx.stroke();
+      ctx.save(); if ((PF.shadow ?? 22) > 0){ ctx.shadowColor = col(PF.shadowColor || '#46234a', (PF.shadow ?? 22) / 100); ctx.shadowBlur = 80; ctx.shadowOffsetY = 30; } rr(px, py, pw, ph, prad); ctx.fillStyle = col(PF.color || '#ffffff', (PF.a ?? 80) / 100); ctx.fill(); ctx.restore();
+      if ((PF.border ?? 95) > 0){ rr(px, py, pw, ph, prad); ctx.strokeStyle = col(PF.borderColor || '#ffffff', (PF.border ?? 95) / 100); ctx.lineWidth = 2; ctx.stroke(); }
     } else {
-      ctx.save(); rr(px, py, pw, ph, rad * .8); ctx.clip(); ctx.globalAlpha = .55; ctx.drawImage(blurC, px - 40, py - 40, pw + 80, ph + 80); ctx.restore();
-      rr(px, py, pw, ph, rad * .8); ctx.fillStyle = col(C.line, .07); ctx.fill(); ctx.strokeStyle = col(C.line, .22); ctx.lineWidth = 1.2; ctx.stroke();
+      ctx.save(); rr(px, py, pw, ph, prad); ctx.clip(); ctx.globalAlpha = (PF.blur ?? 55) / 100; ctx.drawImage(blurC, px - 40, py - 40, pw + 80, ph + 80); ctx.restore();
+      rr(px, py, pw, ph, prad); ctx.fillStyle = col(PF.color || C.line, (PF.a ?? 7) / 100); ctx.fill();
+      if ((PF.border ?? 22) > 0){ ctx.strokeStyle = col(PF.borderColor || C.line, (PF.border ?? 22) / 100); ctx.lineWidth = 1.2; ctx.stroke(); }
     }
     boxes.panel = {x0: px, y0: py, x1: px + pw, y1: py + ph};
   }
@@ -4037,7 +4041,7 @@ view.addEventListener('input', e => {
 });
 view.addEventListener('click', e => {
   const s = e.target.closest('[data-tset]');
-  if (s){ setT(s.dataset.tset, s.dataset.val); if (s.dataset.tset === 'coverSrc') refreshCover(); syncUI(); sched(); return; }
+  if (s){ if (s.dataset.tset === 'panelStyle' && tb.panelStyle !== s.dataset.val) tb.pfx = panelDefaults(s.dataset.val); setT(s.dataset.tset, s.dataset.val); if (s.dataset.tset === 'coverSrc') refreshCover(); syncUI(); sched(); return; }
   const pr = e.target.closest('[data-tpreset]');
   if (pr){ if (M.EDITORS.thumb) M.EDITORS.thumb.checkpoint(); applyPresetTo(tb, pr.dataset.tpreset); sel = null; syncUI(); sched(); toast(`'${PRESETS[tb.preset].name}' 배치를 적용했어요`); return; }
   const r = e.target.closest('[data-treset]');
@@ -4109,9 +4113,15 @@ $('[data-fontin="t"]').addEventListener('change', async e => { const f = e.targe
     + `<button class="link" data-treset="${k}" style="margin-bottom:4px">위치 초기화</button>`;
   const adj = k => `<button class="adj" data-tadj="${k}">조정 <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m2 3.5 3 3 3-3"/></svg></button>`;
   const pin = (k, n) => `<button class="pin" data-tpin="${k}" title="고정" aria-label="${n} 고정"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5 13.5 6l-2.5 1-2.5 3.5.5 2.5L3 7.5l2.5.5L9 5.5z"/><path d="M5.5 10.5 2.5 13.5"/></svg></button><button class="rst" data-treset="${k}" title="위치 초기화" aria-label="${n} 위치 초기화">${RST}</button>`;
+  const colorRow = (path, lab) => `<div class="range"><span class="lbl">${lab}</span><div class="color"><input type="color" data-tbind="${path}" aria-label="${lab}"><span data-tout="${path}" data-fmt="hex"></span></div></div>`;
+  const PANEL = `<div class="dsub-h"><span>패널 모양</span></div><div class="seg txt" style="margin-bottom:10px"><button data-tset="panelStyle" data-val="glass">유리</button><button data-tset="panelStyle" data-val="card">카드</button></div>`
+    + colorRow('pfx.color', '패널 색') + tRg('pfx.a', '진하기', 0, 100, 1, 'pct') + tRg('pfx.blur', '커버 비침', 0, 100, 1, 'pct')
+    + colorRow('pfx.borderColor', '테두리 색') + tRg('pfx.border', '테두리', 0, 100, 1, 'pct') + tRg('pfx.radius', '둥글기', 0, 80, 1, 'int')
+    + colorRow('pfx.shadowColor', '그림자 색') + tRg('pfx.shadow', '그림자', 0, 100, 1, 'pct')
+    + `<p class="note" style="margin:2px 0 6px">커버 비침은 유리, 그림자는 카드 모양일 때 보여요.</p><div class="sep"></div>`;
   const BADGE = `<div class="dsub-h"><span>문구</span></div><input class="inp" type="text" data-tbind="badge" maxlength="24" placeholder="비워 두면 안 보여요" aria-label="배지 문구"><div class="sep"></div>`;
   $('#tObjList').innerHTML = `<div class="dlist">${OBJ.map(([k, n]) => `<div class="ditem" data-tkey="${k}"><div class="drow"><span class="dname"><b>${n}</b></span>${pin(k, n)}${adj(k)}
-    <label class="sw"><input type="checkbox" data-tbind="on.${k}" aria-label="${n}"><span></span></label></div><div class="dsub np">${k === 'badge' ? BADGE : ''}${TTXB[k] ? `<div class="dsub-h"><span>글씨</span></div>${TTXB[k]}<div class="sep"></div>` : ''}${posSub(k)}</div></div>`).join('')}</div>`;
+    <label class="sw"><input type="checkbox" data-tbind="on.${k}" aria-label="${n}"><span></span></label></div><div class="dsub np">${k === 'badge' ? BADGE : ''}${k === 'panel' ? PANEL : ''}${TTXB[k] ? `<div class="dsub-h"><span>글씨</span></div>${TTXB[k]}<div class="sep"></div>` : ''}${posSub(k)}</div></div>`).join('')}</div>`;
   { const P = 'dust', R = tRg; TTXB.dust = `<div class="dsub-h"><span>별가루</span></div>` + R(P + '.amt', '양', 0, 300, 5, 'pct') + R(P + '.stars', '반짝이 별', 0, 400, 10, 'pct') + R(P + '.size', '크기', 40, 250, 5, 'pct') + R(P + '.a', '진하기', 5, 100, 1, 'pct') + `<div class="range"><span class="lbl">색</span><select class="sm" data-tbind="${P}.c" style="grid-column:2 / -1"><option value="auto">자동 (라인색 + 포인트색)</option><option value="line">라인색</option><option value="accent">포인트색</option><option value="text">글자색</option><option value="custom">직접 고르기</option></select></div>` + `<div class="range"><span class="lbl">직접 고른 색</span><div class="color"><input type="color" data-tbind="${P}.color" aria-label="별가루 색"><span data-tout="${P}.color" data-fmt="hex"></span></div></div>`; }
   $('#tFixList').innerHTML = `<div class="dlist">${FIX.map(([k, n]) => `<div class="ditem" data-tkey="${k}"><div class="drow"><span class="dname"><b>${n}</b></span>${TTXB[k] ? adj(k) : ''}
     <label class="sw"><input type="checkbox" data-tbind="on.${k}" aria-label="${n}"><span></span></label></div>${TTXB[k] ? `<div class="dsub np">${TTXB[k]}</div>` : ''}</div>`).join('')}</div>`;
@@ -4136,6 +4146,7 @@ function tApplySnapshot(d){
     else if (typeof d[k] === typeof def) tb[k] = d[k];
   });
   if (!PRESETS[tb.preset]) tb.preset = 'left';
+  if (!('pfx' in d)) tb.pfx = panelDefaults(tb.panelStyle);
   Object.keys(BASE_O).forEach(k => { if (!tb.o[k]) tb.o[k] = {...presetO(tb.preset)[k]}; });
   if (!(M.FONTS || []).some(f => f[0] === tb.font)) tb.font = TDEF.font;
   sel = null; refreshCover(); syncUI(); loadFonts(); sched();
@@ -4224,6 +4235,7 @@ syncUI(); refreshCover();
     if (s.v !== 4){ const keep = {}; ['title', 'sub', 'font', 'weight', 'bgMode', 'coverSrc', 'coverShape', 'stroke', 'strokeColor'].forEach(k => { if (k in s) keep[k] = s[k]; }); s = keep; }
     if (s.preset && PRESETS[s.preset] && s.v !== 4) applyPresetTo(tb, s.preset);
     M.deepAssign(tb, s); tb.lock = true;
+    if (!s.pfx) tb.pfx = panelDefaults(tb.panelStyle);
     Object.keys(BASE_O).forEach(k => { if (!tb.o[k]) tb.o[k] = {...presetO(tb.preset)[k]}; });
     if (tb.songName && c && tb.coverSrc === 'upload' && $('#tCoverThumb img')) songThumb($('#tCoverThumb img').src);
   }
