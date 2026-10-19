@@ -657,7 +657,7 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
             <div class="pane" data-pane="vstyle" hidden>
               <div class="sec">
                 <div class="sec-h"><h3>내 영상 세트</h3></div>
-                <p class="note">템플릿 · 색 · 효과 · 장식 · 세부 글씨 문구 · 배치를 한꺼번에 저장해요. (곡 정보와 가사는 빼고 저장돼요)</p>
+                <p class="note">템플릿 · 색 · 배경 색감 · 효과 · 장식 · 음파 크기 · 부드럽게 · 반응 강도 · 속도 · 세부 글씨 문구 · 배치를 한꺼번에 저장해요. (곡 정보와 가사는 빼고 저장돼요)</p>
                 <div class="saverow"><input class="inp" id="vSetName" placeholder="세트 이름" maxlength="30"><button class="btn primary sm" id="vSaveSet" style="height:32px">저장</button></div>
                 <div class="sets" id="vSetList"></div>
                 <div class="inline-btns">
@@ -3337,6 +3337,8 @@ const vStoreSets = a => { if (!M.STORE.write(VSET_KEY, a)) toast('이 브라우�
 const vSnapshot = () => { const o = {}; Object.keys(vs).forEach(k => { if (!VSKIP.has(k)) o[k] = JSON.parse(JSON.stringify(vs[k])); }); return o; };
 function vApplySnapshot(d){
   if (!d || typeof d !== 'object') return;
+  // settings added after the set was saved (e.g. wave size) go back to their defaults so every set looks the same each time
+  Object.keys(VDEF).forEach(k => { if (!VSKIP.has(k) && !(k in d)) vs[k] = JSON.parse(JSON.stringify(VDEF[k])); });
   Object.keys(d).forEach(k => {
     if (VSKIP.has(k) || !(k in VDEF)) return;
     const def = VDEF[k];
