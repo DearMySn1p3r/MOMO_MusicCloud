@@ -848,11 +848,13 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
               </div>
               <div class="sec">
                 <div class="sec-h"><h3>배치</h3></div>
-                <div class="tpls" style="grid-template-columns:repeat(4,1fr)">
-                  <button class="tpl" data-tpreset="left"><svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><path d="M7 13h22M7 18h16M7 24h10"/><rect x="38" y="8" width="20" height="20" rx="1"/></svg><span>왼쪽 글자</span></button>
-                  <button class="tpl" data-tpreset="right"><svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><rect x="6" y="8" width="20" height="20" rx="1"/><path d="M35 13h22M35 18h16M35 24h10"/></svg><span>오른쪽 글자</span></button>
-                  <button class="tpl" data-tpreset="center"><svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><rect x="25" y="5" width="14" height="14" rx="1"/><path d="M16 25h32M22 30h20"/></svg><span>가운데</span></button>
-                  <button class="tpl" data-tpreset="big"><svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><path d="M8 14h48M8 22h34" stroke-width="3"/></svg><span>큰 글자</span></button>
+                <div class="tpls" style="grid-template-columns:repeat(3,1fr)">
+                  <button class="tpl" data-tpreset="left"><svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><path d="M7 6h50" stroke-opacity=".5"/><path d="M7 15h22M7 20h16"/><path d="M7 27h8M17 27h6" stroke-opacity=".6"/><rect x="38" y="10" width="19" height="19" rx="1"/><circle cx="47.5" cy="19.5" r="12" stroke-dasharray="1 2" stroke-opacity=".6"/></svg><span>스포트라이트</span></button>
+                  <button class="tpl" data-tpreset="right"><svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><rect x="7" y="9" width="19" height="19" rx="1"/><ellipse cx="16.5" cy="18.5" rx="14" ry="5" stroke-opacity=".5"/><path d="M34 13h22M34 18h14"/><path d="M34 25h22" stroke-dasharray="1 1.4"/><path d="M34 29h22" stroke-opacity=".5"/></svg><span>갤러리</span></button>
+                  <button class="tpl" data-tpreset="center"><svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><rect x="3" y="3" width="58" height="30" rx="2" stroke-opacity=".4"/><rect x="25" y="5" width="14" height="14" rx="1"/><path d="M16 24h32M22 28h20"/><path d="M26 31.5h12" stroke-opacity=".6"/></svg><span>스테이지</span></button>
+                  <button class="tpl" data-tpreset="big"><svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><path d="M7 11h34M7 18h28" stroke-width="3"/><rect x="44" y="17" width="13" height="13" rx="1" transform="rotate(-8 50 23)"/><path d="M50 4l1.5 3 3 1.5-3 1.5-1.5 3-1.5-3-3-1.5 3-1.5z" stroke-opacity=".7"/><path d="M7 28h12" stroke-opacity=".6"/></svg><span>포스터</span></button>
+                  <button class="tpl" data-tpreset="y2k"><svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><path d="M3 7V3h4M61 7V3h-4M3 29v4h4M61 29v4h-4" stroke-opacity=".7"/><rect x="9" y="11" width="15" height="15" rx="1"/><circle cx="16.5" cy="18.5" r="11" stroke-dasharray="1 2" stroke-opacity=".6"/><rect x="31" y="8" width="26" height="21" rx="2.5"/><path d="M35 14h14M35 18h10M35 24h7"/></svg><span>Y2K 인터페이스</span></button>
+                  <button class="tpl" data-tpreset="player"><svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><rect x="8" y="7" width="48" height="23" rx="4"/><rect x="11" y="10" width="15" height="15" rx="2"/><path d="M30 13h16M30 17h10"/><path d="M30 22h22" stroke-dasharray="1 1.2"/><circle cx="41" cy="26.5" r="1.6"/></svg><span>플레이어 카드</span></button>
                 </div>
               </div>
               <div class="sec">
@@ -940,6 +942,18 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                   <div class="range"><span class="lbl">회전</span><input type="range" id="tRot" min="-180" max="180" step="1" aria-label="회전"><output id="tRotOut"></output><button class="rv show" id="tRotReset" title="회전 처음 값으로" aria-label="회전 처음 값으로"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2.5 8a5.5 5.5 0 1 0 1.8-4.1"/><path d="M2.5 2.5v3h3"/></svg></button></div>
                 </div>
                 <div id="tObjList"></div>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>장식 문구</h3></div>
+                <div class="grid2">
+                  <div class="field full"><label>태그 ( · 로 구분)</label><input type="text" data-tbind="tagText" maxlength="60"></div>
+                  <div class="field"><label>상단 라인 왼쪽</label><input type="text" data-tbind="headL" maxlength="40" placeholder="비우면 아티스트"></div>
+                  <div class="field"><label>상단 라인 오른쪽</label><input type="text" data-tbind="headR" maxlength="40" placeholder="비우면 앨범 · 연도"></div>
+                  <div class="field"><label>퍼센트 라벨</label><input type="text" data-tbind="pctLabel" maxlength="24"></div>
+                  <div class="field"><label>트랙 넘버</label><input type="text" data-tbind="bignumText" maxlength="6"></div>
+                </div>
+                <div class="range" style="margin-top:8px"><span class="lbl">퍼센트</span><input type="range" min="0" max="100" step="1" data-tbind="pct"><output data-tout="pct" data-fmt="pct"></output></div>
+                <div class="range"><span class="lbl">진행도</span><input type="range" min="0" max="100" step="1" data-tbind="prog"><output data-tout="prog" data-fmt="pct"></output></div>
               </div>
               <div class="sec">
                 <div class="sec-h"><h3>배경 꾸밈</h3></div>
@@ -3455,27 +3469,52 @@ function rr(x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x,
 function rng(seed){ let a = seed >>> 0; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 
 /* ---------- state ---------- */
-const OBJ = [['title','제목'],['sub','부제'],['badge','배지'],['cover','앨범 커버'],['ring','커버 링'],['glow','하이라이트 빛'],['sparkle','반짝이'],['globe','지구본'],['target','조준점']];
-const FIX = [['accentBar','포인트 선','제목 위 짧은 선'],['brackets','코너 브래킷','네 귀퉁이 꺾쇠'],['dust','별가루','흩뿌려진 점과 작은 별'],['fade','글자 쪽 음영','글자가 잘 보이게 어둡게'],['vignette','비네트','가장자리 음영'],['grain','그레인','필름 질감']];
-// title.y = bottom of the title block (long titles grow upward), sub.y = top of the subtitle
+const OBJ = [['title','제목'],['sub','부제'],['badge','배지'],['cover','앨범 커버'],['panel','패널'],['tags','태그'],['ring','커버 링'],['glow','하이라이트 빛'],['orbit','궤도선'],['sparkle','반짝이'],['hearts','하트'],['globe','지구본'],['target','조준점'],['ornament','엠블럼'],['percent','퍼센트'],['progress','재생 바'],['waveform','웨이브폼'],['barcode','바코드'],['bignum','트랙 넘버']];
+const FIX = [['header','상단 라인','위쪽 정보 줄'],['frame','테두리','안쪽 얇은 테두리'],['side','세로 텍스트','오른쪽 세로 글자'],['gridBg','그리드','은은한 격자'],['accentBar','포인트 선','제목 위 짧은 선'],['brackets','코너 브래킷','네 귀퉁이 꺾쇠'],['dust','별가루','흩뿌려진 점과 작은 별'],['fade','글자 쪽 음영','글자가 잘 보이게 어둡게'],['vignette','비네트','가장자리 음영'],['grain','그레인','필름 질감']];
+const DECO_KEYS = ['panel','tags','ring','glow','orbit','sparkle','hearts','globe','target','ornament','percent','progress','waveform','barcode','bignum','header','frame','side','gridBg','accentBar','brackets','dust','fade','vignette','grain'];
+// every object has a default spot; each layout overrides what it uses
+// title.y = bottom of the title block (long titles grow upward), sub.y = top of the subtitle, panel x/y = top-left
+const BASE_O = {title:{x:7,y:58,s:100}, sub:{x:7,y:62,s:100}, badge:{x:7,y:11,s:100}, cover:{x:74,y:50,s:96}, panel:{x:55,y:20,s:100,w:38,h:60}, tags:{x:7,y:76,s:170},
+  ring:{x:74,y:50,s:96}, glow:{x:74,y:50,s:110}, orbit:{x:74,y:50,s:60}, sparkle:{x:92,y:14,s:80}, hearts:{x:40,y:20,s:100}, globe:{x:90,y:84,s:40}, target:{x:56,y:18,s:70}, ornament:{x:90,y:18,s:60},
+  percent:{x:60,y:70,s:130}, progress:{x:66,y:84,s:85}, waveform:{x:66,y:76,s:62}, barcode:{x:90,y:90,s:100}, bignum:{x:52,y:12,s:70}};
 const PRESETS = {
-  left:  {align:'left',   o:{title:{x:7,y:58,s:100}, sub:{x:7,y:62,s:100}, badge:{x:7,y:11,s:100}, cover:{x:74,y:50,s:96}, ring:{x:74,y:50,s:96}, glow:{x:74,y:50,s:110}, sparkle:{x:92,y:14,s:90}, globe:{x:92,y:84,s:90}, target:{x:56,y:18,s:90}}},
-  right: {align:'left',   o:{title:{x:52,y:58,s:100}, sub:{x:52,y:62,s:100}, badge:{x:52,y:11,s:100}, cover:{x:26,y:50,s:96}, ring:{x:26,y:50,s:96}, glow:{x:26,y:50,s:110}, sparkle:{x:44,y:14,s:90}, globe:{x:92,y:84,s:90}, target:{x:8,y:14,s:90}}},
-  center:{align:'center', o:{title:{x:50,y:79,s:86},  sub:{x:50,y:83,s:90},  badge:{x:50,y:5,s:86},  cover:{x:50,y:35,s:60}, ring:{x:50,y:35,s:60}, glow:{x:50,y:35,s:72}, sparkle:{x:66,y:12,s:80}, globe:{x:88,y:20,s:80}, target:{x:12,y:20,s:80}}},
-  big:   {align:'left',   o:{title:{x:6,y:64,s:140},  sub:{x:6,y:68,s:110}, badge:{x:6,y:10,s:105}, cover:{x:86,y:76,s:46}, ring:{x:86,y:76,s:46}, glow:{x:86,y:76,s:60}, sparkle:{x:92,y:12,s:90}, globe:{x:86,y:22,s:90}, target:{x:72,y:14,s:90}}}
+  left:   {name:'스포트라이트', align:'left', on:{ring:true, glow:true, sparkle:true, globe:true, tags:true, bignum:true, header:true, side:true, dust:true, fade:true, vignette:true, grain:true, accentBar:true},
+           o:{title:{x:7,y:56,s:100}, sub:{x:7,y:60,s:100}, badge:{x:7,y:18,s:100}, cover:{x:73,y:52,s:92}, ring:{x:73,y:52,s:92}, glow:{x:73,y:52,s:110}, sparkle:{x:89,y:22,s:75}, globe:{x:91,y:86,s:38}, orbit:{x:73,y:52,s:58}, tags:{x:7,y:77,s:170}, bignum:{x:50,y:14,s:72}}},
+  right:  {name:'갤러리', align:'left', on:{glow:true, orbit:true, hearts:true, sparkle:true, tags:true, waveform:true, progress:true, header:true, dust:true, fade:true, vignette:true, grain:true, accentBar:true},
+           o:{title:{x:52,y:52,s:96}, sub:{x:52,y:56,s:96}, badge:{x:52,y:16,s:100}, cover:{x:27,y:52,s:92}, glow:{x:27,y:52,s:110}, orbit:{x:27,y:52,s:58}, hearts:{x:42,y:22,s:100}, sparkle:{x:9,y:18,s:70}, tags:{x:52,y:24,s:165}, waveform:{x:66.7,y:72,s:62}, progress:{x:66.7,y:81,s:85}}},
+  center: {name:'스테이지', align:'center', on:{ring:true, glow:true, orbit:true, sparkle:true, hearts:true, tags:true, frame:true, dust:true, fade:true, vignette:true, grain:true, accentBar:false},
+           o:{title:{x:50,y:77,s:84}, sub:{x:50,y:81,s:88}, badge:{x:50,y:5,s:86}, cover:{x:50,y:35,s:58}, ring:{x:50,y:35,s:58}, glow:{x:50,y:35,s:80}, orbit:{x:50,y:35,s:52}, sparkle:{x:71,y:17,s:72}, hearts:{x:29,y:22,s:95}, tags:{x:50,y:92,s:150}}},
+  big:    {name:'포스터', align:'left', tilt:-6, on:{glow:true, ornament:true, hearts:true, sparkle:true, tags:true, barcode:false, header:true, dust:true, fade:true, vignette:true, grain:true, accentBar:true},
+           o:{title:{x:6,y:66,s:140}, sub:{x:6,y:70,s:110}, badge:{x:6,y:16,s:105}, cover:{x:83,y:58,s:52}, glow:{x:83,y:58,s:70}, ornament:{x:92,y:17,s:58}, hearts:{x:69,y:84,s:100}, sparkle:{x:63,y:16,s:62}, orbit:{x:83,y:58,s:40}, tags:{x:6,y:88,s:170}}},
+  y2k:    {name:'Y2K 인터페이스', align:'left', bgDim:72, panelStyle:'glass', on:{panel:true, glow:true, ring:true, target:true, sparkle:true, globe:true, tags:true, percent:true, barcode:true, header:true, frame:true, brackets:true, gridBg:true, dust:true, fade:false, vignette:true, grain:true, accentBar:false},
+           o:{title:{x:58.5,y:55,s:72}, sub:{x:58.5,y:58.5,s:80}, badge:{x:58.5,y:13,s:90}, cover:{x:29,y:53,s:66}, panel:{x:55,y:21,s:100,w:38,h:61}, ring:{x:29,y:53,s:72}, glow:{x:29,y:53,s:100}, target:{x:15,y:84,s:58}, sparkle:{x:43,y:23,s:68}, globe:{x:88,y:28.5,s:26}, orbit:{x:29,y:53,s:48}, tags:{x:58.5,y:30,s:158}, percent:{x:58.5,y:69.5,s:128}, barcode:{x:90,y:78,s:100}}},
+  player: {name:'플레이어 카드', align:'left', bgDim:0, wash:'light', panelStyle:'card', shadow:false, colors:{text:'#2a2230', line:'#ffffff'},
+           on:{panel:true, tags:true, waveform:true, progress:true, hearts:true, sparkle:true, ornament:true, header:true, dust:true, fade:false, vignette:false, grain:true, accentBar:false},
+           o:{title:{x:44.4,y:51,s:62}, sub:{x:44.4,y:54.5,s:70}, badge:{x:44.4,y:8,s:90}, cover:{x:28.1,y:53,s:79}, panel:{x:12.5,y:19,s:100,w:75,h:62}, tags:{x:44.4,y:34.5,s:150}, waveform:{x:64.3,y:68,s:85}, progress:{x:64.3,y:75,s:115}, hearts:{x:11,y:80,s:110}, sparkle:{x:90,y:17,s:70}, ornament:{x:91,y:80,s:40}, orbit:{x:28.1,y:53,s:46}}}
 };
+// minimal sizing: words and decorations a little smaller, the cover only slightly
+const MINI = n => n === 'panel' ? 1 : (n === 'cover' || n === 'ring' || n === 'glow' || n === 'orbit') ? .93 : .84;
+const presetO = k => { const P = PRESETS[k] || PRESETS.left, o = JSON.parse(JSON.stringify(BASE_O)); Object.keys(P.o).forEach(n => Object.assign(o[n], P.o[n])); Object.keys(o).forEach(n => { o[n].s = Math.round(o[n].s * MINI(n)); }); return o; };
+function applyPresetTo(t, k){
+  const P = PRESETS[k] || PRESETS.left;
+  t.preset = k; t.align = P.align; t.o = presetO(k); t.tilt = P.tilt || 0; t.bgDim = P.bgDim ?? 30; t.wash = P.wash || 'dark'; t.panelStyle = P.panelStyle || 'glass';
+  t.colors.text = (P.colors && P.colors.text) || '#ffffff'; t.colors.line = (P.colors && P.colors.line) || '#ffffff'; t.shadow = P.shadow ?? true;
+  DECO_KEYS.forEach(n => { t.on[n] = !!P.on[n]; }); t.on.title = t.on.sub = t.on.cover = true;
+}
 const tb = {
-  v:2, preset:'left', bgMode:'cover', bgDim:30, coverSrc:'cover', coverShape:'square', tilt:0,
+  v:4, preset:'left', bgMode:'cover', bgDim:30, wash:'dark', panelStyle:'glass', coverSrc:'cover', coverShape:'square', tilt:0,
   colors:{bg:CS.cover.bg, text:'#ffffff', accent:CS.cover.accent, line:'#ffffff'},
   title:null, sub:null, songName:'', badge:'', font:'Paperlogy', weight:'800', align:'left', tracking:-2, lineH:104, maxLines:3, stroke:0, strokeColor:'#000000', shadow:true, shadowColor:'#000000', shadowAmt:35, shadowBlur:30, shadowDist:4, glow:false,
-  on:{title:true, sub:true, badge:true, cover:true, sparkle:false, globe:false, target:false, ring:false, glow:false, accentBar:true, brackets:false, dust:false, fade:true, vignette:true, grain:true},
-  o:JSON.parse(JSON.stringify(PRESETS.left.o)),
+  tagText:'OFFICIAL AUDIO · HQ', headL:'', headR:'', pctLabel:'SYNC RATE', pct:100, prog:40, bignumText:'01',
+  on:{title:true, sub:true, badge:true, cover:true},
+  o:{},
   lock:true, grid:false, snap:true, safe:true, pin:{}
 };
+applyPresetTo(tb, 'left');
 const getT = p => p.split('.').reduce((o, k) => o == null ? o : o[k], tb);
 const setT = (p, v) => { const ks = p.split('.'); const l = ks.pop(); ks.reduce((o, k) => o[k], tb)[l] = v; };
 const TDEF = JSON.parse(JSON.stringify(tb));
-const tDef = p => { const src = p.startsWith('o.') ? {o: PRESETS[tb.preset].o} : TDEF; const v = p.split('.').reduce((o, k) => o == null ? o : o[k], src); return (v !== null && typeof v === 'object') ? undefined : v; };
+const tDef = p => { const src = p.startsWith('o.') ? {o: presetO(tb.preset)} : TDEF; const v = p.split('.').reduce((o, k) => o == null ? o : o[k], src); return (v !== null && typeof v === 'object') ? undefined : v; };
 const titleText = () => (tb.title ?? CS.meta.title) || 'Untitled';
 const subText = () => (tb.sub ?? CS.meta.artist) || '';
 
@@ -3503,9 +3542,93 @@ const fs = (w, px) => `${w} ${px}px "${tb.font}", "Paperlogy", "Pretendard Varia
 function loadFonts(){
   if (!document.fonts) return;
   const txt = titleText() + subText() + tb.badge.toUpperCase();
-  Promise.all(['500', tb.weight, '700'].map(w => document.fonts.load(`${w} 60px "${tb.font}"`, txt).catch(() => {}))).then(draw);
+  Promise.all(['500', tb.weight, '700'].map(w => document.fonts.load(`${w} 60px "${tb.font}"`, txt).catch(() => {})).concat(['500', '700', '800'].map(w => document.fonts.load(`${w} 40px Outfit`, 'OFFICIAL 0123456789%').catch(() => {})))).then(draw);
 }
 
+/* ---------- decorations (same drawings as the album-cover editor) ---------- */
+const INF = 'Outfit, Paperlogy, "Pretendard Variable", sans-serif';
+const rgbA = (c, a) => typeof c === 'string' ? col(c, a) : `rgba(${c[0]},${c[1]},${c[2]},${Math.max(0, Math.min(1, a))})`;
+function dtext(str, x, y, font, color, align = 'left', sp = 0){ ctx.font = font; ctx.fillStyle = color; ctx.textAlign = align; setLS(sp); ctx.fillText(str, x, y); setLS(0); return ctx.measureText(str).width; }
+function heart(cx, cy, sz){ ctx.beginPath(); ctx.moveTo(cx, cy + sz * .35); ctx.bezierCurveTo(cx - sz * 1.1, cy - sz * .35, cx - sz * .45, cy - sz * 1.05, cx, cy - sz * .45); ctx.bezierCurveTo(cx + sz * .45, cy - sz * 1.05, cx + sz * 1.1, cy - sz * .35, cx, cy + sz * .35); ctx.closePath(); }
+const fmtT = sec => { sec = Math.max(0, Math.floor(sec)); return Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0'); };
+const DECO = {
+  orbit(P){ ctx.lineWidth = 1.1; [[640, 150, .5, 0], [700, 220, .28, 1], [560, 95, .38, 0]].forEach(([rx, ry, a, dash], i) => { ctx.setLineDash(dash ? [5, 9] : []); ctx.strokeStyle = rgbA(P.ln, a); ctx.beginPath(); ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2); ctx.stroke(); const t = [-.7, 2.4, .9][i]; ctx.fillStyle = i === 0 ? rgbA(P.ac, 1) : rgbA(P.ln, .8); ctx.beginPath(); ctx.arc(Math.cos(t) * rx, Math.sin(t) * ry, i === 0 ? 6 : 3.5, 0, Math.PI * 2); ctx.fill(); }); ctx.setLineDash([]); return [-700, -220, 700, 220]; },
+  globe(P){
+    const R = 130, tilt = -.36, ring = (rx, ry, a, dash, front) => { ctx.save(); ctx.rotate(tilt); ctx.setLineDash(dash ? [4, 7] : []); ctx.strokeStyle = rgbA(P.ln, a); ctx.lineWidth = 1.1; ctx.beginPath(); ctx.ellipse(0, 0, rx, ry, 0, front ? 0 : Math.PI, front ? Math.PI : Math.PI * 2); ctx.stroke(); ctx.restore(); };
+    ring(R * 1.6, R * .36, .75, 0, false); ring(R * 1.85, R * .46, .4, 1, false);
+    const g = ctx.createRadialGradient(-R * .38, -R * .42, R * .08, 0, 0, R); g.addColorStop(0, 'rgba(255,255,255,.55)'); g.addColorStop(.25, rgbA(P.ac, .65)); g.addColorStop(.8, rgbA(P.ac, .28)); g.addColorStop(1, rgbA(P.ac, .12));
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2); ctx.fill();
+    ctx.save(); ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2); ctx.clip(); ctx.rotate(-.22); ctx.strokeStyle = rgbA(P.ln, .5); ctx.lineWidth = .9;
+    for (const d of [-60, -40, -20, 0, 20, 40, 60]){ const a = d * Math.PI / 180, y = R * Math.sin(a), rx = R * Math.cos(a); ctx.beginPath(); ctx.ellipse(0, y, rx, rx * .2, 0, 0, Math.PI * 2); ctx.stroke(); }
+    for (const d of [0, 30, 60, 90, 120, 150]){ const rx = Math.abs(R * Math.cos(d * Math.PI / 180)); ctx.beginPath(); ctx.ellipse(0, 0, Math.max(.5, rx), R, 0, 0, Math.PI * 2); ctx.stroke(); }
+    ctx.restore(); ctx.setLineDash([]);
+    ctx.strokeStyle = rgbA(P.ln, .9); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2); ctx.stroke();
+    ring(R * 1.6, R * .36, .9, 0, true); ring(R * 1.85, R * .46, .45, 1, true); ctx.setLineDash([]);
+    ctx.save(); ctx.rotate(tilt); const sx = Math.cos(.55) * R * 1.6, sy = Math.sin(.55) * R * .36; ctx.fillStyle = rgbA(P.ln, 1); ctx.beginPath(); ctx.arc(sx, sy, 5.5, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = rgbA(P.ac, .9); ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(sx, sy, 11, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+    ctx.strokeStyle = rgbA(P.ln, .6); ctx.lineWidth = 1; [[-R * 1.35, -R * .95], [R * 1.25, R * 1.05], [R * 1.05, -R * 1.1]].forEach(([px, py]) => { ctx.beginPath(); ctx.moveTo(px - 6, py); ctx.lineTo(px + 6, py); ctx.moveTo(px, py - 6); ctx.lineTo(px, py + 6); ctx.stroke(); });
+    ctx.fillStyle = rgbA(P.ln, .85); star4(-R * .52, -R * .55, 9); ctx.fill();
+    return [-240, -150, 240, 150];
+  },
+  ornament(P){
+    const hex = r => { ctx.beginPath(); for (let i = 0; i < 6; i++){ const a = i * Math.PI / 3 - Math.PI / 2; i ? ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r) : ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r); } ctx.closePath(); };
+    ctx.lineWidth = 1.4; ctx.strokeStyle = rgbA(P.ln, .9); hex(62); ctx.stroke(); ctx.lineWidth = 1; ctx.strokeStyle = rgbA(P.ln, .55); hex(46); ctx.stroke();
+    for (let i = 0; i < 6; i++){ const a = i * Math.PI / 3 - Math.PI / 2; ctx.fillStyle = rgbA(P.ln, .9); ctx.beginPath(); ctx.arc(Math.cos(a) * 62, Math.sin(a) * 62, 2.6, 0, Math.PI * 2); ctx.fill(); }
+    ctx.beginPath(); ctx.moveTo(0, -30); ctx.lineTo(20, 0); ctx.lineTo(0, 30); ctx.lineTo(-20, 0); ctx.closePath(); ctx.fillStyle = rgbA(P.ac, .45); ctx.fill(); ctx.strokeStyle = rgbA(P.ac, 1); ctx.lineWidth = 1.3; ctx.stroke();
+    ctx.fillStyle = rgbA(P.ln, 1); ctx.beginPath(); ctx.arc(0, 0, 3.5, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = rgbA(P.ln, .7); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(0, -62); ctx.lineTo(0, -112); ctx.moveTo(0, 62); ctx.lineTo(0, 112); ctx.stroke();
+    [-118, 118].forEach(y => { ctx.beginPath(); ctx.moveTo(0, y - 6); ctx.lineTo(5, y); ctx.lineTo(0, y + 6); ctx.lineTo(-5, y); ctx.closePath(); ctx.fillStyle = rgbA(P.ln, .9); ctx.fill(); });
+    ctx.lineWidth = 1.2; ctx.strokeStyle = rgbA(P.ln, .75); ctx.beginPath(); ctx.arc(0, 0, 92, -.75, .75); ctx.stroke(); ctx.beginPath(); ctx.arc(0, 0, 92, Math.PI - .75, Math.PI + .75); ctx.stroke();
+    ctx.strokeStyle = rgbA(P.ln, .35); ctx.beginPath(); ctx.arc(0, 0, 104, -.45, .45); ctx.stroke(); ctx.beginPath(); ctx.arc(0, 0, 104, Math.PI - .45, Math.PI + .45); ctx.stroke();
+    return [-110, -125, 110, 125];
+  },
+  hearts(P){ [[0, 0, 26, 1], [46, -30, 13, 0], [-38, 30, 10, 0], [30, 36, 7, 1]].forEach(([hx, hy, sz, fill]) => { heart(hx, hy, sz); if (fill){ ctx.fillStyle = rgbA(P.ac, .8); ctx.fill(); } ctx.strokeStyle = rgbA(P.ln, .9); ctx.lineWidth = 1.2; ctx.stroke(); }); return [-52, -50, 62, 48]; },
+  target(P){
+    ctx.strokeStyle = rgbA(P.ln, .9); ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(0, 0, 34, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = rgbA(P.ln, .4); ctx.setLineDash([2, 4]); ctx.beginPath(); ctx.arc(0, 0, 50, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+    ctx.strokeStyle = rgbA(P.ln, .9); ctx.beginPath(); ctx.moveTo(-64, 0); ctx.lineTo(-14, 0); ctx.moveTo(14, 0); ctx.lineTo(64, 0); ctx.moveTo(0, -64); ctx.lineTo(0, -14); ctx.moveTo(0, 14); ctx.lineTo(0, 64); ctx.stroke();
+    ctx.lineWidth = 1.6; ctx.beginPath(); [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(([a, b]) => { ctx.moveTo(a * 76, b * 62); ctx.lineTo(a * 76, b * 76); ctx.lineTo(a * 62, b * 76); }); ctx.stroke();
+    ctx.fillStyle = rgbA(P.ac, 1); ctx.beginPath(); ctx.arc(0, 0, 4.5, 0, Math.PI * 2); ctx.fill();
+    dtext('LOCK 01', 86, 70, `500 10px ${INF}`, rgbA(P.ln, .8), 'left', 1.5); dtext('37.56 / 126.97', 86, 84, `500 10px ${INF}`, rgbA(P.ln, .5), 'left', 1);
+    return [-80, -80, 170, 90];
+  },
+  sparkle(P){ [[0, 0, 36, 'w'], [-52, 34, 15, 'a'], [40, -40, 11, 'a'], [56, 28, 7, 'w'], [-28, -46, 6, 'w']].forEach(([sx, sy, r, c]) => { ctx.save(); ctx.shadowColor = rgbA(P.ac, .9); ctx.shadowBlur = r * .9; ctx.fillStyle = c === 'w' ? rgbA(P.ln, .95) : rgbA(P.ac, 1); star4(sx, sy, r); ctx.fill(); ctx.restore(); }); return [-70, -60, 70, 55]; },
+  percent(P){
+    const v = Math.round(tb.pct), lab = (tb.pctLabel || '').toUpperCase();
+    if (lab) dtext(lab, 0, 0, `500 11px ${INF}`, rgbA(P.ln, .7), 'left', 2.2);
+    ctx.font = `700 54px ${INF}`; setLS(-1); ctx.fillStyle = rgbA(P.tx, 1); ctx.textAlign = 'left'; ctx.fillText(String(v), 0, 56); const w = ctx.measureText(String(v)).width; setLS(0);
+    dtext('%', w + 4, 56, `500 24px ${INF}`, rgbA(P.ac, 1));
+    for (let i = 0; i < 12; i++){ ctx.fillStyle = i < Math.round(v / 100 * 12) ? rgbA(P.ac, 1) : rgbA(P.ln, .22); rr(i * 13, 70, 9, 6, 1.5); ctx.fill(); }
+    return [0, -12, 160, 78];
+  },
+  tags(P){
+    const items = String(tb.tagText || '').split(/\s*[·,|]\s*/).filter(Boolean).slice(0, 6); if (!items.length) return null;
+    ctx.font = `500 11px ${INF}`; setLS(1.6);
+    const ws = items.map((t, i) => ctx.measureText(t.toUpperCase()).width + 22 + (i === 0 ? 12 : 0)); setLS(0);
+    const total = ws.reduce((a, b) => a + b, 0) + 7 * (items.length - 1);
+    let px = tb.align === 'center' ? -total / 2 : tb.align === 'right' ? -total : 0; const x0 = px;
+    items.forEach((t, i) => { t = t.toUpperCase(); const w = ws[i];
+      rr(px, -16, w, 24, 12); ctx.strokeStyle = rgbA(P.ln, .75); ctx.lineWidth = 1; ctx.stroke();
+      if (i === 0){ ctx.fillStyle = rgbA(P.ac, 1); ctx.beginPath(); ctx.arc(px + 13, -4, 3.5, 0, Math.PI * 2); ctx.fill(); }
+      dtext(t, px + 11 + (i === 0 ? 12 : 0), 0, `500 11px ${INF}`, rgbA(P.tx, .9), 'left', 1.6); px += w + 7; });
+    return [x0, -16, x0 + total, 8];
+  },
+  progress(P){
+    const W2 = 600, ph = tb.prog / 100, dur = (M.AU && M.AU.duration) || 225;
+    dtext(fmtT(dur * ph), -W2 / 2, 4, `500 11px ${INF}`, rgbA(P.tx, .75), 'left', 1); dtext(fmtT(dur), W2 / 2, 4, `500 11px ${INF}`, rgbA(P.tx, .75), 'right', 1);
+    const x0 = -W2 / 2 + 48, x1 = W2 / 2 - 48, xp = x0 + (x1 - x0) * ph; ctx.lineCap = 'round'; ctx.lineWidth = 2.5;
+    ctx.strokeStyle = rgbA(P.ln, .28); ctx.beginPath(); ctx.moveTo(x0, 0); ctx.lineTo(x1, 0); ctx.stroke(); ctx.strokeStyle = rgbA(P.ac, 1); ctx.beginPath(); ctx.moveTo(x0, 0); ctx.lineTo(xp, 0); ctx.stroke(); ctx.lineCap = 'butt';
+    ctx.fillStyle = rgbA(P.knob || P.ln, 1); ctx.beginPath(); ctx.arc(xp, 0, 7, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = rgbA(P.tx, .9);
+    const tri = (tx, ty, sz, dir) => { ctx.beginPath(); ctx.moveTo(tx - dir * sz * .6, ty - sz); ctx.lineTo(tx + dir * sz * .8, ty); ctx.lineTo(tx - dir * sz * .6, ty + sz); ctx.closePath(); ctx.fill(); };
+    tri(2, 38, 10, 1); tri(-56, 38, 7, -1); tri(-66, 38, 7, -1); ctx.fillRect(-77, 31, 2.2, 14); tri(56, 38, 7, 1); tri(66, 38, 7, 1); ctx.fillRect(75, 31, 2.2, 14);
+    ctx.strokeStyle = rgbA(P.ln, .6); ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(0, 38, 22, 0, Math.PI * 2); ctx.stroke();
+    return [-W2 / 2, -14, W2 / 2, 62];
+  },
+  waveform(P){ const W2 = 840, bh = 46, n = 96, bw = W2 / n, w = Math.max(1, bw * .42), ph = tb.prog / 100, r = rng(9), pk = M.AU && M.AU.peaks;
+    for (let i = 0; i < n; i++){ const v = pk && pk.length ? pk[Math.floor(i / n * pk.length)] : Math.abs(Math.sin(i * .21) * .6 + Math.sin(i * .07) * .3 + r() * .25); const h = Math.max(.08, Math.min(1, v)) * bh, px = -W2 / 2 + i * bw + (bw - w) / 2; ctx.fillStyle = i / n < ph ? rgbA(P.ac, .95) : rgbA(P.ln, .5); rr(px, -h / 2, w, h, w / 2); ctx.fill(); }
+    return [-W2 / 2, -bh / 2, W2 / 2, bh / 2]; },
+  barcode(P){ const bw = 130, bh = 36, r = rng(7); let cx = -bw; ctx.fillStyle = rgbA(P.tx, .85); while (cx < 0){ const w = (r() < .55 ? 1 : r() < .75 ? 2 : 3) * 1.3; if (r() > .38) ctx.fillRect(cx, -16 - bh, Math.min(w, -cx), bh); cx += w + 1.3; } dtext((CS.meta.catalog || 'MMC-0001').toUpperCase(), -bw, 0, `500 9.5px ${INF}`, rgbA(P.tx, .65), 'left', 2); return [-bw, -16 - bh, 0, 4]; },
+  bignum(P){ const t = String(tb.bignumText || '').trim() || '01', sz = 360; ctx.font = `800 ${sz}px Outfit, Paperlogy, sans-serif`; setLS(-8); const w = ctx.measureText(t).width; ctx.fillStyle = rgbA(P.ln, .1); ctx.textAlign = 'right'; ctx.fillText(t, 0, sz * .74); setLS(0); return [-w, 0, 0, sz * .76]; }
+};
 /* ---------- render ---------- */
 let boxes = {}, hover = null, drag = null, guides = [], sel = null;
 function textBlockLines(t, px, maxW){
@@ -3575,6 +3698,9 @@ function draw(preview = true){
     g.addColorStop(0, col(C.accent, .32)); g.addColorStop(1, col(C.accent, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
   }
   ctx.fillStyle = col(C.bg, tb.bgDim / 100); ctx.fillRect(0, 0, W, H);
+  if (tb.wash === 'light'){ ctx.fillStyle = 'rgba(255,255,255,.5)'; ctx.fillRect(0, 0, W, H); }
+  if (on.gridBg){ ctx.strokeStyle = col(C.line, .05); ctx.lineWidth = 1; ctx.beginPath(); for (let gx = 0; gx <= W; gx += 64){ ctx.moveTo(gx + .5, 0); ctx.lineTo(gx + .5, H); } for (let gy = 0; gy <= H; gy += 64){ ctx.moveTo(0, gy + .5); ctx.lineTo(W, gy + .5); } ctx.stroke(); }
+  if (on.frame){ const m = 26; ctx.strokeStyle = col(C.line, .28); ctx.lineWidth = 1.2; ctx.strokeRect(m, m, W - 2 * m, H - 2 * m); }
   if (on.fade){
     const tx = O.title.x / 100, g = tb.align === 'center' ? ctx.createLinearGradient(0, H, 0, H * .25) : tx < .45 ? ctx.createLinearGradient(0, 0, W * .75, 0) : ctx.createLinearGradient(W, 0, W * .25, 0);
     g.addColorStop(0, col(C.bg, .7)); g.addColorStop(.55, col(C.bg, .3)); g.addColorStop(1, col(C.bg, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
@@ -3601,52 +3727,68 @@ function draw(preview = true){
     });
     const r = cs * .9; boxes.ring = {x0: cx - r, y0: cy - r, x1: cx + r, y1: cy + r};
   }
+  // panel (glass for Y2K, card for the player) — sits behind the cover and the words
+  if (on.panel){
+    const p = O.panel, k = p.s / 100, pw = p.w / 100 * W * k, ph = p.h / 100 * H * k, px = p.x / 100 * W, py = p.y / 100 * H, rad = 28 * u * 1.4;
+    if (tb.panelStyle === 'card'){
+      ctx.save(); ctx.shadowColor = 'rgba(70,35,70,.22)'; ctx.shadowBlur = 80; ctx.shadowOffsetY = 30; rr(px, py, pw, ph, rad); ctx.fillStyle = 'rgba(255,255,255,.8)'; ctx.fill(); ctx.restore();
+      rr(px, py, pw, ph, rad); ctx.strokeStyle = 'rgba(255,255,255,.95)'; ctx.lineWidth = 2; ctx.stroke();
+    } else {
+      ctx.save(); rr(px, py, pw, ph, rad * .8); ctx.clip(); ctx.globalAlpha = .55; ctx.drawImage(blurC, px - 40, py - 40, pw + 80, ph + 80); ctx.restore();
+      rr(px, py, pw, ph, rad * .8); ctx.fillStyle = col(C.line, .07); ctx.fill(); ctx.strokeStyle = col(C.line, .22); ctx.lineWidth = 1.2; ctx.stroke();
+    }
+    boxes.panel = {x0: px, y0: py, x1: px + pw, y1: py + ph};
+  }
+  if (on.orbit){ const p = O.orbit, sc = u * p.s / 100; ctx.save(); ctx.translate(p.x / 100 * W, p.y / 100 * H); if (p.r) ctx.rotate(p.r * Math.PI / 180); ctx.scale(sc, sc); DECO.orbit({ln: C.line, ac: C.accent, tx: C.text}); ctx.restore(); const x = p.x / 100 * W, y = p.y / 100 * H; boxes.orbit = {x0: x - 700 * sc, y0: y - 220 * sc, x1: x + 700 * sc, y1: y + 220 * sc}; }
+  if (on.bignum){ const p = O.bignum, sc = u * p.s / 100, x = p.x / 100 * W, y = p.y / 100 * H; ctx.save(); ctx.translate(x, y); if (p.r) ctx.rotate(p.r * Math.PI / 180); ctx.scale(sc, sc); const bb = DECO.bignum({ln: C.text, ac: C.accent, tx: C.text}); ctx.restore(); boxes.bignum = {x0: x + bb[0] * sc, y0: y + bb[1] * sc, x1: x + bb[2] * sc, y1: y + bb[3] * sc}; }
   // cover
   if (on.cover){
     const c = O.cover, cs = 560 * u * c.s / 100, cx = c.x / 100 * W, cy = c.y / 100 * H;
     ctx.save(); ctx.translate(cx, cy); ctx.rotate(tb.tilt * Math.PI / 180);
     ctx.shadowColor = 'rgba(0,0,0,.42)'; ctx.shadowBlur = 70 * u; ctx.shadowOffsetY = 26 * u;
     if (tb.coverShape === 'circle'){ ctx.beginPath(); ctx.arc(0, 0, cs / 2, 0, Math.PI * 2); } else rr(-cs / 2, -cs / 2, cs, cs, 8 * u);
-    ctx.fillStyle = '#000'; ctx.fill(); ctx.shadowColor = 'transparent';
-    ctx.save(); ctx.clip(); ctx.drawImage(snap, -cs / 2, -cs / 2, cs, cs); ctx.restore();
+    if (tb.panelStyle === 'card' && on.panel) ctx.shadowColor = 'rgba(80,30,60,.3)';
+    ctx.fillStyle = '#777'; ctx.fill(); ctx.shadowColor = 'transparent';
+    ctx.save(); ctx.clip(); ctx.drawImage(snap, -cs / 2 - .5, -cs / 2 - .5, cs + 1, cs + 1); ctx.restore();
     ctx.strokeStyle = 'rgba(255,255,255,.1)'; ctx.lineWidth = 1.2 * u; ctx.stroke();
     ctx.restore();
     boxes.cover = {x0: cx - cs / 2, y0: cy - cs / 2, x1: cx + cs / 2, y1: cy + cs / 2};
   }
   // symbols
   const sym = (k, fn, box) => { if (!on[k]) return; const p = O[k], x = p.x / 100 * W, y = p.y / 100 * H, sc = u * p.s / 100; ctx.save(); ctx.translate(x, y); if (p.r) ctx.rotate(p.r * Math.PI / 180); ctx.scale(sc, sc); fn(); ctx.restore(); boxes[k] = {x0: x + box[0] * sc, y0: y + box[1] * sc, x1: x + box[2] * sc, y1: y + box[3] * sc}; };
-  sym('sparkle', () => {
-    [[0, 0, 44, 'w'], [-64, 42, 18, 'a'], [50, -48, 13, 'a'], [70, 34, 9, 'w']].forEach(([x, y, r, c]) => { ctx.save(); ctx.shadowColor = col(C.accent, .9); ctx.shadowBlur = r; ctx.fillStyle = c === 'w' ? col(C.line, .95) : col(C.accent, 1); star4(x, y, r); ctx.fill(); ctx.restore(); });
-  }, [-85, -70, 85, 70]);
-  sym('globe', () => {
-    const R = 90;
-    const g = ctx.createRadialGradient(-R * .38, -R * .42, R * .08, 0, 0, R);
-    g.addColorStop(0, 'rgba(255,255,255,.55)'); g.addColorStop(.3, col(C.accent, .65)); g.addColorStop(1, col(C.accent, .12));
-    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2); ctx.fill();
-    ctx.save(); ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2); ctx.clip(); ctx.rotate(-.22); ctx.strokeStyle = col(C.line, .5); ctx.lineWidth = 1.2;
-    for (const d of [-60, -30, 0, 30, 60]){ const a = d * Math.PI / 180, yy = R * Math.sin(a), rx = R * Math.cos(a); ctx.beginPath(); ctx.ellipse(0, yy, rx, rx * .2, 0, 0, Math.PI * 2); ctx.stroke(); }
-    for (const d of [0, 30, 60, 90, 120, 150]){ const rx = Math.abs(R * Math.cos(d * Math.PI / 180)); ctx.beginPath(); ctx.ellipse(0, 0, Math.max(.5, rx), R, 0, 0, Math.PI * 2); ctx.stroke(); }
-    ctx.restore();
-    ctx.strokeStyle = col(C.line, .9); ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2); ctx.stroke();
-    ctx.save(); ctx.rotate(-.36); ctx.strokeStyle = col(C.line, .75); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.ellipse(0, 0, R * 1.6, R * .36, 0, 0, Math.PI * 2); ctx.stroke(); ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(Math.cos(.55) * R * 1.6, Math.sin(.55) * R * .36, 6, 0, Math.PI * 2); ctx.fill(); ctx.restore();
-  }, [-150, -95, 150, 95]);
-  sym('target', () => {
-    ctx.strokeStyle = col(C.line, .9); ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, 40, 0, Math.PI * 2); ctx.stroke();
-    ctx.setLineDash([3, 6]); ctx.strokeStyle = col(C.accent, .9); ctx.beginPath(); ctx.arc(0, 0, 58, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
-    ctx.strokeStyle = col(C.line, .9); ctx.beginPath(); ctx.moveTo(-76, 0); ctx.lineTo(-16, 0); ctx.moveTo(16, 0); ctx.lineTo(76, 0); ctx.moveTo(0, -76); ctx.lineTo(0, -16); ctx.moveTo(0, 16); ctx.lineTo(0, 76); ctx.stroke();
-    ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(0, 0, 5, 0, Math.PI * 2); ctx.fill();
-  }, [-80, -80, 80, 80]);
+  // decorations: inside a light card they use the text colour so they stay visible
+  const pb = boxes.panel, inCard = (x, y) => on.panel && tb.panelStyle === 'card' && pb && x > pb.x0 && x < pb.x1 && y > pb.y0 && y < pb.y1;
+  const deco = k => { if (!on[k] || !DECO[k]) return; const p = O[k], x = p.x / 100 * W, y = p.y / 100 * H, sc = u * p.s / 100;
+    const P = inCard(x, y) ? {ln: C.text, ac: C.accent, tx: C.text, knob: C.accent} : {ln: C.line, ac: C.accent, tx: C.text};
+    ctx.save(); ctx.translate(x, y); if (p.r) ctx.rotate(p.r * Math.PI / 180); ctx.scale(sc, sc); const bb = DECO[k](P); ctx.restore();
+    if (bb) boxes[k] = {x0: x + bb[0] * sc, y0: y + bb[1] * sc, x1: x + bb[2] * sc, y1: y + bb[3] * sc}; };
+  ['globe', 'target', 'ornament', 'hearts', 'sparkle', 'waveform', 'progress', 'percent', 'barcode', 'tags'].forEach(deco);
   if (on.brackets){
-    const g = 34 * u, l = 54 * u; ctx.strokeStyle = col(C.line, .85); ctx.lineWidth = 3 * u; ctx.beginPath();
+    const g = 46, l = 30; ctx.strokeStyle = col(C.line, .85); ctx.lineWidth = 2; ctx.beginPath();
     [[g, g, 1, 1], [W - g, g, -1, 1], [g, H - g, 1, -1], [W - g, H - g, -1, -1]].forEach(([x, y, sx, sy]) => { ctx.moveTo(x + sx * l, y); ctx.lineTo(x, y); ctx.lineTo(x, y + sy * l); });
     ctx.stroke();
+    ctx.strokeStyle = col(C.line, .5); ctx.lineWidth = 1.2; ctx.beginPath();
+    [[W / 2, g], [W / 2, H - g], [g, H / 2], [W - g, H / 2]].forEach(([x, y]) => { ctx.moveTo(x - 7, y); ctx.lineTo(x + 7, y); ctx.moveTo(x, y - 7); ctx.lineTo(x, y + 7); });
+    ctx.stroke();
   }
+  // header line (inside the card for the player layout) and vertical side text
+  const OB = {};
+  if (on.header){
+    const cardHead = on.panel && tb.panelStyle === 'card' && pb, X0 = cardHead ? pb.x0 + 40 : 60, X1 = cardHead ? pb.x1 - 40 : W - 60, Y = cardHead ? pb.y0 + 42 : 62;
+    const ink = cardHead ? C.text : C.text, lineC = cardHead ? C.text : C.line, m = CS.meta;
+    const alb = m.album && m.album !== 'Album Title' ? m.album : 'Official Audio', left = (tb.headL || subText() || '').toUpperCase(), right = (tb.headR || [alb, m.year].filter(Boolean).join('  ·  ')).toUpperCase();
+    dtext(left, X0, Y, `500 12px ${INF}`, col(ink, .7), 'left', 2); dtext(right, X1, Y, `500 12px ${INF}`, col(ink, .7), 'right', 2);
+    ctx.fillStyle = col(lineC, .18); ctx.fillRect(X0, Y + 15, X1 - X0, 1); ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(X0, Y + 15.5, 2.6, 0, Math.PI * 2); ctx.fill();
+    OB.header = {x0: X0, y0: Y - 14, x1: X1, y1: Y + 19};
+  }
+  if (on.side){ const m = CS.meta, t = [titleText(), subText(), m.year].filter(Boolean).join('   —   ').toUpperCase(); ctx.save(); ctx.translate(W - 40, H / 2); ctx.rotate(Math.PI / 2); ctx.font = `500 12px ${INF}`; setLS(2); const tw = Math.min(ctx.measureText(t).width, H - 160); setLS(0); dtext(t.length > 80 ? t.slice(0, 80) + '…' : t, 0, 4, `500 11px ${INF}`, col(C.text, .45), 'center', 2); ctx.restore(); }
   // texts
   // the text column stops before the cover (when the cover sits beside it) and inside the safe margins
   const cb = boxes.cover, GAP = 44 * u, ML = W * .05, MR = W * .95;
   const column = (x, yTop, yBot) => {
     let L = ML, R = MR;
     if (cb && !(x >= cb.x0 && x <= cb.x1) && cb.y0 < yBot && cb.y1 > yTop){ if ((cb.x0 + cb.x1) / 2 > x) R = Math.min(R, cb.x0 - GAP); else L = Math.max(L, cb.x1 + GAP); }
+    if (pb && x > pb.x0 && x < pb.x1 && yBot > pb.y0 && yTop < pb.y1){ R = Math.min(R, pb.x1 - 36); L = Math.max(L, pb.x0 + 36); }
     const w = tb.align === 'center' ? 2 * Math.min(x - L, R - x) : tb.align === 'right' ? x - L : R - x;
     return Math.max(120 * u, w);
   };
@@ -3668,7 +3810,7 @@ function draw(preview = true){
     // ceiling: top margin, or the badge / cover when they sit above the title
     let top = H * .06;
     const above = b => b && b.y1 <= bottom - 20 * u && b.y1 > top;
-    if (above(boxes.badge) && !(boxes.badge.x1 < x - W * .4 || boxes.badge.x0 > x + W * .4)) top = boxes.badge.y1 + 22 * u;
+    [boxes.badge, boxes.tags, OB.header].forEach(bx => { if (above(bx) && !(bx.x1 < x - W * .4 || bx.x0 > x + W * .4)) top = Math.max(top, bx.y1 + 22 * u); });
     if (cb && x >= cb.x0 && x <= cb.x1 && above(cb)) top = cb.y1 + 34 * u;
     const maxW = column(x, top, bottom), maxH = Math.max(60 * u, bottom - top - barH);
     const {lines, size, lhPx} = fitTitle(titleText(), 150 * u * p.s / 100, maxW, maxH), ls = size * tb.tracking / 100;
@@ -3678,7 +3820,7 @@ function draw(preview = true){
     const x0 = anchorX(x, wmax);
     rotAt(x0 + wmax / 2, (blockTop + bottom) / 2, p.r || 0, () => {
       lines.forEach((l, i) => paintText(l, x, firstBase + i * lhPx, fs(tb.weight, size), tb.colors.text, tb.stroke * u * p.s / 100, ls));
-      if (on.accentBar){ const bw = 56 * u * p.s / 100, bh = 5 * u * p.s / 100; rr(anchorX(x, bw), blockTop - barH + bh, bw, bh, bh / 2); ctx.fillStyle = col(C.accent, 1); ctx.fill(); }
+      if (on.accentBar){ const bw = 44 * u * p.s / 100, bh = 4 * u * p.s / 100; rr(anchorX(x, bw), blockTop - barH + bh, bw, bh, bh / 2); ctx.fillStyle = col(C.accent, 1); ctx.fill(); }
     });
     boxes.title = {x0: x0 - 6, y0: blockTop - barH, x1: x0 + wmax + 6, y1: bottom};
   }
@@ -3797,9 +3939,9 @@ view.addEventListener('click', e => {
   const s = e.target.closest('[data-tset]');
   if (s){ setT(s.dataset.tset, s.dataset.val); if (s.dataset.tset === 'coverSrc') refreshCover(); syncUI(); sched(); return; }
   const pr = e.target.closest('[data-tpreset]');
-  if (pr){ const P = PRESETS[pr.dataset.tpreset]; tb.preset = pr.dataset.tpreset; tb.align = P.align; tb.o = JSON.parse(JSON.stringify(P.o)); syncUI(); sched(); return; }
+  if (pr){ if (M.EDITORS.thumb) M.EDITORS.thumb.checkpoint(); applyPresetTo(tb, pr.dataset.tpreset); sel = null; syncUI(); sched(); toast(`'${PRESETS[tb.preset].name}' 배치를 적용했어요`); return; }
   const r = e.target.closest('[data-treset]');
-  if (r){ const k = r.dataset.treset; tb.o[k] = {...PRESETS[tb.preset].o[k]}; syncUI(); sched(); toast(OBJ.find(o => o[0] === k)[1] + ' 위치를 처음으로 되돌렸어요'); return; }
+  if (r){ const k = r.dataset.treset; tb.o[k] = {...presetO(tb.preset)[k]}; syncUI(); sched(); toast(OBJ.find(o => o[0] === k)[1] + ' 위치를 처음으로 되돌렸어요'); return; }
   const pn = e.target.closest('[data-tpin]');
   if (pn){ const k = pn.dataset.tpin; tb.pin[k] = !tb.pin[k]; syncUI(); toast(OBJ.find(o => o[0] === k)[1] + (tb.pin[k] ? ' 고정했어요 · 끌어도 움직이지 않아요' : ' 고정을 풀었어요')); }
 });
@@ -3820,7 +3962,7 @@ view.addEventListener('click', e => {
 const setTRot = v => { if (!sel || !tb.o[sel]) return; if (sel === 'cover') tb.tilt = v; else tb.o[sel].r = v; syncUI(); sched(); };
 $('#tRot').addEventListener('input', () => setTRot(+$('#tRot').value));
 $('#tRotReset').addEventListener('click', () => setTRot(0));
-$('#tResetAll').onclick = () => { tb.o = JSON.parse(JSON.stringify(PRESETS[tb.preset].o)); syncUI(); sched(); toast('모든 위치를 처음으로 되돌렸어요'); };
+$('#tResetAll').onclick = () => { tb.o = presetO(tb.preset); syncUI(); sched(); toast('모든 위치를 처음으로 되돌렸어요'); };
 $('#tFromMeta').onclick = () => { tb.title = null; tb.sub = null; syncUI(); loadFonts(); sched(); };
 $('#tLock').onclick = () => { tb.lock = !tb.lock; if (tb.lock) hover = null; syncUI(); sched(); toast(tb.lock ? '오브젝트를 잠갔어요' : '이제 오브젝트를 끌어서 옮길 수 있어요'); };
 $('#tGrid').onclick = () => { tb.grid = !tb.grid; syncUI(); sched(); };
@@ -3868,8 +4010,11 @@ syncUI(); refreshCover();
   const c = await S.get('thumb-cover'); if (c) await setCover(M.fileOf(c), true);
   if (saved){
     let s = saved;
-    if (s.v !== 2){ const keep = {}; ['title', 'sub', 'font', 'weight', 'bgMode', 'coverSrc', 'coverShape', 'stroke', 'strokeColor'].forEach(k => { if (k in s) keep[k] = s[k]; }); s = keep; }
+    if (s.v === 3 && s.o){ s = JSON.parse(JSON.stringify(s)); Object.keys(s.o).forEach(n => { if (s.o[n] && typeof s.o[n].s === 'number') s.o[n].s = Math.round(s.o[n].s * MINI(n)); }); s.v = 4; }
+    if (s.v !== 4){ const keep = {}; ['title', 'sub', 'font', 'weight', 'bgMode', 'coverSrc', 'coverShape', 'stroke', 'strokeColor'].forEach(k => { if (k in s) keep[k] = s[k]; }); s = keep; }
+    if (s.preset && PRESETS[s.preset] && s.v !== 4) applyPresetTo(tb, s.preset);
     M.deepAssign(tb, s); tb.lock = true;
+    Object.keys(BASE_O).forEach(k => { if (!tb.o[k]) tb.o[k] = {...presetO(tb.preset)[k]}; });
     if (tb.songName && c && tb.coverSrc === 'upload' && $('#tCoverThumb img')) songThumb($('#tCoverThumb img').src);
   }
   syncUI(); refreshCover(); loadFonts();
