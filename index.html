@@ -930,10 +930,29 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                 </div>
                 <div class="range"><span class="lbl">커버 크기</span><input type="range" min="30" max="200" step="1" data-tbind="o.cover.s"><output data-tout="o.cover.s" data-fmt="pct"></output></div>
                 <div class="range"><span class="lbl">기울기</span><input type="range" min="-20" max="20" step="0.5" data-tbind="tilt"><output data-tout="tilt" data-fmt="deg"></output></div>
+                <div class="sec-h" style="margin:6px 0 10px"><span>흰 액자 테두리</span><label class="sw"><input type="checkbox" data-tbind="coverMat" aria-label="흰 액자 테두리"><span></span></label></div>
+              </div>
+              <div class="sec">
+                <div class="sec-h"><h3>커버 그림자</h3><label class="sw"><input type="checkbox" data-tbind="cshadow.on" aria-label="커버 그림자"><span></span></label></div>
+                <div class="range"><span class="lbl">색</span><div class="color"><input type="color" data-tbind="cshadow.color" aria-label="그림자 색"><span data-tout="cshadow.color" data-fmt="hex"></span></div></div>
+                <div class="inline-btns" style="margin:-2px 0 8px"><button class="btn sm" id="tCsAccent">포인트색으로</button><button class="btn sm" id="tCsBg">배경색으로</button></div>
+                <div class="range"><span class="lbl">진하기</span><input type="range" min="0" max="100" step="1" data-tbind="cshadow.amt"><output data-tout="cshadow.amt" data-fmt="pct"></output></div>
+                <div class="range"><span class="lbl">번짐</span><input type="range" min="0" max="140" step="1" data-tbind="cshadow.blur"><output data-tout="cshadow.blur" data-fmt="int"></output></div>
+                <div class="range"><span class="lbl">거리</span><input type="range" min="0" max="60" step="1" data-tbind="cshadow.dist"><output data-tout="cshadow.dist" data-fmt="int"></output></div>
               </div>
             </div>
 
             <div class="pane" data-pane="tdeco" hidden>
+              <div class="sec">
+                <div class="sec-h"><h3>내 썸네일 세트</h3></div>
+                <p class="note">배치 · 색 · 글자 모양 · 장식 · 장식 문구 · 커버 그림자를 한꺼번에 저장해요. (제목과 부제는 빼고 저장돼요)</p>
+                <div class="saverow"><input class="inp" id="tSetName" placeholder="세트 이름" maxlength="30"><button class="btn primary sm" id="tSaveSet" style="height:32px">저장</button></div>
+                <div class="sets" id="tSetList"></div>
+                <div class="inline-btns">
+                  <button class="btn sm" id="tExportSets">파일로 내보내기</button>
+                  <label class="btn sm" style="cursor:pointer">파일 불러오기<input type="file" accept=".json,application/json" id="tInSets" hidden></label>
+                </div>
+              </div>
               <div class="sec">
                 <div class="sec-h"><h3>오브젝트</h3><button class="link" id="tResetAll">전체 위치 초기화</button></div>
                 <p class="note">썸네일 위 "오브젝트 잠금"을 풀면 끌어서 옮기고 휠로 크기를 바꿀 수 있어요.</p>
@@ -3479,18 +3498,18 @@ const BASE_O = {title:{x:7,y:58,s:100}, sub:{x:7,y:62,s:100}, badge:{x:7,y:11,s:
   percent:{x:60,y:70,s:130}, progress:{x:66,y:84,s:85}, waveform:{x:66,y:76,s:62}, barcode:{x:90,y:90,s:100}, bignum:{x:52,y:12,s:70}};
 const PRESETS = {
   left:   {name:'스포트라이트', align:'left', on:{ring:true, glow:true, sparkle:true, globe:true, tags:true, bignum:true, header:true, side:true, dust:true, fade:true, vignette:true, grain:true, accentBar:true},
-           o:{title:{x:7,y:56,s:100}, sub:{x:7,y:60,s:100}, badge:{x:7,y:18,s:100}, cover:{x:73,y:52,s:92}, ring:{x:73,y:52,s:92}, glow:{x:73,y:52,s:110}, sparkle:{x:89,y:22,s:75}, globe:{x:91,y:86,s:38}, orbit:{x:73,y:52,s:58}, tags:{x:7,y:77,s:170}, bignum:{x:50,y:14,s:72}}},
-  right:  {name:'갤러리', align:'left', on:{glow:true, orbit:true, hearts:true, sparkle:true, tags:true, waveform:true, progress:true, header:true, dust:true, fade:true, vignette:true, grain:true, accentBar:true},
-           o:{title:{x:52,y:52,s:96}, sub:{x:52,y:56,s:96}, badge:{x:52,y:16,s:100}, cover:{x:27,y:52,s:92}, glow:{x:27,y:52,s:110}, orbit:{x:27,y:52,s:58}, hearts:{x:42,y:22,s:100}, sparkle:{x:9,y:18,s:70}, tags:{x:52,y:24,s:165}, waveform:{x:66.7,y:72,s:62}, progress:{x:66.7,y:81,s:85}}},
+           o:{title:{x:7,y:56,s:100}, sub:{x:7,y:60,s:100}, badge:{x:7,y:18,s:100}, cover:{x:73,y:52,s:98}, ring:{x:73,y:52,s:98}, glow:{x:73,y:52,s:115}, sparkle:{x:89,y:22,s:75}, globe:{x:91,y:86,s:38}, orbit:{x:73,y:52,s:58}, tags:{x:7,y:77,s:170}, bignum:{x:50,y:14,s:72}}},
+  right:  {name:'갤러리', align:'left', coverMat:true, on:{glow:true, sparkle:true, tags:true, waveform:true, barcode:true, header:true, side:true, dust:true, fade:true, vignette:true, grain:true, accentBar:true},
+           o:{title:{x:54,y:54,s:96}, sub:{x:54,y:58,s:96}, badge:{x:54,y:16,s:100}, cover:{x:28,y:53,s:98}, glow:{x:28,y:53,s:125}, orbit:{x:28,y:53,s:60}, hearts:{x:44,y:22,s:90}, sparkle:{x:45,y:21,s:68}, tags:{x:54,y:27,s:165}, waveform:{x:73.8,y:70,s:100}, progress:{x:73.8,y:80,s:95}, barcode:{x:92,y:86,s:100}}},
   center: {name:'스테이지', align:'center', on:{ring:true, glow:true, orbit:true, sparkle:true, hearts:true, tags:true, frame:true, dust:true, fade:true, vignette:true, grain:true, accentBar:false},
-           o:{title:{x:50,y:77,s:84}, sub:{x:50,y:81,s:88}, badge:{x:50,y:5,s:86}, cover:{x:50,y:35,s:58}, ring:{x:50,y:35,s:58}, glow:{x:50,y:35,s:80}, orbit:{x:50,y:35,s:52}, sparkle:{x:71,y:17,s:72}, hearts:{x:29,y:22,s:95}, tags:{x:50,y:92,s:150}}},
+           o:{title:{x:50,y:77,s:84}, sub:{x:50,y:81,s:88}, badge:{x:50,y:5,s:86}, cover:{x:50,y:34,s:70}, ring:{x:50,y:34,s:70}, glow:{x:50,y:34,s:92}, orbit:{x:50,y:34,s:62}, sparkle:{x:71,y:17,s:72}, hearts:{x:29,y:22,s:95}, tags:{x:50,y:92,s:150}}},
   big:    {name:'포스터', align:'left', tilt:-6, on:{glow:true, ornament:true, hearts:true, sparkle:true, tags:true, barcode:false, header:true, dust:true, fade:true, vignette:true, grain:true, accentBar:true},
-           o:{title:{x:6,y:66,s:140}, sub:{x:6,y:70,s:110}, badge:{x:6,y:16,s:105}, cover:{x:83,y:58,s:52}, glow:{x:83,y:58,s:70}, ornament:{x:92,y:17,s:58}, hearts:{x:69,y:84,s:100}, sparkle:{x:63,y:16,s:62}, orbit:{x:83,y:58,s:40}, tags:{x:6,y:88,s:170}}},
+           o:{title:{x:6,y:66,s:140}, sub:{x:6,y:70,s:110}, badge:{x:6,y:16,s:105}, cover:{x:82,y:56,s:66}, glow:{x:82,y:56,s:84}, ornament:{x:92,y:17,s:58}, hearts:{x:69,y:84,s:100}, sparkle:{x:63,y:16,s:62}, orbit:{x:82,y:56,s:50}, tags:{x:6,y:88,s:170}}},
   y2k:    {name:'Y2K 인터페이스', align:'left', bgDim:72, panelStyle:'glass', on:{panel:true, glow:true, ring:true, target:true, sparkle:true, globe:true, tags:true, percent:true, barcode:true, header:true, frame:true, brackets:true, gridBg:true, dust:true, fade:false, vignette:true, grain:true, accentBar:false},
-           o:{title:{x:58.5,y:55,s:72}, sub:{x:58.5,y:58.5,s:80}, badge:{x:58.5,y:13,s:90}, cover:{x:29,y:53,s:66}, panel:{x:55,y:21,s:100,w:38,h:61}, ring:{x:29,y:53,s:72}, glow:{x:29,y:53,s:100}, target:{x:15,y:84,s:58}, sparkle:{x:43,y:23,s:68}, globe:{x:88,y:28.5,s:26}, orbit:{x:29,y:53,s:48}, tags:{x:58.5,y:30,s:158}, percent:{x:58.5,y:69.5,s:128}, barcode:{x:90,y:78,s:100}}},
-  player: {name:'플레이어 카드', align:'left', bgDim:0, wash:'light', panelStyle:'card', shadow:false, colors:{text:'#2a2230', line:'#ffffff'},
+           o:{title:{x:58.5,y:55,s:72}, sub:{x:58.5,y:58.5,s:80}, badge:{x:58.5,y:13,s:90}, cover:{x:29,y:53,s:76}, panel:{x:55,y:21,s:100,w:38,h:61}, ring:{x:29,y:53,s:82}, glow:{x:29,y:53,s:112}, target:{x:15,y:84,s:58}, sparkle:{x:43,y:23,s:68}, globe:{x:88,y:28.5,s:26}, orbit:{x:29,y:53,s:56}, tags:{x:58.5,y:30,s:158}, percent:{x:58.5,y:69.5,s:128}, barcode:{x:90,y:78,s:100}}},
+  player: {name:'플레이어 카드', align:'left', bgDim:0, wash:'light', panelStyle:'card', shadow:false, colors:{text:'#2a2230', line:'#ffffff'}, cshadow:{color:'#7a3a5e', amt:30},
            on:{panel:true, tags:true, waveform:true, progress:true, hearts:true, sparkle:true, ornament:true, header:true, dust:true, fade:false, vignette:false, grain:true, accentBar:false},
-           o:{title:{x:44.4,y:51,s:62}, sub:{x:44.4,y:54.5,s:70}, badge:{x:44.4,y:8,s:90}, cover:{x:28.1,y:53,s:79}, panel:{x:12.5,y:19,s:100,w:75,h:62}, tags:{x:44.4,y:34.5,s:150}, waveform:{x:64.3,y:68,s:85}, progress:{x:64.3,y:75,s:115}, hearts:{x:11,y:80,s:110}, sparkle:{x:90,y:17,s:70}, ornament:{x:91,y:80,s:40}, orbit:{x:28.1,y:53,s:46}}}
+           o:{title:{x:44.4,y:49,s:62}, sub:{x:44.4,y:51.4,s:70}, badge:{x:44.4,y:8,s:90}, cover:{x:28.1,y:53.9,s:79}, panel:{x:12.5,y:19,s:100,w:75,h:62}, tags:{x:44.4,y:36,s:150}, waveform:{x:64.3,y:61,s:85}, progress:{x:64.3,y:67.4,s:115}, hearts:{x:11,y:80,s:110}, sparkle:{x:90,y:17,s:70}, ornament:{x:91,y:80,s:40}, orbit:{x:28.1,y:53.9,s:46}}}
 };
 // minimal sizing: words and decorations a little smaller, the cover only slightly
 const MINI = n => n === 'panel' ? 1 : (n === 'cover' || n === 'ring' || n === 'glow' || n === 'orbit') ? .93 : .84;
@@ -3498,6 +3517,7 @@ const presetO = k => { const P = PRESETS[k] || PRESETS.left, o = JSON.parse(JSON
 function applyPresetTo(t, k){
   const P = PRESETS[k] || PRESETS.left;
   t.preset = k; t.align = P.align; t.o = presetO(k); t.tilt = P.tilt || 0; t.bgDim = P.bgDim ?? 30; t.wash = P.wash || 'dark'; t.panelStyle = P.panelStyle || 'glass';
+  t.cshadow = Object.assign({on:true, color:'#000000', amt:42, blur:70, dist:26}, P.cshadow || {}); t.coverMat = !!P.coverMat;
   t.colors.text = (P.colors && P.colors.text) || '#ffffff'; t.colors.line = (P.colors && P.colors.line) || '#ffffff'; t.shadow = P.shadow ?? true;
   DECO_KEYS.forEach(n => { t.on[n] = !!P.on[n]; }); t.on.title = t.on.sub = t.on.cover = true;
 }
@@ -3505,6 +3525,7 @@ const tb = {
   v:4, preset:'left', bgMode:'cover', bgDim:30, wash:'dark', panelStyle:'glass', coverSrc:'cover', coverShape:'square', tilt:0,
   colors:{bg:CS.cover.bg, text:'#ffffff', accent:CS.cover.accent, line:'#ffffff'},
   title:null, sub:null, songName:'', badge:'', font:'Paperlogy', weight:'800', align:'left', tracking:-2, lineH:104, maxLines:3, stroke:0, strokeColor:'#000000', shadow:true, shadowColor:'#000000', shadowAmt:35, shadowBlur:30, shadowDist:4, glow:false,
+  cshadow:{on:true, color:'#000000', amt:42, blur:70, dist:26}, coverMat:false,
   tagText:'OFFICIAL AUDIO · HQ', headL:'', headR:'', pctLabel:'SYNC RATE', pct:100, prog:40, bignumText:'01',
   on:{title:true, sub:true, badge:true, cover:true},
   o:{},
@@ -3745,14 +3766,17 @@ function draw(preview = true){
   if (on.cover){
     const c = O.cover, cs = 560 * u * c.s / 100, cx = c.x / 100 * W, cy = c.y / 100 * H;
     ctx.save(); ctx.translate(cx, cy); ctx.rotate(tb.tilt * Math.PI / 180);
-    ctx.shadowColor = 'rgba(0,0,0,.42)'; ctx.shadowBlur = 70 * u; ctx.shadowOffsetY = 26 * u;
-    if (tb.coverShape === 'circle'){ ctx.beginPath(); ctx.arc(0, 0, cs / 2, 0, Math.PI * 2); } else rr(-cs / 2, -cs / 2, cs, cs, 8 * u);
-    if (tb.panelStyle === 'card' && on.panel) ctx.shadowColor = 'rgba(80,30,60,.3)';
-    ctx.fillStyle = '#777'; ctx.fill(); ctx.shadowColor = 'transparent';
+    const SH = tb.cshadow || {}, shadowOn = SH.on !== false && SH.amt > 0;
+    const setSh = () => { if (shadowOn){ ctx.shadowColor = col(SH.color || '#000000', SH.amt / 100); ctx.shadowBlur = (SH.blur ?? 70) * u; ctx.shadowOffsetY = (SH.dist ?? 26) * u; } };
+    const mat = tb.coverMat ? 18 * u * c.s / 100 : 0;
+    if (mat){ setSh(); if (tb.coverShape === 'circle'){ ctx.beginPath(); ctx.arc(0, 0, cs / 2 + mat, 0, Math.PI * 2); } else rr(-cs / 2 - mat, -cs / 2 - mat, cs + mat * 2, cs + mat * 2, 6 * u); ctx.fillStyle = '#fbf8f6'; ctx.fill(); ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0; }
+    if (tb.coverShape === 'circle'){ ctx.beginPath(); ctx.arc(0, 0, cs / 2, 0, Math.PI * 2); } else rr(-cs / 2, -cs / 2, cs, cs, (mat ? 2 : 8) * u);
+    if (!mat) setSh();
+    ctx.fillStyle = '#777'; ctx.fill(); ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
     ctx.save(); ctx.clip(); ctx.drawImage(snap, -cs / 2 - .5, -cs / 2 - .5, cs + 1, cs + 1); ctx.restore();
     ctx.strokeStyle = 'rgba(255,255,255,.1)'; ctx.lineWidth = 1.2 * u; ctx.stroke();
     ctx.restore();
-    boxes.cover = {x0: cx - cs / 2, y0: cy - cs / 2, x1: cx + cs / 2, y1: cy + cs / 2};
+    { const m2 = tb.coverMat ? 18 * u * c.s / 100 : 0; boxes.cover = {x0: cx - cs / 2 - m2, y0: cy - cs / 2 - m2, x1: cx + cs / 2 + m2, y1: cy + cs / 2 + m2}; }
   }
   // symbols
   const sym = (k, fn, box) => { if (!on[k]) return; const p = O[k], x = p.x / 100 * W, y = p.y / 100 * H, sc = u * p.s / 100; ctx.save(); ctx.translate(x, y); if (p.r) ctx.rotate(p.r * Math.PI / 180); ctx.scale(sc, sc); fn(); ctx.restore(); boxes[k] = {x0: x + box[0] * sc, y0: y + box[1] * sc, x1: x + box[2] * sc, y1: y + box[3] * sc}; };
@@ -3789,6 +3813,7 @@ function draw(preview = true){
     let L = ML, R = MR;
     if (cb && !(x >= cb.x0 && x <= cb.x1) && cb.y0 < yBot && cb.y1 > yTop){ if ((cb.x0 + cb.x1) / 2 > x) R = Math.min(R, cb.x0 - GAP); else L = Math.max(L, cb.x1 + GAP); }
     if (pb && x > pb.x0 && x < pb.x1 && yBot > pb.y0 && yTop < pb.y1){ R = Math.min(R, pb.x1 - 36); L = Math.max(L, pb.x0 + 36); }
+    if (on.side) R = Math.min(R, W - 80);
     const w = tb.align === 'center' ? 2 * Math.min(x - L, R - x) : tb.align === 'right' ? x - L : R - x;
     return Math.max(120 * u, w);
   };
@@ -3963,6 +3988,61 @@ const setTRot = v => { if (!sel || !tb.o[sel]) return; if (sel === 'cover') tb.t
 $('#tRot').addEventListener('input', () => setTRot(+$('#tRot').value));
 $('#tRotReset').addEventListener('click', () => setTRot(0));
 $('#tResetAll').onclick = () => { tb.o = presetO(tb.preset); syncUI(); sched(); toast('모든 위치를 처음으로 되돌렸어요'); };
+$('#tCsAccent').onclick = () => { tb.cshadow.color = tb.colors.accent; tb.cshadow.on = true; syncUI(); sched(); toast('그림자를 포인트색으로 바꿨어요'); };
+$('#tCsBg').onclick = () => { tb.cshadow.color = tb.colors.bg; tb.cshadow.on = true; syncUI(); sched(); toast('그림자를 배경색으로 바꿨어요'); };
+/* ---------- my thumbnail sets ---------- */
+const TSET_KEY = 'mmc-thumb-sets', TSKIP = new Set(['title', 'sub', 'songName', 'lock', 'grid', 'snap', 'safe', 'v']);
+const tEsc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const tLoadSets = () => { const a = M.STORE.read(TSET_KEY); return Array.isArray(a) ? a : []; };
+const tStoreSets = a => { if (!M.STORE.write(TSET_KEY, a)) toast('이 브라우저에서는 저장이 막혀 있어요 · 파일로 내보내기를 써 주세요'); };
+const tSnapshot = () => { const o = {}; Object.keys(tb).forEach(k => { if (!TSKIP.has(k)) o[k] = JSON.parse(JSON.stringify(tb[k])); }); return o; };
+function tApplySnapshot(d){
+  if (!d || typeof d !== 'object') return;
+  Object.keys(TDEF).forEach(k => {
+    if (TSKIP.has(k)) return;
+    const def = TDEF[k];
+    if (!(k in d)){ tb[k] = JSON.parse(JSON.stringify(def)); return; }
+    if (def && typeof def === 'object'){ tb[k] = JSON.parse(JSON.stringify(def)); M.deepAssign(tb[k], d[k]); }
+    else if (typeof d[k] === typeof def) tb[k] = d[k];
+  });
+  if (!PRESETS[tb.preset]) tb.preset = 'left';
+  Object.keys(BASE_O).forEach(k => { if (!tb.o[k]) tb.o[k] = {...presetO(tb.preset)[k]}; });
+  if (!(M.FONTS || []).some(f => f[0] === tb.font)) tb.font = TDEF.font;
+  sel = null; refreshCover(); syncUI(); loadFonts(); sched();
+}
+function tRenderSets(){
+  const sets = tLoadSets(), el = $('#tSetList');
+  if (!sets.length){ el.innerHTML = '<div class="sets-empty">아직 저장한 세트가 없어요</div>'; return; }
+  el.innerHTML = sets.map((x, i) => `<div class="setrow"><b title="${tEsc(x.name)}">${tEsc(x.name)}</b>
+    <button class="btn sm" data-tapply="${i}" style="height:24px">적용</button><button class="x" data-tdel="${i}" aria-label="삭제">×</button></div>`).join('');
+}
+$('#tSaveSet').onclick = () => {
+  const sets = tLoadSets(), name = $('#tSetName').value.trim() || '썸네일 세트 ' + (sets.length + 1);
+  const entry = {name, data: tSnapshot()}, ex = sets.findIndex(x => x.name === name);
+  if (ex >= 0) sets[ex] = entry; else sets.unshift(entry);
+  tStoreSets(sets); tRenderSets(); $('#tSetName').value = '';
+  toast(ex >= 0 ? `'${name}' 세트를 덮어썼어요` : `'${name}' 세트를 저장했어요`);
+};
+$('#tSetName').addEventListener('keydown', e => { if (e.key === 'Enter') $('#tSaveSet').click(); });
+$('#tSetList').addEventListener('click', e => {
+  const a = e.target.closest('[data-tapply]'), d = e.target.closest('[data-tdel]'), sets = tLoadSets();
+  if (a){ const x = sets[+a.dataset.tapply]; if (x){ if (M.EDITORS.thumb) M.EDITORS.thumb.checkpoint(); tApplySnapshot(x.data); toast(`'${x.name}' 세트를 적용했어요`); } }
+  if (d){ const x = sets.splice(+d.dataset.tdel, 1)[0]; tStoreSets(sets); tRenderSets(); if (x) toast(`'${x.name}' 세트를 지웠어요`); }
+});
+$('#tExportSets').onclick = () => {
+  const sets = tLoadSets();
+  download(new Blob([JSON.stringify({app:'momo-music-cloud', kind:'thumb-sets', version:1, sets: sets.length ? sets : [{name:'현재 썸네일', data: tSnapshot()}]}, null, 2)], {type:'application/json'}), 'momo-thumbnail-sets.json');
+};
+$('#tInSets').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  try {
+    const j = JSON.parse(await f.text()), inc = (Array.isArray(j) ? j : Array.isArray(j.sets) ? j.sets : []).filter(x => x && x.name && x.data);
+    if (!inc.length) return toast('불러올 썸네일 세트가 없어요');
+    const sets = tLoadSets(); inc.forEach(x => { const i = sets.findIndex(y => y.name === x.name); if (i >= 0) sets[i] = x; else sets.push(x); });
+    tStoreSets(sets); tRenderSets(); toast(`썸네일 세트 ${inc.length}개를 불러왔어요`);
+  } catch(err){ toast('세트 파일을 읽지 못했어요'); }
+});
+tRenderSets();
 $('#tFromMeta').onclick = () => { tb.title = null; tb.sub = null; syncUI(); loadFonts(); sched(); };
 $('#tLock').onclick = () => { tb.lock = !tb.lock; if (tb.lock) hover = null; syncUI(); sched(); toast(tb.lock ? '오브젝트를 잠갔어요' : '이제 오브젝트를 끌어서 옮길 수 있어요'); };
 $('#tGrid').onclick = () => { tb.grid = !tb.grid; syncUI(); sched(); };
