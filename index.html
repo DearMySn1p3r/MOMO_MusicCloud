@@ -684,6 +684,14 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                 </div>
               </div>
               <div class="sec">
+                <div class="sec-h"><h3>커버 그림자</h3><label class="sw"><input type="checkbox" data-vbind="shadow.on" aria-label="커버 그림자"><span></span></label></div>
+                <div class="range"><span class="lbl">색</span><div class="color"><input type="color" data-vbind="shadow.color" aria-label="그림자 색"><span data-vout="shadow.color" data-fmt="hex"></span></div></div>
+                <div class="inline-btns" style="margin:-2px 0 8px"><button class="btn sm" id="vShadowAccent">포인트색으로</button><button class="btn sm" id="vShadowBg">배경색으로</button></div>
+                <div class="range"><span class="lbl">진하기</span><input type="range" min="0" max="100" step="1" data-vbind="shadow.amt"><output data-vout="shadow.amt" data-fmt="pct"></output></div>
+                <div class="range"><span class="lbl">번짐</span><input type="range" min="0" max="140" step="1" data-vbind="shadow.blur"><output data-vout="shadow.blur" data-fmt="int"></output></div>
+                <div class="range"><span class="lbl">거리</span><input type="range" min="0" max="60" step="1" data-vbind="shadow.dist"><output data-vout="shadow.dist" data-fmt="int"></output></div>
+              </div>
+              <div class="sec">
                 <div class="sec-h"><h3>색상</h3><button class="link" id="vColorsFromCover">커버 색 가져오기</button></div>
                 <div class="colors4">
                   <div class="field"><label>배경</label><div class="color"><input type="color" data-vbind="colors.bg"><span data-vout="colors.bg" data-fmt="hex"></span></div></div>
@@ -2344,7 +2352,8 @@ const vs = {
   off:Object.fromEntries(OBJ.map(([k]) => [k, {dx:0, dy:0}])),
   lockObj:true, grid:false, snap:true, pin:{}, rot:Object.fromEntries(OBJ.map(([k]) => [k, 0])),
   meta:{title:'', artist:'', album:'', year:''},
-  bgTone:'calm', waveSize:100, ringSize:100, waveEase:0, waveTint:'auto'
+  bgTone:'calm', waveSize:100, ringSize:100, waveEase:0, waveTint:'auto',
+  shadow:{on:true, color:'#000000', amt:55, blur:50, dist:14}
 };
 const getV = p => p.split('.').reduce((o, k) => o == null ? o : o[k], vs);
 // video song info: what was typed / read from the song first, then the album-cover page (without its placeholder text)
@@ -2907,7 +2916,8 @@ function frame(){
   // cover
   rb('cover', cvr);
   ctx.save();
-  ctx.shadowColor = 'rgba(0,0,0,.55)'; ctx.shadowBlur = 50 * u; ctx.shadowOffsetY = 14 * u;
+  { const SH = vs.shadow || {}; if (SH.on === false || !SH.amt){ ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0; }
+    else { ctx.shadowColor = col(SH.color || '#000000', SH.amt / 100); ctx.shadowBlur = (SH.blur ?? 50) * u; ctx.shadowOffsetY = (SH.dist ?? 14) * u; } }
   if (circle){
     ctx.translate(cvr.x, cvr.y); if (FXo.spin) ctx.rotate(t * .25);
     ctx.beginPath(); ctx.arc(0, 0, cs / 2, 0, Math.PI * 2); ctx.fillStyle = '#000'; ctx.fill(); ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
@@ -3329,6 +3339,8 @@ view.addEventListener('drop', e => {
 });
 
 if (M.attachResets) M.attachResets(view, 'data-vbind', vDef, (p, v) => setV(p, v), p => { syncUI(); if (p === 'font') loadFonts(); });
+$('#vShadowAccent').onclick = () => { vs.shadow.color = vs.colors.accent; vs.shadow.on = true; syncUI(); toast('그림자를 포인트색으로 바꿨어요'); };
+$('#vShadowBg').onclick = () => { vs.shadow.color = vs.colors.bg; vs.shadow.on = true; syncUI(); toast('그림자를 배경색으로 바꿨어요'); };
 /* ---------- my video sets ---------- */
 const VSET_KEY = 'mmc-video-sets', VSKIP = new Set(['meta', 'res', 'fps', 'lockObj', 'grid', 'snap']);
 const vEsc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
