@@ -1092,7 +1092,7 @@ function defaultDesign(){
   const on = {}, pos = {};
   DECOS.forEach(d => { on[d[0]] = false; if (d[4]) pos[d[0]] = {...d[4]}; });
   ['header','globe','sparkle','target','dust','fade','grain','brackets','percent'].forEach(k => on[k] = true);
-  return {intensity:100, on, pos, pin:{}, pct:87, pctLabel:'Sync', prog:36, tagText:'REC · Hi-Fi · Lossless', bignumText:'', fadeColor:'#2b2b31', fadeAmt:82, fadeReach:62, fadeVig:40, headL:'', headR:'', sideText:'', tx:{header:{a:100, c:'auto', upper:true, size:100}, side:{a:100, c:'auto', upper:true, size:100}, tags:{a:100, c:'auto', upper:true}, percent:{a:100, c:'auto', upper:true}, barcode:{a:100, c:'auto', upper:true}, progress:{a:100, c:'auto'}, bignum:{a:100, c:'auto'}, explicit:{a:100, c:'auto'}, target:{a:100, c:'auto'}}};
+  return {intensity:100, on, pos, pin:{}, pct:87, pctLabel:'Sync', prog:36, tagText:'REC · Hi-Fi · Lossless', bignumText:'', fadeColor:'#2b2b31', fadeAmt:82, fadeReach:62, fadeVig:40, headL:'', headR:'', sideText:'', lockText:'', lockSub:'', explicitText:'', dust:{amt:100, stars:100, size:100, a:100, c:'auto', color:'#ffffff'}, tx:{header:{a:100, c:'auto', upper:true, size:100}, side:{a:100, c:'auto', upper:true, size:100}, tags:{a:100, c:'auto', upper:true}, percent:{a:100, c:'auto', upper:true}, barcode:{a:100, c:'auto', upper:true}, progress:{a:100, c:'auto'}, bignum:{a:100, c:'auto'}, explicit:{a:100, c:'auto'}, target:{a:100, c:'auto'}}};
 }
 const DEFAULT_COVER = {bg:'#2b2b31', text:'#f7f5f2', deco:'#ffffff', accent:'#f4a3c6', zoom:1, ox:0, oy:0, adjustOn:false,
   bright:100, contrast:100, sat:100, gray:0, blur:0, opacity:100, tintOn:false, tint:'#f4a3c6', tintAmt:30, tintMode:'soft-light'};
@@ -1389,10 +1389,13 @@ function render(ctx, S, preview){
       if (O.side && nx > .925 && nx < .962) return false;
       return true;
     };
-    for (let i = 0; i < 90; i++){ const x = r() * S, y = r() * S, rad = (.6 + r() * 1.6) * u, a = .15 + r() * .5; if (!clear(x, y)) continue; ctx.fillStyle = LN(a); ctx.beginPath(); ctx.arc(x, y, rad, 0, Math.PI * 2); ctx.fill(); }
-    ctx.strokeStyle = LN(.4); ctx.lineWidth = u;
-    for (let i = 0; i < 9; i++){ const x = r() * S, y = r() * S, s = (4 + r() * 4) * u; if (!clear(x, y)) continue; ctx.beginPath(); ctx.moveTo(x - s, y); ctx.lineTo(x + s, y); ctx.moveTo(x, y - s); ctx.lineTo(x, y + s); ctx.stroke(); }
-    for (let i = 0; i < 6; i++){ const x = r() * S, y = r() * S, rad = (5 + r() * 7) * u; if (!clear(x, y)) continue; ctx.fillStyle = i % 2 ? LN(.7) : AC(.85); star4(ctx, x, y, rad); ctx.fill(); }
+    const DS = D.dust || {}, dn = (DS.amt ?? 100) / 100, dst = (DS.stars ?? 100) / 100, dz = (DS.size ?? 100) / 100, dm = (DS.a ?? 100) / 100;
+    const dc = DS.c === 'custom' ? DS.color : DS.c === 'accent' ? C.accent : DS.c === 'text' ? C.text : DS.c === 'line' ? C.deco : null;
+    const DL = a => dc ? col(dc, a * k * dm) : LN(a * dm), DA = a => dc ? col(dc, a * k * dm) : AC(a * dm);
+    for (let i = 0; i < Math.round(90 * dn); i++){ const x = r() * S, y = r() * S, rad = (.6 + r() * 1.6) * u * dz, a = .15 + r() * .5; if (!clear(x, y)) continue; ctx.fillStyle = DL(a); ctx.beginPath(); ctx.arc(x, y, rad, 0, Math.PI * 2); ctx.fill(); }
+    ctx.strokeStyle = DL(.4); ctx.lineWidth = u;
+    for (let i = 0; i < Math.round(9 * dn); i++){ const x = r() * S, y = r() * S, s = (4 + r() * 4) * u * dz; if (!clear(x, y)) continue; ctx.beginPath(); ctx.moveTo(x - s, y); ctx.lineTo(x + s, y); ctx.moveTo(x, y - s); ctx.lineTo(x, y + s); ctx.stroke(); }
+    for (let i = 0; i < Math.round(6 * dst); i++){ const x = r() * S, y = r() * S, rad = (5 + r() * 7) * u * dz; if (!clear(x, y)) continue; ctx.fillStyle = i % 2 ? DL(.7) : DA(.85); star4(ctx, x, y, rad); ctx.fill(); }
   }
 
   // positioned decorations — drawn in local units (1 unit = 1/1000 of the canvas at 100% size)
@@ -1511,7 +1514,7 @@ function render(ctx, S, preview){
     ctx.stroke();
     ctx.fillStyle = AC(1); ctx.beginPath(); ctx.arc(0, 0, 4.5, 0, Math.PI * 2); ctx.fill();
     setFont(ctx, iW, 10, iF);
-    const h = hash(M.title + M.artist), t1 = 'LOCK ' + pad2(M.track || 1), t2 = `${(h % 9000 / 100).toFixed(2)} / ${((h >>> 8) % 18000 / 100).toFixed(2)}`;
+    const h = hash(M.title + M.artist), t1 = D.lockText || 'LOCK ' + pad2(M.track || 1), t2 = D.lockSub || `${(h % 9000 / 100).toFixed(2)} / ${((h >>> 8) % 18000 / 100).toFixed(2)}`;
     need(iF, iW, t1 + t2); ctx.fillStyle = LN(.8);
     drawT(ctx, t1, 86, 70, 1.5, 'left'); ctx.fillStyle = LN(.5); drawT(ctx, t2, 86, 84, 1, 'left');
   });
@@ -1622,10 +1625,11 @@ function render(ctx, S, preview){
   });
 
   deco('explicit', () => {
-    setFont(ctx, '600', 10.5, iF); need(iF, '600', 'EXPLICIT');
-    const tw = textW(ctx, 'EXPLICIT', 2), bw = tw + 22, bh = 24;
+    const ex = D.explicitText || 'EXPLICIT';
+    setFont(ctx, '600', 10.5, iF); need(iF, '600', ex);
+    const tw = textW(ctx, ex, 2), bw = tw + 22, bh = 24;
     rr(ctx, -bw, -bh, bw, bh, 4); ctx.strokeStyle = TX(.8); ctx.lineWidth = 1.2; ctx.stroke();
-    ctx.fillStyle = TX(.85); drawT(ctx, 'EXPLICIT', -bw / 2, -bh / 2 + 3.8, 2, 'center');
+    ctx.fillStyle = TX(.85); drawT(ctx, ex, -bw / 2, -bh / 2 + 3.8, 2, 'center');
   });
 
   if (O.grain){
@@ -1719,8 +1723,9 @@ function buildFonts(){
   $$('.font-select').forEach(sel => { sel.innerHTML = FONTS.map(([f,, lab]) => `<option value="${esc(f)}">${esc(lab || f)}</option>`).join(''); });
 }
 // decorations that carry words: what can be adjusted in their 조정 panel
-const CTX_ROWS = {header:[['headL', '왼쪽 문구 (비우면 아티스트)'], ['headR', '오른쪽 문구 (비우면 앨범 · 연도)']], side:[['sideText', '문구 (비우면 제목 — 아티스트 — 연도)']], tags:[], percent:[], barcode:[], progress:[], bignum:[], explicit:[], target:[]};
+const CTX_ROWS = {header:[['headL', '왼쪽 문구 (비우면 아티스트)'], ['headR', '오른쪽 문구 (비우면 앨범 · 연도)']], side:[['sideText', '문구 (비우면 제목 — 아티스트 — 연도)']], tags:[], percent:[], barcode:[], progress:[], bignum:[], explicit:[['explicitText', '문구 (비우면 EXPLICIT)']], target:[['lockText', '첫 줄 (비우면 LOCK + 트랙 번호)'], ['lockSub', '둘째 줄 (비우면 좌표)']]};
 function ctxSub(k){
+  if (k === 'dust'){ const P = 'design.dust', R = (path, lab, min, max, step, fmt) => `<div class="range"><span class="lbl">${lab}</span><input type="range" min="${min}" max="${max}" step="${step}" data-bind="${path}"><output data-out="${path}" data-fmt="${fmt}"></output></div>`; return `<div class="dsub-h"><span>별가루</span></div>` + R(P + '.amt', '양', 0, 300, 5, 'pct') + R(P + '.stars', '반짝이 별', 0, 400, 10, 'pct') + R(P + '.size', '크기', 40, 250, 5, 'pct') + R(P + '.a', '진하기', 5, 100, 1, 'pct') + `<div class="range"><span class="lbl">색</span><select class="sm" data-bind="${P}.c" style="grid-column:2 / -1"><option value="auto">자동 (라인색 + 포인트색)</option><option value="line">라인색</option><option value="accent">포인트색</option><option value="text">글자색</option><option value="custom">직접 고르기</option></select></div>` + `<div class="range"><span class="lbl">직접 고른 색</span><div class="color"><input type="color" data-bind="${P}.color" aria-label="별가루 색"><span data-out="${P}.color" data-fmt="hex"></span></div></div>`; }
   if (!CTX_ROWS[k]) return '';
   const rg = (path, lab, min, max, step, fmt) => `<div class="range"><span class="lbl">${lab}</span><input type="range" min="${min}" max="${max}" step="${step}" data-bind="${path}"><output data-out="${path}" data-fmt="${fmt}"></output></div>`;
   const d = defaultDesign().tx[k];
@@ -1743,10 +1748,10 @@ function buildDecos(){
           <span class="dname"><b>${n}</b><small>${desc}</small></span>
           ${pos ? `<button class="pin" data-dpin="${k}" title="고정" aria-label="${n} 고정"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5 13.5 6l-2.5 1-2.5 3.5.5 2.5L3 7.5l2.5.5L9 5.5z"/><path d="M5.5 10.5 2.5 13.5"/></svg></button>` : ''}
           ${pos ? `<button class="rst" data-posreset="${k}" title="위치 초기화" aria-label="${n} 위치 초기화"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 8a5.5 5.5 0 1 0 1.8-4.1"/><path d="M2.5 2.5v3h3"/></svg></button>` : ''}
-          ${pos || extra || CTX_ROWS[k] ? `<button class="adj" data-adj="${k}">조정 <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m2 3.5 3 3 3-3"/></svg></button>` : ''}
+          ${pos || extra || CTX_ROWS[k] || k === 'dust' ? `<button class="adj" data-adj="${k}">조정 <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m2 3.5 3 3 3-3"/></svg></button>` : ''}
           <label class="sw"><input type="checkbox" data-bind="design.on.${k}" aria-label="${n}"><span></span></label>
         </div>
-        ${pos || extra || CTX_ROWS[k] ? `<div class="dsub">
+        ${pos || extra || CTX_ROWS[k] || k === 'dust' ? `<div class="dsub">
           ${(extra || []).map(([f, lab, type, a, b, st]) => type === 'range' ? rg(`design.${f}`, lab, a, b, st, k === 'fade' ? 'pct' : 'int')
             : type === 'color' ? `<div class="range"><span class="lbl">${lab}</span><div class="color"><input type="color" data-bind="design.${f}" aria-label="${lab}"><span data-out="design.${f}" data-fmt="hex"></span></div><button class="link" data-fadebg title="배경색과 똑같이">배경색</button></div>`
             : `<input class="inp" type="text" data-bind="design.${f}" placeholder="${lab}" aria-label="${lab}">`).join('')}
@@ -2422,6 +2427,7 @@ const vs = {
   off:Object.fromEntries(OBJ.map(([k]) => [k, {dx:0, dy:0}])),
   lockObj:true, grid:false, snap:true, pin:{}, rot:Object.fromEntries(OBJ.map(([k]) => [k, 0])),
   meta:{title:'', artist:'', album:'', year:''},
+  dust:{amt:100, stars:100, size:100, a:100, c:'auto', color:'#ffffff'},
   bgTone:'calm', waveSize:100, ringSize:100, waveEase:0, waveTint:'auto',
   shadow:{on:true, color:'#000000', amt:55, blur:50, dist:14},
   titleWeight:'700', tshadow:{on:false, color:'#000000', amt:45, blur:24, dist:4}
@@ -2822,7 +2828,7 @@ function layout(W, H){
 
 /* ---------- particles ---------- */
 let parts = [];
-function initParts(){ parts = Array.from({length: 150}, () => ({x: Math.random(), y: Math.random(), v: .01 + Math.random() * .035, r: .6 + Math.random() * 1.8, a: .15 + Math.random() * .6, k: Math.random() < .08 ? 2 : Math.random() < .1 ? 1 : 0, ph: Math.random() * 6})); }
+function initParts(){ parts = Array.from({length: 450}, () => ({x: Math.random(), y: Math.random(), v: .01 + Math.random() * .035, r: .6 + Math.random() * 1.8, a: .15 + Math.random() * .6, q: Math.random(), ph: Math.random() * 6})); }
 initParts();
 
 /* ---------- noise ---------- */
@@ -2906,14 +2912,16 @@ function frame(){
   }
 
   if (FXo.particles){
-    for (const p of parts){
+    const DS = vs.dust || {}, n = Math.min(parts.length, Math.round(150 * (DS.amt ?? 100) / 100)), starP = Math.min(.7, .08 * (DS.stars ?? 100) / 100), dz = (DS.size ?? 100) / 100, dm = (DS.a ?? 100) / 100;
+    const dc = DS.c === 'custom' ? DS.color : DS.c === 'accent' ? C.accent : DS.c === 'text' ? C.text : DS.c === 'line' ? C.line : null;
+    for (let pi = 0; pi < n; pi++){ const p = parts[pi]; p.k = p.q < starP ? 2 : p.q < starP + .09 ? 1 : 0;
       p.y -= p.v * dt * (1 + bassS * 4 * k) * vs.speed / 100; p.x += Math.sin(t * .5 + p.ph) * .0004;
       if (p.y < -.02){ p.y = 1.02; p.x = Math.random(); }
       const x = p.x * W, y = p.y * H, a = p.a * (.6 + .4 * Math.sin(t * 2 + p.ph));
       if (L.keep.some(K => x > K.x0 && x < K.x1 && y > K.y0 && y < K.y1)) continue;
-      if (p.k === 2){ ctx.fillStyle = col(C.accent, a + .2); star4(x, y, (5 + p.r * 3) * u); ctx.fill(); }
-      else if (p.k === 1){ ctx.strokeStyle = col(C.line, a); ctx.lineWidth = u; const s = 5 * u; ctx.beginPath(); ctx.moveTo(x - s, y); ctx.lineTo(x + s, y); ctx.moveTo(x, y - s); ctx.lineTo(x, y + s); ctx.stroke(); }
-      else { ctx.fillStyle = col(C.line, a); ctx.beginPath(); ctx.arc(x, y, p.r * u, 0, Math.PI * 2); ctx.fill(); }
+      if (p.k === 2){ ctx.fillStyle = col(dc || C.accent, (a + .2) * dm); star4(x, y, (5 + p.r * 3) * u * dz); ctx.fill(); }
+      else if (p.k === 1){ ctx.strokeStyle = col(dc || C.line, a * dm); ctx.lineWidth = u; const s = 5 * u * dz; ctx.beginPath(); ctx.moveTo(x - s, y); ctx.lineTo(x + s, y); ctx.moveTo(x, y - s); ctx.lineTo(x, y + s); ctx.stroke(); }
+      else { ctx.fillStyle = col(dc || C.line, a * dm); ctx.beginPath(); ctx.arc(x, y, p.r * u * dz, 0, Math.PI * 2); ctx.fill(); }
     }
   }
 
@@ -3284,6 +3292,7 @@ $('#vSnap').onclick = () => { vs.snap = !vs.snap; lockUI(); toast(vs.snap ? '자
 const vRowBtns = (k, n) => `<button class="pin" data-vpin="${k}" title="고정" aria-label="${n} 고정"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5 13.5 6l-2.5 1-2.5 3.5.5 2.5L3 7.5l2.5.5L9 5.5z"/><path d="M5.5 10.5 2.5 13.5"/></svg></button><button class="rst" data-vreset="${k}" title="위치 초기화" aria-label="${n} 위치 초기화"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 8a5.5 5.5 0 1 0 1.8-4.1"/><path d="M2.5 2.5v3h3"/></svg></button>`;
 const vRg = (path, lab, min, max, step, fmt) => `<div class="range"><span class="lbl">${lab}</span><input type="range" min="${min}" max="${max}" step="${step}" data-vbind="${path}"><output data-vout="${path}" data-fmt="${fmt}"></output></div>`;
 const vPosSub = k => `<div class="dsub-h"><span>위치</span></div>` + vRg(`off.${k}.dx`, '가로', -.5, .5, .005, 'off') + vRg(`off.${k}.dy`, '세로', -.5, .5, .005, 'off') + vRg(`rot.${k}`, '회전', -180, 180, 1, 'deg') + `<button class="link" data-vreset="${k}" style="margin-bottom:4px">위치 초기화</button>`;
+const vDustSub = () => { const P = 'dust', R = vRg; return `<div class="dsub-h"><span>별가루</span></div>` + R(P + '.amt', '양', 0, 300, 5, 'pct') + R(P + '.stars', '반짝이 별', 0, 400, 10, 'pct') + R(P + '.size', '크기', 40, 250, 5, 'pct') + R(P + '.a', '진하기', 5, 100, 1, 'pct') + `<div class="range"><span class="lbl">색</span><select class="sm" data-vbind="${P}.c" style="grid-column:2 / -1"><option value="auto">자동 (라인색 + 포인트색)</option><option value="line">라인색</option><option value="accent">포인트색</option><option value="text">글자색</option><option value="custom">직접 고르기</option></select></div>` + `<div class="range"><span class="lbl">직접 고른 색</span><div class="color"><input type="color" data-vbind="${P}.color" aria-label="별가루 색"><span data-vout="${P}.color" data-fmt="hex"></span></div></div>`; };
 const V_OBJ_TX = {title:['sub'], time:['time'], progress:['prog'], sync:['tr', 'sv']}, V_FX_TX = {sync:['tr', 'sv'], progress:['prog'], hud:['tl', 'bl', 'cap']};
 const vAdj = k => `<button class="adj" data-vadj="${k}">조정 <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m2 3.5 3 3 3-3"/></svg></button>`;
 $('#vObjList').innerHTML = `<div class="dlist">${OBJ.map(([k, n]) => `<div class="ditem is-on" data-vobj="${k}"><div class="drow"><span class="dname"><b>${n}</b></span>${vRowBtns(k, n)}${vAdj(k)}</div><div class="dsub np">${(V_OBJ_TX[k] || []).map(x => VTXB[x] || '').join('<div class="sep"></div>')}${(V_OBJ_TX[k] || []).length ? '<div class="sep"></div>' : ''}${vPosSub(k)}</div></div>`).join('')}</div>`;
@@ -3358,8 +3367,8 @@ $('#vRecCancel').onclick = () => stopRecord(true);
 
 /* ---------- UI ---------- */
 $('#vFxList').innerHTML = `<div class="dlist">${FX.map(([k, n, d]) => `
-  <div class="ditem" data-vfx="${k}"><div class="drow"><span class="dname"><b>${n}</b><small>${d}</small></span>${FX_MOVE.has(k) ? vRowBtns(k, n) : ''}${V_FX_TX[k] || FX_MOVE.has(k) ? vAdj(k) : ''}
-  <label class="sw"><input type="checkbox" data-vbind="fx.${k}" aria-label="${n}"><span></span></label></div>${V_FX_TX[k] || FX_MOVE.has(k) ? `<div class="dsub np">${(V_FX_TX[k] || []).map(x => VTXB[x] || '').join('<div class="sep"></div>')}${V_FX_TX[k] && FX_MOVE.has(k) ? '<div class="sep"></div>' : ''}${FX_MOVE.has(k) ? vPosSub(k) : ''}</div>` : ''}</div>`).join('')}</div>`;
+  <div class="ditem" data-vfx="${k}"><div class="drow"><span class="dname"><b>${n}</b><small>${d}</small></span>${FX_MOVE.has(k) ? vRowBtns(k, n) : ''}${V_FX_TX[k] || FX_MOVE.has(k) || k === 'particles' ? vAdj(k) : ''}
+  <label class="sw"><input type="checkbox" data-vbind="fx.${k}" aria-label="${n}"><span></span></label></div>${k === 'particles' ? `<div class="dsub np">${vDustSub()}</div>` : ''}${V_FX_TX[k] || FX_MOVE.has(k) ? `<div class="dsub np">${(V_FX_TX[k] || []).map(x => VTXB[x] || '').join('<div class="sep"></div>')}${V_FX_TX[k] && FX_MOVE.has(k) ? '<div class="sep"></div>' : ''}${FX_MOVE.has(k) ? vPosSub(k) : ''}</div>` : ''}</div>`).join('')}</div>`;
 $('#vFont').innerHTML = (M.FONTS || []).map(([f,, lab]) => `<option value="${f}">${lab || f}</option>`).join('');
 const VFMT = {off: v => (v > 0 ? '+' : '') + Math.round(v * 100), deg: v => Math.round(v) + '°', int: v => String(Math.round(v * 10) / 10), pct: v => Math.round(v) + '%', hex: v => String(v).toUpperCase(), sec: v => (v > 0 ? '+' : '') + (+v).toFixed(1) + 's'};
 function syncUI(){
@@ -3584,8 +3593,8 @@ const tb = {
   colors:{bg:CS.cover.bg, text:'#ffffff', accent:CS.cover.accent, line:'#ffffff'},
   title:null, sub:null, songName:'', badge:'', font:'Paperlogy', weight:'800', align:'left', tracking:-2, lineH:104, maxLines:3, stroke:0, strokeColor:'#000000', shadow:true, shadowColor:'#000000', shadowAmt:35, shadowBlur:30, shadowDist:4, glow:false,
   cshadow:{on:true, color:'#000000', amt:42, blur:70, dist:26}, coverMat:false,
-  tx:{header:{size:100, a:100, c:'auto', upper:true}, tags:{size:100, a:100, c:'auto', upper:true}, side:{size:100, a:100, c:'auto', upper:true}, percent:{a:100, c:'auto', upper:true}, progress:{a:100, c:'auto'}, barcode:{a:100, c:'auto', upper:true}, bignum:{a:10, c:'auto'}},
-  catalog:'',
+  tx:{header:{size:100, a:100, c:'auto', upper:true}, tags:{size:100, a:100, c:'auto', upper:true}, side:{size:100, a:100, c:'auto', upper:true}, percent:{a:100, c:'auto', upper:true}, progress:{a:100, c:'auto'}, barcode:{a:100, c:'auto', upper:true}, bignum:{a:10, c:'auto'}, target:{a:100, c:'auto'}},
+  catalog:'', sideText:'', lockText:'', lockSub:'', dust:{amt:100, stars:100, size:100, a:100, c:'auto', color:'#ffffff'},
   tagText:'OFFICIAL AUDIO · HQ', headL:'', headR:'', pctLabel:'SYNC RATE', pct:100, prog:40, bignumText:'01',
   on:{title:true, sub:true, badge:true, cover:true},
   o:{},
@@ -3669,7 +3678,7 @@ const DECO = {
     ctx.strokeStyle = rgbA(P.ln, .9); ctx.beginPath(); ctx.moveTo(-64, 0); ctx.lineTo(-14, 0); ctx.moveTo(14, 0); ctx.lineTo(64, 0); ctx.moveTo(0, -64); ctx.lineTo(0, -14); ctx.moveTo(0, 14); ctx.lineTo(0, 64); ctx.stroke();
     ctx.lineWidth = 1.6; ctx.beginPath(); [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(([a, b]) => { ctx.moveTo(a * 76, b * 62); ctx.lineTo(a * 76, b * 76); ctx.lineTo(a * 62, b * 76); }); ctx.stroke();
     ctx.fillStyle = rgbA(P.ac, 1); ctx.beginPath(); ctx.arc(0, 0, 4.5, 0, Math.PI * 2); ctx.fill();
-    dtext('LOCK 01', 86, 70, `500 10px ${INF}`, rgbA(P.ln, .8), 'left', 1.5); dtext('37.56 / 126.97', 86, 84, `500 10px ${INF}`, rgbA(P.ln, .5), 'left', 1);
+    const ta = P.ta ?? 1; dtext(tb.lockText || 'LOCK 01', 86, 70, `500 10px ${INF}`, rgbA(P.tc || P.ln, .8 * ta), 'left', 1.5); dtext(tb.lockSub || '37.56 / 126.97', 86, 84, `500 10px ${INF}`, rgbA(P.tc || P.ln, .5 * ta), 'left', 1);
     return [-80, -80, 170, 90];
   },
   sparkle(P){ [[0, 0, 36, 'w'], [-52, 34, 15, 'a'], [40, -40, 11, 'a'], [56, 28, 7, 'w'], [-28, -46, 6, 'w']].forEach(([sx, sy, r, c]) => { ctx.save(); ctx.shadowColor = rgbA(P.ac, .9); ctx.shadowBlur = r * .9; ctx.fillStyle = c === 'w' ? rgbA(P.ln, .95) : rgbA(P.ac, 1); star4(sx, sy, r); ctx.fill(); ctx.restore(); }); return [-70, -60, 70, 55]; },
@@ -3790,8 +3799,10 @@ function draw(preview = true){
   if (on.dust){
     const r = rng(7 + titleText().length), keep = ['title', 'sub', 'badge'].map(k => prevBoxes[k]).filter(Boolean);
     const clear = (x, y) => !keep.some(b => x > b.x0 - 18 && x < b.x1 + 18 && y > b.y0 - 18 && y < b.y1 + 18);
-    for (let i = 0; i < 70; i++){ const x = r() * W, y = r() * H, rad = (.8 + r() * 1.8) * u, a = .15 + r() * .45; if (!clear(x, y)) continue; ctx.fillStyle = col(C.line, a); ctx.beginPath(); ctx.arc(x, y, rad, 0, Math.PI * 2); ctx.fill(); }
-    for (let i = 0; i < 6; i++){ const x = r() * W, y = r() * H, rad = (6 + r() * 8) * u; if (!clear(x, y)) continue; ctx.fillStyle = i % 2 ? col(C.line, .7) : col(C.accent, .85); star4(x, y, rad); ctx.fill(); }
+    const DS = tb.dust || {}, dn = (DS.amt ?? 100) / 100, dst = (DS.stars ?? 100) / 100, dz = (DS.size ?? 100) / 100, dm = (DS.a ?? 100) / 100;
+    const dc = DS.c === 'custom' ? DS.color : DS.c === 'accent' ? C.accent : DS.c === 'text' ? C.text : DS.c === 'line' ? C.line : null;
+    for (let i = 0; i < Math.round(70 * dn); i++){ const x = r() * W, y = r() * H, rad = (.8 + r() * 1.8) * u * dz, a = .15 + r() * .45; if (!clear(x, y)) continue; ctx.fillStyle = col(dc || C.line, a * dm); ctx.beginPath(); ctx.arc(x, y, rad, 0, Math.PI * 2); ctx.fill(); }
+    for (let i = 0; i < Math.round(6 * dst); i++){ const x = r() * W, y = r() * H, rad = (6 + r() * 8) * u * dz; if (!clear(x, y)) continue; ctx.fillStyle = dc ? col(dc, .8 * dm) : i % 2 ? col(C.line, .7 * dm) : col(C.accent, .85 * dm); star4(x, y, rad); ctx.fill(); }
   }
   // glow + ring (free objects, drawn behind the cover)
   if (on.glow){
@@ -3868,7 +3879,7 @@ function draw(preview = true){
     ctx.fillStyle = col(lineC, .18); ctx.fillRect(X0, Y + 15, X1 - X0, 1); ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(X0, Y + 15.5, 2.6, 0, Math.PI * 2); ctx.fill();
     OB.header = {x0: X0, y0: Y - 14, x1: X1, y1: Y + 19};
   }
-  if (on.side){ const m = CS.meta, SX = (tb.tx && tb.tx.side) || {}, sz2 = (SX.size || 100) / 100, sa = (SX.a ?? 100) / 100, scol = SX.c === 'accent' ? C.accent : SX.c === 'line' ? C.line : C.text, t0 = [titleText(), subText(), m.year].filter(Boolean).join('   —   '), t = SX.upper === false ? t0 : t0.toUpperCase(); ctx.save(); ctx.translate(W - 40, H / 2); ctx.rotate(Math.PI / 2); ctx.font = `500 12px ${INF}`; setLS(2); const tw = Math.min(ctx.measureText(t).width, H - 160); setLS(0); dtext(t.length > 80 ? t.slice(0, 80) + '…' : t, 0, 4, `500 ${11 * sz2}px ${INF}`, col(scol, .45 * sa), 'center', 2 * sz2); ctx.restore(); }
+  if (on.side){ const m = CS.meta, SX = (tb.tx && tb.tx.side) || {}, sz2 = (SX.size || 100) / 100, sa = (SX.a ?? 100) / 100, scol = SX.c === 'accent' ? C.accent : SX.c === 'line' ? C.line : C.text, t0 = tb.sideText || [titleText(), subText(), m.year].filter(Boolean).join('   —   '), t = SX.upper === false ? t0 : t0.toUpperCase(); ctx.save(); ctx.translate(W - 40, H / 2); ctx.rotate(Math.PI / 2); ctx.font = `500 12px ${INF}`; setLS(2); const tw = Math.min(ctx.measureText(t).width, H - 160); setLS(0); dtext(t.length > 80 ? t.slice(0, 80) + '…' : t, 0, 4, `500 ${11 * sz2}px ${INF}`, col(scol, .45 * sa), 'center', 2 * sz2); ctx.restore(); }
   // texts
   // the text column stops before the cover (when the cover sits beside it) and inside the safe margins
   const cb = boxes.cover, GAP = 44 * u, ML = W * .05, MR = W * .95;
@@ -4071,7 +4082,7 @@ $('#tFullReset').onclick = () => {
 const TTXB = {}; // detail-text panels, shown inside each decoration's 조정
 { // detail-text rows (same look as the video page)
   const TTX = [['header','상단 라인',[['headL','왼쪽 문구','비우면 아티스트',40],['headR','오른쪽 문구','비우면 앨범 · 연도',40]], true],
-    ['tags','태그',[['tagText','문구 ( · 로 구분)','',60]], true], ['side','세로 텍스트',[], true],
+    ['tags','태그',[['tagText','문구 ( · 로 구분)','',60]], true], ['side','세로 텍스트',[['sideText','문구','비우면 제목 — 아티스트 — 연도',80]], true], ['target','조준점',[['lockText','첫 줄','비우면 LOCK 01',20],['lockSub','둘째 줄','비우면 좌표',30]], false],
     ['percent','퍼센트',[['pctLabel','라벨','',24]], false], ['progress','재생 바 시간',[], false],
     ['barcode','바코드 번호',[['catalog','번호','비우면 곡 정보의 카탈로그 번호',24]], false], ['bignum','트랙 넘버',[['bignumText','숫자 · 문구','',6]], false]];
   const rngT = (k, lbl, key, min, max, st, fmt) => `<div class="range"><span class="lbl">${lbl}</span><input type="range" min="${min}" max="${max}" step="${st}" data-tbind="tx.${k}.${key}"><output data-tout="tx.${k}.${key}" data-fmt="${fmt}"></output></div>`;
@@ -4101,6 +4112,7 @@ $('[data-fontin="t"]').addEventListener('change', async e => { const f = e.targe
   const BADGE = `<div class="dsub-h"><span>문구</span></div><input class="inp" type="text" data-tbind="badge" maxlength="24" placeholder="비워 두면 안 보여요" aria-label="배지 문구"><div class="sep"></div>`;
   $('#tObjList').innerHTML = `<div class="dlist">${OBJ.map(([k, n]) => `<div class="ditem" data-tkey="${k}"><div class="drow"><span class="dname"><b>${n}</b></span>${pin(k, n)}${adj(k)}
     <label class="sw"><input type="checkbox" data-tbind="on.${k}" aria-label="${n}"><span></span></label></div><div class="dsub np">${k === 'badge' ? BADGE : ''}${TTXB[k] ? `<div class="dsub-h"><span>글씨</span></div>${TTXB[k]}<div class="sep"></div>` : ''}${posSub(k)}</div></div>`).join('')}</div>`;
+  { const P = 'dust', R = tRg; TTXB.dust = `<div class="dsub-h"><span>별가루</span></div>` + R(P + '.amt', '양', 0, 300, 5, 'pct') + R(P + '.stars', '반짝이 별', 0, 400, 10, 'pct') + R(P + '.size', '크기', 40, 250, 5, 'pct') + R(P + '.a', '진하기', 5, 100, 1, 'pct') + `<div class="range"><span class="lbl">색</span><select class="sm" data-tbind="${P}.c" style="grid-column:2 / -1"><option value="auto">자동 (라인색 + 포인트색)</option><option value="line">라인색</option><option value="accent">포인트색</option><option value="text">글자색</option><option value="custom">직접 고르기</option></select></div>` + `<div class="range"><span class="lbl">직접 고른 색</span><div class="color"><input type="color" data-tbind="${P}.color" aria-label="별가루 색"><span data-tout="${P}.color" data-fmt="hex"></span></div></div>`; }
   $('#tFixList').innerHTML = `<div class="dlist">${FIX.map(([k, n]) => `<div class="ditem" data-tkey="${k}"><div class="drow"><span class="dname"><b>${n}</b></span>${TTXB[k] ? adj(k) : ''}
     <label class="sw"><input type="checkbox" data-tbind="on.${k}" aria-label="${n}"><span></span></label></div>${TTXB[k] ? `<div class="dsub np">${TTXB[k]}</div>` : ''}</div>`).join('')}</div>`;
   view.addEventListener('click', e => { const a = e.target.closest('[data-tadj]'); if (a) a.closest('.ditem').classList.toggle('open'); });
