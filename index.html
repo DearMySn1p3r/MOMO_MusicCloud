@@ -221,6 +221,10 @@ input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;bac
 .adj svg{transition:transform .15s}
 .ditem.open .adj svg{transform:rotate(180deg)}
 .dsub{display:none;padding:2px 10px 8px 43px}
+.dsub.np{padding:4px 12px 10px}
+.dsub-h{display:flex;align-items:center;justify-content:space-between;font-size:11px;font-weight:600;color:var(--muted);margin:8px 0 8px}
+.dsub-h:first-child{margin-top:2px}
+.dsub .sep{height:1px;background:var(--line);margin:8px 0}
 .ditem.is-on.open .dsub{display:block}
 .dsub .inp{margin-bottom:9px;height:32px}
 
@@ -729,11 +733,6 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                 </div>
               </div>
               <div class="sec">
-                <div class="sec-h"><h3>세부 글씨</h3><button class="link" id="vTxResetAll">모두 처음으로</button></div>
-                <p class="note">이름을 누르면 문구 · 크기 · 진하기 · 색을 고칠 수 있어요. 싱크율은 효과 탭의 "싱크율", 위·아래 문구는 "HUD 문구"가 켜져 있어야 보여요.</p>
-                <div id="vTxList"></div>
-              </div>
-              <div class="sec">
                 <div class="sec-h"><h3>배치</h3><button class="link" id="vResetAll">전체 위치 초기화</button></div>
                 <p class="note">영상 위 "오브젝트 잠금"을 풀면 커버 · 제목 · 가사 등을 끌어서 옮길 수 있어요. ↺ 를 누르면 그 오브젝트만 원래 자리로 돌아가요.</p>
 <div class="selbox" id="vSelBox" hidden>
@@ -974,11 +973,6 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                 <div id="tObjList"></div>
               </div>
               <div class="sec">
-                <div class="sec-h"><h3>세부 글씨</h3><button class="link" id="tTxResetAll">모두 처음으로</button></div>
-                <p class="note">이름을 누르면 문구 · 크기 · 진하기 · 색을 고칠 수 있어요. 해당 장식이 켜져 있어야 보여요.</p>
-                <div id="tTxList"></div>
-              </div>
-              <div class="sec">
                 <div class="sec-h"><h3>배경 꾸밈</h3></div>
                 <div id="tFixList"></div>
                 <div class="colors4" style="margin-top:10px">
@@ -1098,7 +1092,7 @@ function defaultDesign(){
   const on = {}, pos = {};
   DECOS.forEach(d => { on[d[0]] = false; if (d[4]) pos[d[0]] = {...d[4]}; });
   ['header','globe','sparkle','target','dust','fade','grain','brackets','percent'].forEach(k => on[k] = true);
-  return {intensity:100, on, pos, pin:{}, pct:87, pctLabel:'Sync', prog:36, tagText:'REC · Hi-Fi · Lossless', bignumText:'', fadeColor:'#2b2b31', fadeAmt:82, fadeReach:62, fadeVig:40};
+  return {intensity:100, on, pos, pin:{}, pct:87, pctLabel:'Sync', prog:36, tagText:'REC · Hi-Fi · Lossless', bignumText:'', fadeColor:'#2b2b31', fadeAmt:82, fadeReach:62, fadeVig:40, headL:'', headR:'', sideText:'', tx:{header:{a:100, c:'auto', upper:true, size:100}, side:{a:100, c:'auto', upper:true, size:100}, tags:{a:100, c:'auto', upper:true}, percent:{a:100, c:'auto', upper:true}, barcode:{a:100, c:'auto', upper:true}, progress:{a:100, c:'auto'}, bignum:{a:100, c:'auto'}, explicit:{a:100, c:'auto'}, target:{a:100, c:'auto'}}};
 }
 const DEFAULT_COVER = {bg:'#2b2b31', text:'#f7f5f2', deco:'#ffffff', accent:'#f4a3c6', zoom:1, ox:0, oy:0, adjustOn:false,
   bright:100, contrast:100, sat:100, gray:0, blur:0, opacity:100, tintOn:false, tint:'#f4a3c6', tintAmt:30, tintMode:'soft-light'};
@@ -1336,7 +1330,8 @@ function render(ctx, S, preview){
   const u = S / 1000, C = state.cover, D = state.design, O = D.on, T = state.text, M = state.meta, k = D.intensity / 100;
   const L = T.layout, top = L[0] === 't', bottom = L[0] === 'b';
   const iF = T.infoFont, iW = T.infoWeight;
-  const LN = a => col(C.deco, a * k), AC = a => col(C.accent, a * k), TX = a => col(C.text, a * k);
+  let LN = a => col(C.deco, a * k), AC = a => col(C.accent, a * k), TX = a => col(C.text, a * k);
+  const UPK = (key, str) => (D.tx && D.tx[key] && D.tx[key].upper === false) ? str : str.toUpperCase();
   ctx.save();
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none'; ctx.textBaseline = 'alphabetic';
@@ -1406,7 +1401,12 @@ function render(ctx, S, preview){
     ctx.save(); ctx.translate(p.x * S / 100, p.y * S / 100);
     if (p.r && !NO_ROT.has(key)) ctx.rotate(p.r * Math.PI / 180);
     const sc = u * p.s / 100; ctx.scale(sc, sc);
+    // per-decoration strength / colour (조정 → 진하기 · 색)
+    const X = D.tx && D.tx[key], oL = LN, oA = AC, oT = TX;
+    if (X){ const m = (X.a ?? 100) / 100, ch = X.c === 'text' ? C.text : X.c === 'accent' ? C.accent : X.c === 'line' ? C.deco : null;
+      LN = a => col(ch || C.deco, a * k * m); TX = a => col(ch || C.text, a * k * m); AC = a => col(X.c === 'auto' || !ch ? C.accent : ch, a * k * m); }
     ctx.save(); fn(); ctx.restore();
+    LN = oL; AC = oA; TX = oT;
     if (preview && SEL === key && HIT[key] && HL !== key){
       const [x0, y0, x1, y1] = HIT[key];
       ctx.lineWidth = 2 / sc; ctx.strokeStyle = col(C.accent, 1); ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
@@ -1551,10 +1551,11 @@ function render(ctx, S, preview){
   }
 
   if (O.header){
-    setFont(ctx, iW, 12.5 * u, iF);
-    const left = (M.label || M.artist || '').toUpperCase(), right = [M.album, M.year].filter(Boolean).join('  ·  ').toUpperCase();
+    const HX = (D.tx && D.tx.header) || {}, hz = (HX.size || 100) / 100, hm = (HX.a ?? 100) / 100, hcol = HX.c === 'accent' ? C.accent : HX.c === 'line' ? C.deco : HX.c === 'text' ? C.text : null;
+    setFont(ctx, iW, 12.5 * u * hz, iF);
+    const left = UPK('header', D.headL || M.label || M.artist || ''), right = UPK('header', D.headR || [M.album, M.year].filter(Boolean).join('  ·  '));
     need(iF, iW, left + right);
-    ctx.fillStyle = TX(.75);
+    ctx.fillStyle = hcol ? col(hcol, .75 * k * hm) : TX(.75 * hm);
     drawT(ctx, left, 80*u, 84*u, 1.4*u, 'left');
     drawT(ctx, right, S - 80*u, 84*u, 1.4*u, 'right');
     ctx.fillStyle = LN(.2); ctx.fillRect(80*u, 102*u, S - 160*u, Math.max(1, u));
@@ -1562,17 +1563,18 @@ function render(ctx, S, preview){
   }
 
   if (O.side){
-    const t = [M.title, M.artist, M.year].filter(Boolean).join('   —   ').toUpperCase();
-    setFont(ctx, iW, 10.5 * u, iF); need(iF, iW, t);
+    const SX = (D.tx && D.tx.side) || {}, sz = (SX.size || 100) / 100, sm = (SX.a ?? 100) / 100, scol = SX.c === 'accent' ? C.accent : SX.c === 'line' ? C.deco : SX.c === 'text' ? C.text : null;
+    const t = UPK('side', D.sideText || [M.title, M.artist, M.year].filter(Boolean).join('   —   '));
+    setFont(ctx, iW, 10.5 * u * sz, iF); need(iF, iW, t);
     ctx.save(); ctx.translate(S - 64*u, S/2); ctx.rotate(Math.PI / 2);
-    ctx.fillStyle = TX(.5); drawT(ctx, t, 0, 3.5*u, 1.6*u, 'center'); ctx.restore();
+    ctx.fillStyle = scol ? col(scol, .5 * k * sm) : TX(.5 * sm); drawT(ctx, t, 0, 3.5*u, 1.6*u * sz, 'center'); ctx.restore();
   }
 
   drawTextBlock(ctx, S);
 
   deco('percent', () => {
     const v = Math.round(D.pct);
-    setFont(ctx, iW, 11, iF); const lab = (D.pctLabel || '').toUpperCase(); need(iF, iW, lab);
+    setFont(ctx, iW, 11, iF); const lab = UPK('percent', D.pctLabel || ''); need(iF, iW, lab);
     ctx.fillStyle = LN(.7); drawT(ctx, lab, 0, 0, 2.2, 'left');
     setFont(ctx, '700', 54, iF); need(iF, '700', v + '%');
     ctx.fillStyle = TX(1); const w = drawT(ctx, String(v), 0, 56, -1, 'left');
@@ -1585,7 +1587,7 @@ function render(ctx, S, preview){
     setFont(ctx, iW, 11, iF); need(iF, iW, items.join('').toUpperCase());
     let x = 0;
     items.forEach((t, i) => {
-      t = t.toUpperCase(); const tw = textW(ctx, t, 1.6), dot = i === 0 ? 12 : 0, w = tw + 22 + dot;
+      t = UPK('tags', t); const tw = textW(ctx, t, 1.6), dot = i === 0 ? 12 : 0, w = tw + 22 + dot;
       rr(ctx, x, -16, w, 24, 12); ctx.strokeStyle = LN(.75); ctx.lineWidth = 1; ctx.stroke();
       if (i === 0){ ctx.fillStyle = AC(1); ctx.beginPath(); ctx.arc(x + 13, -4, 3.5, 0, Math.PI * 2); ctx.fill(); }
       ctx.fillStyle = TX(.9); drawT(ctx, t, x + 11 + dot, 0, 1.6, 'left');
@@ -1615,7 +1617,7 @@ function render(ctx, S, preview){
     const bw = 130, bh = 36, r = rng(hash(M.catalog || M.title)); let cx = -bw;
     ctx.fillStyle = TX(.85);
     while (cx < 0){ const w = (r() < .55 ? 1 : r() < .75 ? 2 : 3) * 1.3; if (r() > .38) ctx.fillRect(cx, -16 - bh, Math.min(w, -cx), bh); cx += w + 1.3; }
-    setFont(ctx, iW, 9.5, iF); const ct = (M.catalog || '').toUpperCase(); need(iF, iW, ct);
+    setFont(ctx, iW, 9.5, iF); const ct = UPK('barcode', M.catalog || ''); need(iF, iW, ct);
     ctx.fillStyle = TX(.65); drawT(ctx, ct, -bw, 0, 2, 'left');
   });
 
@@ -1716,6 +1718,19 @@ function buildMeta(){
 function buildFonts(){
   $$('.font-select').forEach(sel => { sel.innerHTML = FONTS.map(([f,, lab]) => `<option value="${esc(f)}">${esc(lab || f)}</option>`).join(''); });
 }
+// decorations that carry words: what can be adjusted in their 조정 panel
+const CTX_ROWS = {header:[['headL', '왼쪽 문구 (비우면 아티스트)'], ['headR', '오른쪽 문구 (비우면 앨범 · 연도)']], side:[['sideText', '문구 (비우면 제목 — 아티스트 — 연도)']], tags:[], percent:[], barcode:[], progress:[], bignum:[], explicit:[], target:[]};
+function ctxSub(k){
+  if (!CTX_ROWS[k]) return '';
+  const rg = (path, lab, min, max, step, fmt) => `<div class="range"><span class="lbl">${lab}</span><input type="range" min="${min}" max="${max}" step="${step}" data-bind="${path}"><output data-out="${path}" data-fmt="${fmt}"></output></div>`;
+  const d = defaultDesign().tx[k];
+  let h = CTX_ROWS[k].map(([f, lab]) => `<input class="inp" type="text" data-bind="design.${f}" placeholder="${lab}" aria-label="${lab}">`).join('');
+  if ('size' in d) h += rg(`design.tx.${k}.size`, '글자 크기', 50, 220, 1, 'pct');
+  h += rg(`design.tx.${k}.a`, '진하기', 5, k === 'bignum' ? 400 : 100, 1, 'pct');
+  h += `<div class="range"><span class="lbl">색</span><select class="sm" data-bind="design.tx.${k}.c" style="grid-column:2 / -1"><option value="auto">자동</option><option value="text">글자색</option><option value="accent">포인트색</option><option value="line">라인색</option></select></div>`;
+  if ('upper' in d) h += `<div class="range"><span class="lbl">영문 대문자</span><label class="sw" style="grid-column:2 / -1"><input type="checkbox" data-bind="design.tx.${k}.upper" aria-label="영문 대문자"><span></span></label></div>`;
+  return h;
+}
 function buildDecos(){
   const groups = {};
   DECOS.forEach(d => (groups[d[3]] = groups[d[3]] || []).push(d));
@@ -1728,13 +1743,14 @@ function buildDecos(){
           <span class="dname"><b>${n}</b><small>${desc}</small></span>
           ${pos ? `<button class="pin" data-dpin="${k}" title="고정" aria-label="${n} 고정"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5 13.5 6l-2.5 1-2.5 3.5.5 2.5L3 7.5l2.5.5L9 5.5z"/><path d="M5.5 10.5 2.5 13.5"/></svg></button>` : ''}
           ${pos ? `<button class="rst" data-posreset="${k}" title="위치 초기화" aria-label="${n} 위치 초기화"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 8a5.5 5.5 0 1 0 1.8-4.1"/><path d="M2.5 2.5v3h3"/></svg></button>` : ''}
-          ${pos || extra ? `<button class="adj" data-adj="${k}">조정 <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m2 3.5 3 3 3-3"/></svg></button>` : ''}
+          ${pos || extra || CTX_ROWS[k] ? `<button class="adj" data-adj="${k}">조정 <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m2 3.5 3 3 3-3"/></svg></button>` : ''}
           <label class="sw"><input type="checkbox" data-bind="design.on.${k}" aria-label="${n}"><span></span></label>
         </div>
-        ${pos || extra ? `<div class="dsub">
+        ${pos || extra || CTX_ROWS[k] ? `<div class="dsub">
           ${(extra || []).map(([f, lab, type, a, b, st]) => type === 'range' ? rg(`design.${f}`, lab, a, b, st, k === 'fade' ? 'pct' : 'int')
             : type === 'color' ? `<div class="range"><span class="lbl">${lab}</span><div class="color"><input type="color" data-bind="design.${f}" aria-label="${lab}"><span data-out="design.${f}" data-fmt="hex"></span></div><button class="link" data-fadebg title="배경색과 똑같이">배경색</button></div>`
             : `<input class="inp" type="text" data-bind="design.${f}" placeholder="${lab}" aria-label="${lab}">`).join('')}
+          ${ctxSub(k)}
           ${pos ? rg(`design.pos.${k}.x`, '가로', 0, 100, .5, 'int') + rg(`design.pos.${k}.y`, '세로', 0, 100, .5, 'int') + rg(`design.pos.${k}.s`, '크기', 30, 260, 1, 'pct') + (NO_ROT.has(k) ? '' : rg(`design.pos.${k}.r`, '회전', -180, 180, 1, 'deg')) : ''}
           ${pos ? `<button class="link" data-posreset="${k}" style="margin-bottom:4px">위치 초기화</button>` : ''}
         </div>` : ''}
@@ -2377,7 +2393,7 @@ const FX = [
   ['orbit','회전 궤도','커버 주위를 도는 타원'],
   ['reticle','움직이는 조준점','커버 위를 떠다니는 레티클'],
   ['globe','회전 지구본','와이어프레임 구체'],
-  ['hud','화면 문구','모서리 문구 (스타일 탭에서 수정)'],
+  ['hud','화면 문구','모서리 문구 (조정에서 문구 수정)'],
   ['spin','레코드 회전','원형 커버일 때 천천히 회전'],
   ['beat','비트 줌','저음에 맞춰 커버가 커짐'],
   ['glow','비트 글로우','커버 뒤에 번지는 빛'],
@@ -2414,6 +2430,7 @@ const getV = p => p.split('.').reduce((o, k) => o == null ? o : o[k], vs);
 // video song info: what was typed / read from the song first, then the album-cover page (without its placeholder text)
 const PLACEHOLDER = {title:'Untitled Track', artist:'Artist Name', album:'Album Title'};
 const VM = () => { const o = {}; ['title', 'artist', 'album', 'year'].forEach(k => { const own = String(vs.meta[k] || '').trim(), c = String(CS.meta[k] || '').trim(); o[k] = own || (c && c !== PLACEHOLDER[k] ? c : ''); }); return o; };
+const VTXB = {}; // detail-text panels, shown inside each object's 조정
 { // detail-text editor rows
   const rng = (k, lbl, key, min, max, step, fmt) => `<div class="range"><span class="lbl">${lbl}</span><input type="range" min="${min}" max="${max}" step="${step}" data-vbind="tx.${k}.${key}"><output data-vout="tx.${k}.${key}" data-fmt="${fmt}"></output></div>`;
   const body = ([k,, lab, max]) => {
@@ -2430,9 +2447,7 @@ const VM = () => { const o = {}; ['title', 'artist', 'album', 'year'].forEach(k 
     if ('upper' in d) h += `<div class="field"><label>영문 대문자</label><label class="sw" style="margin-top:6px"><input type="checkbox" data-vbind="tx.${k}.upper"><span></span></label></div>`;
     return h + '</div>';
   };
-  $('#vTxList').innerHTML = `<div class="dlist">${TXK.map(r => `<div class="ditem" data-vtx="${r[0]}"><div class="drow"><span class="dname" role="button" tabindex="0"><b>${r[1]}</b></span>
-    <label class="sw"><input type="checkbox" data-vbind="tx.${r[0]}.on" aria-label="${r[1]}"><span></span></label></div><div class="txbody" hidden>${body(r)}</div></div>`).join('')}</div>`;
-  $('#vTxList').addEventListener('click', e => { const n = e.target.closest('.dname'); if (!n) return; const b = n.closest('.ditem').querySelector('.txbody'); b.hidden = !b.hidden; n.closest('.ditem').classList.toggle('open', !b.hidden); });
+  TXK.forEach(r => { VTXB[r[0]] = `<div class="dsub-h"><span>${r[1]}</span><label class="sw"><input type="checkbox" data-vbind="tx.${r[0]}.on" aria-label="${r[1]} 보이기"><span></span></label></div>` + body(r).replace('<div class="txbody" hidden', '<div'); });
 }
 function metaFromSong(tag, fileName){
   const T = (tag && tag.text) || {}, base = String(fileName || '').replace(/\.[^.]+$/, '');
@@ -3267,7 +3282,12 @@ $('#vLockObj').onclick = () => { vs.lockObj = !vs.lockObj; lockUI(); toast(vs.lo
 $('#vGrid').onclick = () => { vs.grid = !vs.grid; lockUI(); };
 $('#vSnap').onclick = () => { vs.snap = !vs.snap; lockUI(); toast(vs.snap ? '자석 맞춤을 켰어요' : '자석 맞춤을 껐어요'); };
 const vRowBtns = (k, n) => `<button class="pin" data-vpin="${k}" title="고정" aria-label="${n} 고정"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5 13.5 6l-2.5 1-2.5 3.5.5 2.5L3 7.5l2.5.5L9 5.5z"/><path d="M5.5 10.5 2.5 13.5"/></svg></button><button class="rst" data-vreset="${k}" title="위치 초기화" aria-label="${n} 위치 초기화"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 8a5.5 5.5 0 1 0 1.8-4.1"/><path d="M2.5 2.5v3h3"/></svg></button>`;
-$('#vObjList').innerHTML = `<div class="dlist">${OBJ.map(([k, n]) => `<div class="ditem is-on" data-vobj="${k}"><div class="drow"><span class="dname"><b>${n}</b></span>${vRowBtns(k, n)}</div></div>`).join('')}</div>`;
+const vRg = (path, lab, min, max, step, fmt) => `<div class="range"><span class="lbl">${lab}</span><input type="range" min="${min}" max="${max}" step="${step}" data-vbind="${path}"><output data-vout="${path}" data-fmt="${fmt}"></output></div>`;
+const vPosSub = k => `<div class="dsub-h"><span>위치</span></div>` + vRg(`off.${k}.dx`, '가로', -.5, .5, .005, 'off') + vRg(`off.${k}.dy`, '세로', -.5, .5, .005, 'off') + vRg(`rot.${k}`, '회전', -180, 180, 1, 'deg') + `<button class="link" data-vreset="${k}" style="margin-bottom:4px">위치 초기화</button>`;
+const V_OBJ_TX = {title:['sub'], time:['time'], progress:['prog'], sync:['tr', 'sv']}, V_FX_TX = {sync:['tr', 'sv'], progress:['prog'], hud:['tl', 'bl', 'cap']};
+const vAdj = k => `<button class="adj" data-vadj="${k}">조정 <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m2 3.5 3 3 3-3"/></svg></button>`;
+$('#vObjList').innerHTML = `<div class="dlist">${OBJ.map(([k, n]) => `<div class="ditem is-on" data-vobj="${k}"><div class="drow"><span class="dname"><b>${n}</b></span>${vRowBtns(k, n)}${vAdj(k)}</div><div class="dsub np">${(V_OBJ_TX[k] || []).map(x => VTXB[x] || '').join('<div class="sep"></div>')}${(V_OBJ_TX[k] || []).length ? '<div class="sep"></div>' : ''}${vPosSub(k)}</div></div>`).join('')}</div>`;
+view.addEventListener('click', e => { const a = e.target.closest('[data-vadj]'); if (a) a.closest('.ditem').classList.toggle('open'); });
 function pinUI(){ $$('[data-vpin]', view).forEach(b => { const on = !!vs.pin[b.dataset.vpin]; b.classList.toggle('pinned', on); b.title = on ? '고정 풀기' : '고정'; }); }
 view.addEventListener('click', e => {
   const r = e.target.closest('[data-vreset]'); if (r){ vs.off[r.dataset.vreset] = {dx:0, dy:0}; toast(OBJ.find(o => o[0] === r.dataset.vreset)[1] + ' 위치를 처음으로 되돌렸어요'); }
@@ -3338,10 +3358,10 @@ $('#vRecCancel').onclick = () => stopRecord(true);
 
 /* ---------- UI ---------- */
 $('#vFxList').innerHTML = `<div class="dlist">${FX.map(([k, n, d]) => `
-  <div class="ditem" data-vfx="${k}"><div class="drow"><span class="dname"><b>${n}</b><small>${d}</small></span>${FX_MOVE.has(k) ? vRowBtns(k, n) : ''}
-  <label class="sw"><input type="checkbox" data-vbind="fx.${k}" aria-label="${n}"><span></span></label></div></div>`).join('')}</div>`;
+  <div class="ditem" data-vfx="${k}"><div class="drow"><span class="dname"><b>${n}</b><small>${d}</small></span>${FX_MOVE.has(k) ? vRowBtns(k, n) : ''}${V_FX_TX[k] || FX_MOVE.has(k) ? vAdj(k) : ''}
+  <label class="sw"><input type="checkbox" data-vbind="fx.${k}" aria-label="${n}"><span></span></label></div>${V_FX_TX[k] || FX_MOVE.has(k) ? `<div class="dsub np">${(V_FX_TX[k] || []).map(x => VTXB[x] || '').join('<div class="sep"></div>')}${V_FX_TX[k] && FX_MOVE.has(k) ? '<div class="sep"></div>' : ''}${FX_MOVE.has(k) ? vPosSub(k) : ''}</div>` : ''}</div>`).join('')}</div>`;
 $('#vFont').innerHTML = (M.FONTS || []).map(([f,, lab]) => `<option value="${f}">${lab || f}</option>`).join('');
-const VFMT = {int: v => String(Math.round(v * 10) / 10), pct: v => Math.round(v) + '%', hex: v => String(v).toUpperCase(), sec: v => (v > 0 ? '+' : '') + (+v).toFixed(1) + 's'};
+const VFMT = {off: v => (v > 0 ? '+' : '') + Math.round(v * 100), deg: v => Math.round(v) + '°', int: v => String(Math.round(v * 10) / 10), pct: v => Math.round(v) + '%', hex: v => String(v).toUpperCase(), sec: v => (v > 0 ? '+' : '') + (+v).toFixed(1) + 's'};
 function syncUI(){
   $$('[data-vbind]', view).forEach(el => { const v = getV(el.dataset.vbind); if (el.type === 'checkbox') el.checked = !!v; else if (document.activeElement !== el || el.type === 'range' || el.type === 'color') el.value = v ?? ''; });
   $$('[data-vout]', view).forEach(o => { const f = VFMT[o.dataset.fmt] || (v => v); o.textContent = f(getV(o.dataset.vout)); });
@@ -3476,7 +3496,7 @@ $('#vFullReset').onclick = () => {
   sel = null; refreshCover(); syncUI(); loadFonts();
   toast('영상 꾸밈 · 글자 · 색을 처음 상태로 되돌렸어요 · Ctrl+Z로 되돌릴 수 있어요');
 };
-$('#vTxResetAll').onclick = () => { vs.tx = JSON.parse(JSON.stringify(TXD)); ['tl', 'tr', 'bl', 'cap'].forEach(k => vs.labels[k] = VDEF.labels[k]); syncUI(); loadFonts(); toast('세부 글씨를 모두 처음으로 되돌렸어요'); };
+if ($('#vTxResetAll')) $('#vTxResetAll').onclick = () => { vs.tx = JSON.parse(JSON.stringify(TXD)); ['tl', 'tr', 'bl', 'cap'].forEach(k => vs.labels[k] = VDEF.labels[k]); syncUI(); loadFonts(); toast('세부 글씨를 모두 처음으로 되돌렸어요'); };
 setSize(false); syncUI(); lockUI(); refreshCover(); frame();
 (async () => {
   try { await M.ready; } catch(e){}
@@ -3974,9 +3994,9 @@ $('#tObjList').innerHTML = `<div class="dlist">${OBJ.map(([k, n]) => `<div class
   <label class="sw"><input type="checkbox" data-tbind="on.${k}" aria-label="${n}"><span></span></label></div></div>`).join('')}</div>`;
 $('#tFixList').innerHTML = `<div class="dlist">${FIX.map(([k, n]) => `<div class="ditem" data-tkey="${k}"><div class="drow"><span class="dname"><b>${n}</b></span>
   <label class="sw"><input type="checkbox" data-tbind="on.${k}" aria-label="${n}"><span></span></label></div></div>`).join('')}</div>`;
-const TF = {pct: v => Math.round(v) + '%', hex: v => String(v).toUpperCase(), int: v => String(Math.round(v * 10) / 10), deg: v => (+v).toFixed(1) + '°'};
+const TF = {pct: v => Math.round(v) + '%', hex: v => String(v).toUpperCase(), int: v => String(Math.round(v * 10) / 10), deg: v => (+v || 0).toFixed(1) + '°'};
 function syncUI(){
-  $$('[data-tbind]', view).forEach(el => { const v = getT(el.dataset.tbind); if (el.type === 'checkbox') el.checked = !!v; else if (document.activeElement !== el || el.type === 'range' || el.type === 'color') el.value = v ?? ''; });
+  $$('[data-tbind]', view).forEach(el => { let v = getT(el.dataset.tbind); if (v == null && /\.r$/.test(el.dataset.tbind)) v = 0; if (el.type === 'checkbox') el.checked = !!v; else if (document.activeElement !== el || el.type === 'range' || el.type === 'color') el.value = v ?? ''; });
   $$('[data-tout]', view).forEach(o => o.textContent = (TF[o.dataset.fmt] || (v => v))(getT(o.dataset.tout)));
   $$('[data-tset]', view).forEach(b => b.classList.toggle('on', String(getT(b.dataset.tset)) === b.dataset.val));
   $$('[data-tpreset]', view).forEach(b => b.classList.toggle('on', tb.preset === b.dataset.tpreset));
@@ -4048,6 +4068,7 @@ $('#tFullReset').onclick = () => {
   sel = null; hover = null; refreshCover(); syncUI(); loadFonts(); sched();
   toast(`'${PRESETS[tb.preset].name}' 처음 상태로 되돌렸어요 (색 포함) · Ctrl+Z로 되돌릴 수 있어요`);
 };
+const TTXB = {}; // detail-text panels, shown inside each decoration's 조정
 { // detail-text rows (same look as the video page)
   const TTX = [['header','상단 라인',[['headL','왼쪽 문구','비우면 아티스트',40],['headR','오른쪽 문구','비우면 앨범 · 연도',40]], true],
     ['tags','태그',[['tagText','문구 ( · 로 구분)','',60]], true], ['side','세로 텍스트',[], true],
@@ -4064,15 +4085,26 @@ $('#tFullReset').onclick = () => {
     if ('upper' in TDEF.tx[k]) h += `<div class="field"><label>영문 대문자</label><label class="sw" style="margin-top:6px"><input type="checkbox" data-tbind="tx.${k}.upper"><span></span></label></div>`;
     return h + '</div>';
   };
-  const onKey = k => k === 'header' || k === 'side' ? k : k;
-  $('#tTxList').innerHTML = `<div class="dlist">${TTX.map(r => `<div class="ditem" data-ttx="${r[0]}"><div class="drow"><span class="dname" role="button" tabindex="0"><b>${r[1]}</b></span>
-    <label class="sw"><input type="checkbox" data-tbind="on.${onKey(r[0])}" aria-label="${r[1]}"><span></span></label></div><div class="txbody" hidden>${body(r)}</div></div>`).join('')}</div>`;
-  $('#tTxList').addEventListener('click', e => { const n = e.target.closest('.dname'); if (!n) return; const b = n.closest('.ditem').querySelector('.txbody'); b.hidden = !b.hidden; n.closest('.ditem').classList.toggle('open', !b.hidden); });
-  $('#tTxResetAll').onclick = () => { if (M.EDITORS.thumb) M.EDITORS.thumb.checkpoint(); tb.tx = JSON.parse(JSON.stringify(TDEF.tx)); ['headL', 'headR', 'tagText', 'pctLabel', 'bignumText', 'catalog', 'pct', 'prog'].forEach(k => tb[k] = TDEF[k]); syncUI(); sched(); toast('세부 글씨를 모두 처음으로 되돌렸어요'); };
+  TTX.forEach(r => { TTXB[r[0]] = body(r); });
+  if ($('#tTxResetAll')) $('#tTxResetAll').onclick = () => { if (M.EDITORS.thumb) M.EDITORS.thumb.checkpoint(); tb.tx = JSON.parse(JSON.stringify(TDEF.tx)); ['headL', 'headR', 'tagText', 'pctLabel', 'bignumText', 'catalog', 'pct', 'prog'].forEach(k => tb[k] = TDEF[k]); syncUI(); sched(); toast('세부 글씨를 모두 처음으로 되돌렸어요'); };
 }
 const tFillFonts = () => { const cur = tb.font; $('#tFont').innerHTML = (M.FONTS || []).map(([f,, lab]) => `<option value="${f}">${lab || f}</option>`).join(''); $('#tFont').value = cur; };
 document.addEventListener('mmc-fonts', tFillFonts);
 $('[data-fontin="t"]').addEventListener('change', async e => { const f = e.target.files[0]; e.target.value = ''; if (!f || !M.addUserFont) return; try { const name = await M.addUserFont(f); tFillFonts(); tb.font = name; syncUI(); loadFonts(); sched(); toast('폰트를 추가하고 썸네일 글자에 적용했어요'); } catch(err){ toast('폰트 파일을 읽을 수 없어요'); } });
+{
+  const tRg = (path, lab, min, max, step, fmt) => `<div class="range"><span class="lbl">${lab}</span><input type="range" min="${min}" max="${max}" step="${step}" data-tbind="${path}"><output data-tout="${path}" data-fmt="${fmt}"></output></div>`;
+  const posSub = k => `<div class="dsub-h"><span>위치</span></div>` + tRg(`o.${k}.x`, '가로', 0, 100, .5, 'int') + tRg(`o.${k}.y`, '세로', 0, 100, .5, 'int') + (k === 'title' || k === 'sub' ? '' : tRg(`o.${k}.s`, '크기', 30, 260, 1, 'pct'))
+    + (k === 'panel' ? tRg('o.panel.w', '너비', 10, 100, .5, 'int') + tRg('o.panel.h', '높이', 10, 100, .5, 'int') : '') + (k === 'cover' ? tRg('tilt', '회전', -20, 20, .5, 'deg') : k === 'panel' ? '' : tRg(`o.${k}.r`, '회전', -180, 180, 1, 'deg'))
+    + `<button class="link" data-treset="${k}" style="margin-bottom:4px">위치 초기화</button>`;
+  const adj = k => `<button class="adj" data-tadj="${k}">조정 <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m2 3.5 3 3 3-3"/></svg></button>`;
+  const pin = (k, n) => `<button class="pin" data-tpin="${k}" title="고정" aria-label="${n} 고정"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5 13.5 6l-2.5 1-2.5 3.5.5 2.5L3 7.5l2.5.5L9 5.5z"/><path d="M5.5 10.5 2.5 13.5"/></svg></button><button class="rst" data-treset="${k}" title="위치 초기화" aria-label="${n} 위치 초기화">${RST}</button>`;
+  const BADGE = `<div class="dsub-h"><span>문구</span></div><input class="inp" type="text" data-tbind="badge" maxlength="24" placeholder="비워 두면 안 보여요" aria-label="배지 문구"><div class="sep"></div>`;
+  $('#tObjList').innerHTML = `<div class="dlist">${OBJ.map(([k, n]) => `<div class="ditem" data-tkey="${k}"><div class="drow"><span class="dname"><b>${n}</b></span>${pin(k, n)}${adj(k)}
+    <label class="sw"><input type="checkbox" data-tbind="on.${k}" aria-label="${n}"><span></span></label></div><div class="dsub np">${k === 'badge' ? BADGE : ''}${TTXB[k] ? `<div class="dsub-h"><span>글씨</span></div>${TTXB[k]}<div class="sep"></div>` : ''}${posSub(k)}</div></div>`).join('')}</div>`;
+  $('#tFixList').innerHTML = `<div class="dlist">${FIX.map(([k, n]) => `<div class="ditem" data-tkey="${k}"><div class="drow"><span class="dname"><b>${n}</b></span>${TTXB[k] ? adj(k) : ''}
+    <label class="sw"><input type="checkbox" data-tbind="on.${k}" aria-label="${n}"><span></span></label></div>${TTXB[k] ? `<div class="dsub np">${TTXB[k]}</div>` : ''}</div>`).join('')}</div>`;
+  view.addEventListener('click', e => { const a = e.target.closest('[data-tadj]'); if (a) a.closest('.ditem').classList.toggle('open'); });
+}
 $('#tColorsFromCover').onclick = () => { Object.assign(tb.colors, {bg: CS.cover.bg, accent: CS.cover.accent}); syncUI(); sched(); toast('앨범 커버의 배경색 · 포인트색을 가져왔어요'); };
 $('#tCsAccent').onclick = () => { tb.cshadow.color = tb.colors.accent; tb.cshadow.on = true; syncUI(); sched(); toast('그림자를 포인트색으로 바꿨어요'); };
 $('#tCsBg').onclick = () => { tb.cshadow.color = tb.colors.bg; tb.cshadow.on = true; syncUI(); sched(); toast('그림자를 배경색으로 바꿨어요'); };
