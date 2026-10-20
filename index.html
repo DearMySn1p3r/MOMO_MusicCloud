@@ -830,6 +830,9 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                 <div class="sec-h"><h3>보기</h3></div>
                 <div class="range"><span class="lbl">가사 크기</span><input type="range" min="50" max="180" step="1" data-vbind="lyricSize"><output data-vout="lyricSize" data-fmt="pct"></output></div>
                 <div class="range"><span class="lbl">싱크 보정</span><input type="range" min="-3" max="3" step="0.1" data-vbind="lyricOffset"><output data-vout="lyricOffset" data-fmt="sec"></output></div>
+                <div class="sec-h" style="margin:4px 0 8px"><span>2줄 가사 (원문 + 번역)</span><label class="sw"><input type="checkbox" data-vbind="lyricPair" aria-label="2줄 가사"><span></span></label></div>
+                <div class="range" id="vSubSizeRow"><span class="lbl">아래 줄 크기</span><input type="range" min="35" max="100" step="1" data-vbind="subSize"><output data-vout="subSize" data-fmt="pct"></output></div>
+                <p class="note">2줄 가사를 켜면 원문과 번역을 한 줄씩 번갈아 적은 가사가 두 줄씩 묶여서 같이 나와요. 탭 싱크도 두 줄을 한 번에 맞춰요.</p>
                 <p class="note">탭 싱크: 곡이 처음부터 재생되면, 각 줄을 부르기 시작할 때 스페이스바를 누르세요. 끝까지 가면 시간이 저장돼요.</p>
               </div>
             </div>
@@ -2793,7 +2796,7 @@ const vs = {
   tx:JSON.parse(JSON.stringify(TXD)),
   res:'1920x1080', fps:30, template:'minimal', coverSrc:'cover', coverShape:'square', bgMode:'cover', bgDim:62,
   colors:{bg:CS.cover.bg, text:CS.cover.text, line:CS.cover.deco, accent:CS.cover.accent},
-  labels:{tl:'Now Playing', tr:'Sync Rate', bl:'Audio Online · MMC-001', cap:'Artwork // MMC-001'}, font:'Paperlogy', titleSize:100, showTitle:true, sens:100, speed:100, lyricSize:100, lyricOffset:0,
+  labels:{tl:'Now Playing', tr:'Sync Rate', bl:'Audio Online · MMC-001', cap:'Artwork // MMC-001'}, font:'Paperlogy', titleSize:100, showTitle:true, sens:100, speed:100, lyricSize:100, lyricOffset:0, lyricPair:false, subSize:62,
   fx:{spectrum:true, ring:true, eq:true, sync:false, particles:true, sparkle:true, orbit:false, reticle:false, globe:false, hud:true, spin:true, beat:true, glow:true, progress:true, brackets:false, vignette:true, grain:true, lyrics:true},
   off:Object.fromEntries(OBJ.map(([k]) => [k, {dx:0, dy:0}])),
   lockObj:true, grid:false, snap:true, pin:{}, rot:Object.fromEntries(OBJ.map(([k]) => [k, 0])),
@@ -2993,23 +2996,33 @@ function drawFit(src, W, H, zoom){
 }
 
 /* ---------- lyrics ---------- */
-let lyr = []; // {t, text}
+let lyr = []; // {t, text, sub}  sub = the second line (translation) in 2-line mode
 const LRC_TAG = /\[(\d{1,3}):(\d{1,2})(?:[.:](\d{1,3}))?\]/g;
 function parseLyrics(src){
-  const out = [];
+  const lines = [];
   for (const raw of String(src).split(/\r?\n/)){
     if (/^\s*\[(ar|ti|al|by|offset|length|re|ve):/i.test(raw)) continue;
     const tags = [...raw.matchAll(LRC_TAG)], text = raw.replace(LRC_TAG, '').trim();
-    if (!text && !tags.length) continue;
-    if (tags.length) tags.forEach(m => out.push({t: +m[1] * 60 + +m[2] + (m[3] ? +('0.' + m[3].padEnd(3, '0')) : 0), text}));
-    else out.push({t: null, text});
+    if (!text) continue;
+    lines.push({ts: tags.map(m => +m[1] * 60 + +m[2] + (m[3] ? +('0.' + m[3].padEnd(3, '0')) : 0)), text});
   }
+  // 2-line mode: a line and the one after it belong together (the second has the same time, or no time)
+  const same = (a, b) => a.length === b.length && a.every((v, i) => Math.abs(v - b[i]) < .005);
+  const groups = [];
+  for (let i = 0; i < lines.length; i++){
+    const a = lines[i], b = lines[i + 1];
+    if (vs.lyricPair && b && (!b.ts.length || same(a.ts, b.ts))){ groups.push({ts: a.ts, text: a.text, sub: b.text}); i++; }
+    else groups.push({ts: a.ts, text: a.text, sub: ''});
+  }
+  const out = [];
+  groups.forEach(g => { if (g.ts.length) g.ts.forEach(t => out.push({t, text: g.text, sub: g.sub})); else out.push({t: null, text: g.text, sub: g.sub}); });
   if (out.some(l => l.t != null)) out.sort((a, b) => (a.t ?? 1e9) - (b.t ?? 1e9));
   return out.filter(l => l.text);
 }
-function writeLyrics(){ $('#vLyrics').value = lyr.map(l => (l.t != null ? lrcTime(l.t) + ' ' : '') + l.text).join('\n'); lyrStat(); }
+function writeLyrics(){ $('#vLyrics').value = lyr.map(l => { const tg = l.t != null ? lrcTime(l.t) + ' ' : ''; return tg + l.text + (l.sub ? '\n' + tg + l.sub : ''); }).join('\n'); lyrStat(); }
 function lyrStat(){
   const timed = lyr.filter(l => l.t != null).length;
+  if (vs.lyricPair && lyr.length){ $('#vLyrStat').textContent = `2줄 가사 ${lyr.length}묶음 · ` + (timed === lyr.length ? '모든 묶음에 시간이 있어요' : timed ? `${timed}묶음에 시간이 있어요` : '아직 시간이 없어요 (탭 싱크로 맞춰 주세요)'); return; }
   $('#vLyrStat').textContent = !lyr.length ? '' : timed === lyr.length ? `${lyr.length}줄 · 모든 줄에 시간이 있어요` : timed ? `${lyr.length}줄 중 ${timed}줄에 시간이 있어요` : `${lyr.length}줄 · 아직 시간이 없어요 (탭 싱크로 맞춰 주세요)`;
 }
 $('#vLyrics').addEventListener('input', () => { lyr = parseLyrics($('#vLyrics').value); lyrStat(); loadFonts(); });
@@ -3040,13 +3053,15 @@ $('#vSongLyrics').onclick = async () => {
 // song loaded on the album-cover page and no song of its own here → use its lyrics when the box is empty
 $$('.nav-item').forEach(n => n.addEventListener('click', () => { if (n.dataset.view === 'video' && !ownUrl && M.AU && M.AU.tag && !$('#vLyrics').value.trim()){ const r = offerSongLyrics(M.AU.tag); if (r === 'synced' || r === 'plain') toast('앨범 커버 탭 노래의 가사를 가져왔어요'); } }));
 let lyrIdx = -1, lyrChanged = 0;
+let lyrPairSeen = null;
 function currentLyric(time){
+  if (lyrPairSeen !== !!vs.lyricPair){ lyrPairSeen = !!vs.lyricPair; lyr = parseLyrics($('#vLyrics').value); lyrStat(); }
   const timed = lyr.filter(l => l.t != null);
   if (!timed.length) return null;
   const tt = time + vs.lyricOffset; let idx = -1;
   for (let i = 0; i < timed.length; i++){ if (timed[i].t <= tt) idx = i; else break; }
   if (idx !== lyrIdx){ lyrIdx = idx; lyrChanged = nowMs(); }
-  return {prev: idx > 0 ? timed[idx - 1].text : '', cur: idx >= 0 ? timed[idx].text : '', next: timed[idx + 1] ? timed[idx + 1].text : '', fade: Math.min(1, (nowMs() - lyrChanged) / 380)};
+  return {prev: idx > 0 ? timed[idx - 1].text : '', cur: idx >= 0 ? timed[idx].text : '', curSub: idx >= 0 ? timed[idx].sub : '', next: timed[idx + 1] ? timed[idx + 1].text : '', fade: Math.min(1, (nowMs() - lyrChanged) / 380)};
 }
 $('#vEven').onclick = () => {
   if (!lyr.length) return toast('먼저 가사를 적어 주세요');
@@ -3069,7 +3084,7 @@ function tapUI(){
   if (!tap.on) return;
   $('#vTapCount').textContent = `${Math.min(tap.i, lyr.length)} / ${lyr.length}`;
   $('#vTapNowLine').textContent = tap.i > 0 ? '♪ ' + lyr[tap.i - 1].text : '곡이 시작됐어요 · 첫 줄을 부를 때 누르세요';
-  $('#vTapNextLine').textContent = lyr[tap.i] ? '다음: ' + lyr[tap.i].text : '마지막 줄이에요';
+  $('#vTapNextLine').textContent = lyr[tap.i] ? '다음: ' + lyr[tap.i].text + (lyr[tap.i].sub ? ' / ' + lyr[tap.i].sub : '') : '마지막 줄이에요';
 }
 async function startTap(){
   lyr = parseLyrics($('#vLyrics').value);
@@ -3103,7 +3118,7 @@ document.addEventListener('keydown', e => {
 function fontStr(w, px){ return `${w} ${px}px "${vs.font}", "Paperlogy", "Pretendard Variable", sans-serif`; }
 function loadFonts(){
   if (!document.fonts) return;
-  const m = VM(), txt = [m.title, m.artist, m.album, m.year, ...lyr.map(l => l.text), ...Object.values(vs.labels), '0123456789%:./'].join(' ').toUpperCase() + ' ' + lyr.map(l => l.text).join(' ');
+  const m = VM(), txt = [m.title, m.artist, m.album, m.year, ...lyr.map(l => l.text), ...Object.values(vs.labels), '0123456789%:./'].join(' ').toUpperCase() + ' ' + lyr.map(l => l.text + ' ' + (l.sub || '')).join(' ');
   ['400','500','700'].forEach(w => document.fonts.load(`${w} 40px "${vs.font}"`, txt).catch(() => {}));
 }
 
@@ -3188,7 +3203,7 @@ function layout(W, H){
     const w = Math.min(ctx.measureText(VM().title || 'Untitled').width, Tt.w || W * .8) + 10 * u, x0 = Tt.align === 'center' ? Tt.x - w / 2 : Tt.x;
     B.title = {x0, y0: Tt.y - Tt.size * ts * .95, x1: x0 + w, y1: Tt.y + Tt.size * ts * .95};
   }
-  if (FXo.lyrics){ const Ly = L.lyrics, sz = Ly.size * vs.lyricSize / 100, x0 = Ly.align === 'center' ? Ly.x - Ly.w / 2 : Ly.x; B.lyrics = {x0, y0: Ly.y - 4 * u, x1: x0 + Ly.w, y1: Ly.y + sz * 3.2}; }
+  if (FXo.lyrics){ const Ly = L.lyrics, sz = Ly.size * vs.lyricSize / 100, x0 = Ly.align === 'center' ? Ly.x - Ly.w / 2 : Ly.x; B.lyrics = {x0, y0: Ly.y - 4 * u, x1: x0 + Ly.w, y1: Ly.y + sz * 3.2 + (vs.lyricPair ? sz * (vs.subSize ?? 62) / 100 * 1.4 : 0)}; }
   if (FXo.progress){ const P = L.progress; B.progress = {x0: P.x - 10 * u, y0: P.y - 20 * u, x1: P.x + P.w + 10 * u, y1: P.y + 40 * u}; }
   if (FXo.eq && L.eq){ const E = L.eq, x0 = E.align === 'center' ? E.x - E.w / 2 : E.align === 'right' ? E.x - E.w : E.x; B.eq = {x0: x0 - 6 * u, y0: E.y - E.h / 2 - 6 * u, x1: x0 + E.w + 6 * u, y1: E.y + E.h / 2 + 6 * u}; }
   if (FXo.sync && L.sync){ const S = L.sync, w = 190 * u, x0 = S.align === 'right' ? S.x - w : S.x; B.sync = {x0, y0: S.y - 28 * u, x1: x0 + w, y1: S.y + 28 * u}; }
@@ -3588,12 +3603,14 @@ function drawLyrics(B, u, C){
   const size = B.size * vs.lyricSize / 100, small = size * .56;
   if (!Ly) return;
   const e = 1 - Math.pow(1 - Ly.fade, 3), shift = (1 - e) * size * .6;
-  const yPrev = B.y + small + shift, yCur = yPrev + size * 1.5, yNext = yCur + size * 1.12;
+  const subPx = size * (vs.subSize ?? 62) / 100, hasSub = vs.lyricPair && Ly.curSub;
+  const yPrev = B.y + small + shift, yCur = yPrev + size * 1.5, ySub = yCur + subPx * 1.4, yNext = (hasSub ? ySub : yCur) + size * 1.12;
   const draw = (t, y, px, w, a) => { if (!t) return; ctx.font = fontStr(w, px); let s = px; while (ctx.measureText(t).width > B.w && s > px * .6){ s *= .94; ctx.font = fontStr(w, s); } text(fit(t, B.w), B.x, y, ctx.font, col(C.text, a), B.align); };
   draw(Ly.prev, yPrev, small, 400, .3 * e);
   ctx.save(); ctx.shadowColor = col(C.accent, .45); ctx.shadowBlur = 14 * u;
   draw(Ly.cur, yCur, size, 600, .35 + .65 * e);
   ctx.restore();
+  if (hasSub) draw(Ly.curSub, ySub, subPx, 500, (.3 + .45 * e));
   draw(Ly.next, yNext, small, 400, .38);
 }
 
@@ -3794,6 +3811,7 @@ function syncUI(){
   $('#vDropBg').hidden = vs.bgMode !== 'video';
   $('#vRes').value = vs.res; $('#vFps').value = String(vs.fps);
   $('#vTShadowBox').hidden = !(vs.tshadow && vs.tshadow.on);
+  $('#vSubSizeRow').style.display = vs.lyricPair ? '' : 'none';
   { const vm = VM(); [['Title', 'title', '곡 제목'], ['Artist', 'artist', '아티스트'], ['Album', 'album', '앨범'], ['Year', 'year', '연도']].forEach(([id, k, ph]) => { const el = $('#vMeta' + id); if (el) el.placeholder = vs.meta[k] ? ph : (vm[k] || ph); }); }
   if (M.refreshResets) M.refreshResets(view, vDef, getV);
   if (typeof vAlignUI === 'function') vAlignUI();
