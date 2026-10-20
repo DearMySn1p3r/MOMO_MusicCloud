@@ -563,6 +563,7 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
             <div class="pane" data-pane="design" hidden>
               <div class="sec">
                 <div class="sec-h"><h3>내 꾸밈 세트</h3></div>
+                <p class="note">꾸밈 · 색 · 배치만 저장해요. 제목 · 아티스트 · 앨범 · 가사와 직접 쓴 문구는 저장되지 않아요.</p>
                 <div class="saverow"><input class="inp" id="setName" placeholder="세트 이름" maxlength="30"><button class="btn primary sm" id="btnSaveSet" style="height:32px">저장</button></div>
                 <div class="sets" id="setList"></div>
                 <div class="inline-btns">
@@ -698,7 +699,7 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
             <div class="pane" data-pane="vstyle" hidden>
               <div class="sec">
                 <div class="sec-h"><h3>내 영상 세트</h3></div>
-                <p class="note">템플릿 · 색 · 배경 색감 · 효과 · 장식 · 음파 크기 · 부드럽게 · 반응 강도 · 속도 · 세부 글씨 문구 · 배치를 한꺼번에 저장해요. (곡 정보와 가사는 빼고 저장돼요)</p>
+                <p class="note">꾸밈 · 색 · 배치만 저장해요. 제목 · 아티스트 · 앨범 · 가사와 직접 쓴 문구는 저장되지 않아요.</p>
                 <div class="saverow"><input class="inp" id="vSetName" placeholder="세트 이름" maxlength="30"><button class="btn primary sm" id="vSaveSet" style="height:32px">저장</button></div>
                 <div class="sets" id="vSetList"></div>
                 <div class="inline-btns">
@@ -971,7 +972,7 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
             <div class="pane" data-pane="pstyle" hidden>
               <div class="sec">
                 <div class="sec-h"><h3>내 플레이리스트 세트</h3></div>
-                <p class="note">템플릿 · 배경 · 색 · 글자 · 배치 · 오브젝트 설정 · 효과를 한꺼번에 저장해요. (곡과 타임스탬프는 빼고 저장돼요)</p>
+                <p class="note">꾸밈 · 색 · 배치만 저장해요. 곡 · 플레이리스트 이름 · 직접 쓴 문구 · 타임스탬프는 저장되지 않아요.</p>
                 <div class="saverow"><input class="inp" id="pSetName" placeholder="세트 이름" maxlength="30"><button class="btn primary sm" id="pSaveSet" style="height:32px">저장</button></div>
                 <div class="sets" id="pSetList"></div>
                 <div class="inline-btns">
@@ -1263,7 +1264,7 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
             <div class="pane" data-pane="tdeco" hidden>
               <div class="sec">
                 <div class="sec-h"><h3>내 썸네일 세트</h3></div>
-                <p class="note">배치 · 색 · 글자 모양 · 장식 · 장식 문구 · 커버 그림자를 한꺼번에 저장해요. (제목과 부제는 빼고 저장돼요)</p>
+                <p class="note">꾸밈 · 색 · 배치만 저장해요. 제목 · 아티스트 · 앨범 · 가사와 직접 쓴 문구는 저장되지 않아요.</p>
                 <div class="saverow"><input class="inp" id="tSetName" placeholder="세트 이름" maxlength="30"><button class="btn primary sm" id="tSaveSet" style="height:32px">저장</button></div>
                 <div class="sets" id="tSetList"></div>
                 <div class="inline-btns">
@@ -1319,19 +1320,16 @@ const fallbackOf = f => (FONTS.find(x => x[0] === f) || [0, 'sans-serif'])[1];
 
 const DEFAULT_META = {
   title:'Untitled Track', artist:'Artist Name', feat:'', album:'Album Title', albumArtist:'',
-  track:'1', trackTotal:'10', disc:'1', year:YEAR, genre:'Electronic',
-  composer:'', lyricist:'', producer:'', label:'Label Name', catalog:'MMC-001', isrc:'',
-  copyright:'℗ ' + YEAR + ' Label Name', bpm:'120', key:'A min', comment:'', lyrics:''
+  // number · date, credits and sound are no longer edited here; values read from a song are kept for its MP3 tags
+  track:'', trackTotal:'', disc:'', year:'', genre:'',
+  composer:'', lyricist:'', producer:'', label:'', catalog:'', isrc:'',
+  copyright:'', bpm:'', key:'', comment:'', lyrics:''
 };
 const META_GROUPS = [
   ['기본 정보', [['title','곡 제목',1],['artist','아티스트'],['feat','피처링'],['album','앨범',1],['albumArtist','앨범 아티스트',1]]],
-  ['번호 · 날짜', [['track','트랙 번호'],['trackTotal','총 트랙 수'],['disc','디스크'],['year','연도'],['genre','장르',1]]],
-  ['크레딧', [['composer','작곡'],['lyricist','작사'],['producer','프로듀서'],['label','레이블'],['catalog','카탈로그 번호'],['isrc','ISRC'],['copyright','저작권 표기',1]]],
-  ['사운드', [['bpm','BPM'],['key','키 (Key)']]],
   ['메모', [['comment','코멘트',1,1],['lyrics','가사',1,1]]]
 ];
-const SHOW_LIST = [['track','트랙 번호'],['genre','장르'],['artist','아티스트'],['feat','피처링'],['album','앨범'],['year','연도'],
-  ['label','레이블'],['catalog','카탈로그'],['bpm','BPM'],['key','키'],['duration','재생 시간'],['copyright','저작권']];
+const SHOW_LIST = [['artist','아티스트'],['feat','피처링'],['album','앨범'],['duration','재생 시간']];
 
 const IC = {
   globe:'<circle cx="8" cy="8" r="4.5"/><ellipse cx="8" cy="8" rx="7.2" ry="2.2" transform="rotate(-20 8 8)"/>',
@@ -1823,7 +1821,7 @@ function render(ctx, S, preview){
     ctx.stroke();
     ctx.fillStyle = AC(1); ctx.beginPath(); ctx.arc(0, 0, 4.5, 0, Math.PI * 2); ctx.fill();
     setFont(ctx, iW, 10, iF);
-    const h = hash(M.title + M.artist), t1 = D.lockText || 'LOCK ' + pad2(M.track || 1), t2 = D.lockSub || `${(h % 9000 / 100).toFixed(2)} / ${((h >>> 8) % 18000 / 100).toFixed(2)}`;
+    const h = hash(M.title + M.artist), t1 = D.lockText || 'LOCK 01', t2 = D.lockSub || `${(h % 9000 / 100).toFixed(2)} / ${((h >>> 8) % 18000 / 100).toFixed(2)}`;
     need(iF, iW, t1 + t2); ctx.fillStyle = LN(.8);
     drawT(ctx, t1, 86, 70, 1.5, 'left'); ctx.fillStyle = LN(.5); drawT(ctx, t2, 86, 84, 1, 'left');
   });
@@ -1836,7 +1834,7 @@ function render(ctx, S, preview){
   });
 
   deco('bignum', () => {
-    const t = (D.bignumText || '').trim() || pad2(M.track || '1'), sz = 360;
+    const t = (D.bignumText || '').trim() || '01', sz = 360;
     setFont(ctx, T.titleWeight, sz, T.titleFont); need(T.titleFont, T.titleWeight, t);
     ctx.fillStyle = LN(.1); drawT(ctx, t, 0, sz * .74, -8, 'right');
   });
@@ -1865,7 +1863,7 @@ function render(ctx, S, preview){
   if (O.header){
     const HX = (D.tx && D.tx.header) || {}, hz = (HX.size || 100) / 100, hm = (HX.a ?? 100) / 100, hcol = HX.c === 'accent' ? C.accent : HX.c === 'line' ? C.deco : HX.c === 'text' ? C.text : null;
     setFont(ctx, iW, 12.5 * u * hz, iF);
-    const left = UPK('header', D.headL || M.label || M.artist || ''), right = UPK('header', D.headR || [M.album, M.year].filter(Boolean).join('  ·  '));
+    const left = UPK('header', D.headL || M.artist || ''), right = UPK('header', D.headR || M.album || '');
     need(iF, iW, left + right);
     ctx.fillStyle = hcol ? col(hcol, .75 * k * hm) : TX(.75 * hm);
     drawT(ctx, left, 80*u, 84*u, 1.4*u, 'left');
@@ -1876,7 +1874,7 @@ function render(ctx, S, preview){
 
   if (O.side){
     const SX = (D.tx && D.tx.side) || {}, sz = (SX.size || 100) / 100, sm = (SX.a ?? 100) / 100, scol = SX.c === 'accent' ? C.accent : SX.c === 'line' ? C.deco : SX.c === 'text' ? C.text : null;
-    const t = UPK('side', D.sideText || [M.title, M.artist, M.year].filter(Boolean).join('   —   '));
+    const t = UPK('side', D.sideText || [M.title, M.artist].filter(Boolean).join('   —   '));
     setFont(ctx, iW, 10.5 * u * sz, iF); need(iF, iW, t);
     ctx.save(); ctx.translate(S - 64*u, S/2); ctx.rotate(Math.PI / 2);
     ctx.fillStyle = scol ? col(scol, .5 * k * sm) : TX(.5 * sm); drawT(ctx, t, 0, 3.5*u, 1.6*u * sz, 'center'); ctx.restore();
@@ -1926,10 +1924,10 @@ function render(ctx, S, preview){
   });
 
   deco('barcode', () => {
-    const bw = 130, bh = 36, r = rng(hash(M.catalog || M.title)); let cx = -bw;
+    const bw = 130, bh = 36, r = rng(hash(M.title || 'x')); let cx = -bw;
     ctx.fillStyle = TX(.85);
     while (cx < 0){ const w = (r() < .55 ? 1 : r() < .75 ? 2 : 3) * 1.3; if (r() > .38) ctx.fillRect(cx, -16 - bh, Math.min(w, -cx), bh); cx += w + 1.3; }
-    setFont(ctx, iW, 9.5, iF); const ct = UPK('barcode', M.catalog || ''); need(iF, iW, ct);
+    setFont(ctx, iW, 9.5, iF); const ct = UPK('barcode', 'MMC-001'); need(iF, iW, ct);
     ctx.fillStyle = TX(.65); drawT(ctx, ct, -bw, 0, 2, 'left');
   });
 
@@ -1976,7 +1974,7 @@ function drawTextBlock(ctx, S){
   const tF = T.titleFont, iF = T.infoFont, tW = T.titleWeight, iW = T.infoWeight;
   const tSp = T.titleTrack / 100 * tsz, iSp = T.infoTrack / 100 * isz, aSp = Math.max(0, T.titleTrack) / 100 * asz;
   const items = [], lg = (T.lineGap ?? 100) / 100, LH = (base, extra) => base + extra * lg;
-  const kick = [SH.track && M.track ? `TRACK ${pad2(M.track)}${M.trackTotal ? ' / ' + pad2(M.trackTotal) : ''}` : '', SH.genre && M.genre ? M.genre : ''].filter(Boolean).join('   ·   ');
+  const kick = '';
   if (kick) items.push({t: iU(kick), f: iF, w: iW, s: isz, sp: iSp, c: C.accent, a: 1, gap: 0, lh: isz * LH(1.05, .2)});
   setFont(ctx, tW, tsz, tF);
   wrap(ctx, tU(M.title || 'Untitled'), maxW, tSp, 3).forEach((t, i) => items.push({t, f: tF, w: tW, s: tsz, sp: tSp, c: pickTC(T.tcol && T.tcol.title, C, C.text), a: 1, gap: i === 0 && items.length ? isz * .8 * lg : 0, lh: tsz * LH(.88, .12)}));
@@ -1987,14 +1985,13 @@ function drawTextBlock(ctx, S){
     wrap(ctx, tU(at), maxW, aSp, 2).forEach((t, i) => items.push({t, f: tF, w: aw, s: asz, sp: aSp, c: pickTC(T.tcol && T.tcol.sub, C, C.text), a: .9, gap: i === 0 ? asz * .3 * lg : 0, lh: asz * LH(1.02, .14)}));
   }
   const rows = [
-    [SH.album && M.album, SH.year && M.year].filter(Boolean).join('  —  '),
-    [SH.label && M.label, SH.catalog && M.catalog].filter(Boolean).join('  /  '),
-    [SH.bpm && M.bpm && `${M.bpm} BPM`, SH.key && M.key, SH.duration && AU.duration ? fmtTime(AU.duration) : ''].filter(Boolean).join('  ·  ')
+    SH.album && M.album ? M.album : '',
+    SH.duration && AU.duration ? fmtTime(AU.duration) : ''
   ].filter(Boolean);
   setFont(ctx, iW, isz, iF);
   let first = true;
   rows.forEach(r => wrap(ctx, iU(r), maxW, iSp, 2).forEach(t => { items.push({t, f: iF, w: iW, s: isz, sp: iSp, c: C.text, a: .8, gap: first ? isz * 1.15 * lg : isz * .1 * lg, lh: isz * LH(1.08, .2)}); first = false; }));
-  if (SH.copyright && M.copyright){
+  if (false){
     const cs = isz * .82; setFont(ctx, iW, cs, iF);
     wrap(ctx, M.copyright, maxW, iSp * .8, 2).forEach((t, i) => items.push({t, f: iF, w: iW, s: cs, sp: iSp * .8, c: C.text, a: .55, gap: i === 0 ? isz * .7 * lg : 0, lh: cs * LH(1.05, .2)}));
   }
@@ -2153,21 +2150,22 @@ $$('.nav-item').forEach(n => n.onclick = () => {
 const SET_KEY = 'mmc-deco-sets';
 function loadSets(){ try { const a = JSON.parse(lsGet(SET_KEY) || '[]'); return Array.isArray(a) ? a : []; } catch(e){ return []; } }
 function storeSets(a){ if (!lsSet(SET_KEY, JSON.stringify(a))) toast('이 브라우저에서는 저장이 막혀 있어요 · 파일로 내보내기를 써 주세요'); }
+// written words (song info and decoration text you typed) stay out of sets: a set only carries the look
+const SET_WORDS = ['pctLabel', 'tagText', 'bignumText', 'headL', 'headR', 'sideText', 'lockText', 'lockSub', 'explicitText'];
 function snapshot(){
-  const c = state.cover;
-  return {meta: clone(state.meta), design: clone(state.design), text: clone(state.text), show: clone(state.show),
+  const c = state.cover, design = clone(state.design); SET_WORDS.forEach(k => delete design[k]);
+  return {design, text: clone(state.text), show: clone(state.show),
     cover: {bg:c.bg, text:c.text, deco:c.deco, accent:c.accent, tintOn:c.tintOn, tint:c.tint, tintAmt:c.tintAmt, tintMode:c.tintMode}};
 }
 function applySnapshot(d){
   if (!d) return;
-  if (d.design) mergeInto(state.design, d.design);
+  if (d.design){ const dd = clone(d.design); SET_WORDS.forEach(k => delete dd[k]); mergeInto(state.design, dd); }
   if (d.text){
     mergeInto(state.text, d.text);
     if (!FONTS.some(f => f[0] === state.text.titleFont)) state.text.titleFont = DEFAULT_TEXT.titleFont;
     if (!FONTS.some(f => f[0] === state.text.infoFont)) state.text.infoFont = DEFAULT_TEXT.infoFont;
   }
   if (d.show) mergeInto(state.show, d.show);
-  if (d.meta) Object.keys(state.meta).forEach(k => { if (typeof d.meta[k] === 'string') state.meta[k] = d.meta[k]; });
   if (d.cover) mergeInto(state.cover, d.cover);
   syncUI(); scheduleRender();
 }
@@ -2637,6 +2635,9 @@ async function restoreCover(){
   const mp3 = await STORE.get('cover-mp3'); if (mp3){ await loadMp3(fileOf(mp3), {restore: true}); any = true; }
   if (saved){
     if (saved.meta) Object.keys(state.meta).forEach(k => { if (typeof saved.meta[k] === 'string') state.meta[k] = saved.meta[k]; });
+    { const OLD = {track:'1', trackTotal:'10', disc:'1', genre:'Electronic', label:'Label Name', catalog:'MMC-001', bpm:'120', key:'A min'}, mt = state.meta;
+      Object.keys(OLD).forEach(k => { if (mt[k] === OLD[k]) mt[k] = ''; });
+      if (/^\d{4}$/.test(mt.year) && mt.year === YEAR) mt.year = ''; if (/^℗ \d{4} Label Name$/.test(mt.copyright)) mt.copyright = ''; }
     ['cover', 'text', 'show', 'design'].forEach(k => saved[k] && deepAssign(state[k], saved[k]));
     // fonts were re-registered under new internal names
     ['titleFont', 'infoFont'].forEach(k => { if (saved.fontNames && saved.fontNames[k] && fontMap[saved.fontNames[k]]) state.text[k] = fontMap[saved.fontNames[k]]; if (!FONTS.some(f => f[0] === state.text[k])) state.text[k] = DEFAULT_TEXT[k]; });
@@ -3851,7 +3852,7 @@ if (M.attachResets) M.attachResets(view, 'data-vbind', vDef, (p, v) => setV(p, v
 $('#vShadowAccent').onclick = () => { vs.shadow.color = vs.colors.accent; vs.shadow.on = true; syncUI(); toast('그림자를 포인트색으로 바꿨어요'); };
 $('#vShadowBg').onclick = () => { vs.shadow.color = vs.colors.bg; vs.shadow.on = true; syncUI(); toast('그림자를 배경색으로 바꿨어요'); };
 /* ---------- my video sets ---------- */
-const VSET_KEY = 'mmc-video-sets', VSKIP = new Set(['meta', 'res', 'fps', 'lockObj', 'grid', 'snap']);
+const VSET_KEY = 'mmc-video-sets', VSKIP = new Set(['meta', 'labels', 'res', 'fps', 'lockObj', 'grid', 'snap']);
 const vEsc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const vLoadSets = () => { const a = M.STORE.read(VSET_KEY); return Array.isArray(a) ? a : []; };
 const vStoreSets = a => { if (!M.STORE.write(VSET_KEY, a)) toast('이 브라우저에서는 저장이 막혀 있어요 · 파일로 내보내기를 써 주세요'); };
@@ -4131,7 +4132,7 @@ const DECO = {
   waveform(P){ const W2 = 840, bh = 46, n = 96, bw = W2 / n, w = Math.max(1, bw * .42), ph = tb.prog / 100, r = rng(9), pk = M.AU && M.AU.peaks;
     for (let i = 0; i < n; i++){ const v = pk && pk.length ? pk[Math.floor(i / n * pk.length)] : Math.abs(Math.sin(i * .21) * .6 + Math.sin(i * .07) * .3 + r() * .25); const h = Math.max(.08, Math.min(1, v)) * bh, px = -W2 / 2 + i * bw + (bw - w) / 2; ctx.fillStyle = i / n < ph ? rgbA(P.ac, .95) : rgbA(P.ln, .5); rr(px, -h / 2, w, h, w / 2); ctx.fill(); }
     return [-W2 / 2, -bh / 2, W2 / 2, bh / 2]; },
-  barcode(P){ const bw = 130, bh = 36, r = rng(7), ta = P.ta ?? 1; let cx = -bw; ctx.fillStyle = rgbA(P.tc || P.tx, .85 * ta); while (cx < 0){ const w = (r() < .55 ? 1 : r() < .75 ? 2 : 3) * 1.3; if (r() > .38) ctx.fillRect(cx, -16 - bh, Math.min(w, -cx), bh); cx += w + 1.3; } const cat = tb.catalog || CS.meta.catalog || 'MMC-0001'; dtext(P.up === false ? cat : cat.toUpperCase(), -bw, 0, `500 9.5px ${INF}`, rgbA(P.tc || P.tx, .65 * ta), 'left', 2); return [-bw, -16 - bh, 0, 4]; },
+  barcode(P){ const bw = 130, bh = 36, r = rng(7), ta = P.ta ?? 1; let cx = -bw; ctx.fillStyle = rgbA(P.tc || P.tx, .85 * ta); while (cx < 0){ const w = (r() < .55 ? 1 : r() < .75 ? 2 : 3) * 1.3; if (r() > .38) ctx.fillRect(cx, -16 - bh, Math.min(w, -cx), bh); cx += w + 1.3; } const cat = tb.catalog || 'MMC-0001'; dtext(P.up === false ? cat : cat.toUpperCase(), -bw, 0, `500 9.5px ${INF}`, rgbA(P.tc || P.tx, .65 * ta), 'left', 2); return [-bw, -16 - bh, 0, 4]; },
   bignum(P){ const t = String(tb.bignumText || '').trim() || '01', sz = 360; ctx.font = `800 ${sz}px Outfit, Paperlogy, sans-serif`; setLS(-8); const w = ctx.measureText(t).width; ctx.fillStyle = rgbA(P.tc || P.ln, (tb.tx && tb.tx.bignum ? tb.tx.bignum.a : 10) / 100); ctx.textAlign = 'right'; ctx.fillText(t, 0, sz * .74); setLS(0); return [-w, 0, 0, sz * .76]; }
 };
 /* ---------- render ---------- */
@@ -4291,12 +4292,12 @@ function draw(preview = true){
     const cardHead = on.panel && tb.panelStyle === 'card' && pb, X0 = cardHead ? pb.x0 + 40 : 60, X1 = cardHead ? pb.x1 - 40 : W - 60, Y = cardHead ? pb.y0 + 42 : 62;
     const ink = cardHead ? C.text : C.text, lineC = cardHead ? C.text : C.line, m = CS.meta;
     const HX = (tb.tx && tb.tx.header) || {}, hz = (HX.size || 100) / 100, ha = (HX.a ?? 100) / 100, hc = HX.c === 'accent' ? C.accent : HX.c === 'line' ? C.line : ink, HU = t => HX.upper === false ? t : t.toUpperCase();
-    const alb = m.album && m.album !== 'Album Title' ? m.album : 'Official Audio', left = HU(tb.headL || subText() || ''), right = HU(tb.headR || [alb, m.year].filter(Boolean).join('  ·  '));
+    const alb = m.album && m.album !== 'Album Title' ? m.album : 'Official Audio', left = HU(tb.headL || subText() || ''), right = HU(tb.headR || alb);
     dtext(left, X0, Y, `500 ${12 * hz}px ${INF}`, col(hc, .7 * ha), 'left', 2 * hz); dtext(right, X1, Y, `500 ${12 * hz}px ${INF}`, col(hc, .7 * ha), 'right', 2 * hz);
     ctx.fillStyle = col(lineC, .18); ctx.fillRect(X0, Y + 15, X1 - X0, 1); ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(X0, Y + 15.5, 2.6, 0, Math.PI * 2); ctx.fill();
     OB.header = {x0: X0, y0: Y - 14, x1: X1, y1: Y + 19};
   }
-  if (on.side){ const m = CS.meta, SX = (tb.tx && tb.tx.side) || {}, sz2 = (SX.size || 100) / 100, sa = (SX.a ?? 100) / 100, scol = SX.c === 'accent' ? C.accent : SX.c === 'line' ? C.line : C.text, t0 = tb.sideText || [titleText(), subText(), m.year].filter(Boolean).join('   —   '), t = SX.upper === false ? t0 : t0.toUpperCase(); ctx.save(); ctx.translate(W - 40, H / 2); ctx.rotate(Math.PI / 2); ctx.font = `500 12px ${INF}`; setLS(2); const tw = Math.min(ctx.measureText(t).width, H - 160); setLS(0); dtext(t.length > 80 ? t.slice(0, 80) + '…' : t, 0, 4, `500 ${11 * sz2}px ${INF}`, col(scol, .45 * sa), 'center', 2 * sz2); ctx.restore(); }
+  if (on.side){ const m = CS.meta, SX = (tb.tx && tb.tx.side) || {}, sz2 = (SX.size || 100) / 100, sa = (SX.a ?? 100) / 100, scol = SX.c === 'accent' ? C.accent : SX.c === 'line' ? C.line : C.text, t0 = tb.sideText || [titleText(), subText()].filter(Boolean).join('   —   '), t = SX.upper === false ? t0 : t0.toUpperCase(); ctx.save(); ctx.translate(W - 40, H / 2); ctx.rotate(Math.PI / 2); ctx.font = `500 12px ${INF}`; setLS(2); const tw = Math.min(ctx.measureText(t).width, H - 160); setLS(0); dtext(t.length > 80 ? t.slice(0, 80) + '…' : t, 0, 4, `500 ${11 * sz2}px ${INF}`, col(scol, .45 * sa), 'center', 2 * sz2); ctx.restore(); }
   // texts
   // the text column stops before the cover (when the cover sits beside it) and inside the safe margins
   const cb = boxes.cover, GAP = 44 * u, ML = W * .05, MR = W * .95;
@@ -4501,7 +4502,7 @@ const TTXB = {}; // detail-text panels, shown inside each decoration's 조정
   const TTX = [['header','상단 라인',[['headL','왼쪽 문구','비우면 아티스트',40],['headR','오른쪽 문구','비우면 앨범 · 연도',40]], true],
     ['tags','태그',[['tagText','문구 ( · 로 구분)','',60]], true], ['side','세로 텍스트',[['sideText','문구','비우면 제목 — 아티스트 — 연도',80]], true], ['target','조준점',[['lockText','첫 줄','비우면 LOCK 01',20],['lockSub','둘째 줄','비우면 좌표',30]], false],
     ['percent','퍼센트',[['pctLabel','라벨','',24]], false], ['progress','재생 바 시간',[], false],
-    ['barcode','바코드 번호',[['catalog','번호','비우면 곡 정보의 카탈로그 번호',24]], false], ['bignum','트랙 넘버',[['bignumText','숫자 · 문구','',6]], false]];
+    ['barcode','바코드 번호',[['catalog','번호','비우면 MMC-0001',24]], false], ['bignum','트랙 넘버',[['bignumText','숫자 · 문구','',6]], false]];
   const rngT = (k, lbl, key, min, max, st, fmt) => `<div class="range"><span class="lbl">${lbl}</span><input type="range" min="${min}" max="${max}" step="${st}" data-tbind="tx.${k}.${key}"><output data-tout="tx.${k}.${key}" data-fmt="${fmt}"></output></div>`;
   const body = ([k, , fields, sized]) => {
     let h = fields.map(([path, lab, ph, max]) => `<div class="field full" style="margin-bottom:8px"><label>${lab}</label><input type="text" data-tbind="${path}" maxlength="${max}" placeholder="${ph}"></div>`).join('');
@@ -4544,7 +4545,7 @@ $('#tColorsFromCover').onclick = () => { Object.assign(tb.colors, {bg: CS.cover.
 $('#tCsAccent').onclick = () => { tb.cshadow.color = tb.colors.accent; tb.cshadow.on = true; syncUI(); sched(); toast('그림자를 포인트색으로 바꿨어요'); };
 $('#tCsBg').onclick = () => { tb.cshadow.color = tb.colors.bg; tb.cshadow.on = true; syncUI(); sched(); toast('그림자를 배경색으로 바꿨어요'); };
 /* ---------- my thumbnail sets ---------- */
-const TSET_KEY = 'mmc-thumb-sets', TSKIP = new Set(['title', 'sub', 'songName', 'lock', 'grid', 'snap', 'safe', 'v']);
+const TSET_KEY = 'mmc-thumb-sets', TSKIP = new Set(['title', 'sub', 'songName', 'badge', 'catalog', 'sideText', 'lockText', 'lockSub', 'tagText', 'headL', 'headR', 'pctLabel', 'bignumText', 'lock', 'grid', 'snap', 'safe', 'v']);
 const tEsc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const tLoadSets = () => { const a = M.STORE.read(TSET_KEY); return Array.isArray(a) ? a : []; };
 const tStoreSets = a => { if (!M.STORE.write(TSET_KEY, a)) toast('이 브라우저에서는 저장이 막혀 있어요 · 파일로 내보내기를 써 주세요'); };
@@ -5856,9 +5857,11 @@ document.addEventListener('keydown', e => {
 const PSET_KEY = 'mmc-playlist-sets', PSKIP = new Set(['mode', 'gap', 'split', 'singleText', 'name', 'stampFmt', 'stampNum', 'stampSrc', 'res', 'fps', 'qual', 'lock', 'grid', 'snap']);
 const pLoadSets = () => { const a = M.STORE.read(PSET_KEY); return Array.isArray(a) ? a : []; };
 const pStoreSets = a => { if (!M.STORE.write(PSET_KEY, a)) toast('이 브라우저에서는 저장이 막혀 있어요 · 파일로 내보내기를 써 주세요'); };
-const pSnapshot = () => { const o = {}; Object.keys(ps).forEach(k => { if (!PSKIP.has(k)) o[k] = clone(ps[k]); }); return o; };
+const P_WORDS = [['tl', 'text'], ['tr', 'text'], ['next', 'label']]; // words you typed stay out of sets
+const pSnapshot = () => { const o = {}; Object.keys(ps).forEach(k => { if (!PSKIP.has(k)) o[k] = clone(ps[k]); }); P_WORDS.forEach(([a, b]) => { if (o.st && o.st[a]) delete o.st[a][b]; }); return o; };
 function pApplySnapshot(d){
   if (!d || typeof d !== 'object') return;
+  const keepWords = P_WORDS.map(([a, b]) => ps.st[a][b]);
   Object.keys(PDEF).forEach(k => {
     if (PSKIP.has(k)) return;
     const def = PDEF[k];
@@ -5867,6 +5870,7 @@ function pApplySnapshot(d){
     else if (typeof d[k] === typeof def) ps[k] = d[k];
   });
   if (!PRESETS[ps.preset]) ps.preset = ps.preset === 'poster' ? 'wide' : 'side';
+  P_WORDS.forEach(([a, b], i) => { ps.st[a][b] = keepWords[i]; });
   if (!(M.FONTS || []).some(f => f[0] === ps.font)) ps.font = PDEF.font;
   softCache = new WeakMap(); sel = null; refreshDefault(); syncUI(); loadFonts();
 }
