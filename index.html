@@ -3061,7 +3061,7 @@ function currentLyric(time){
   const tt = time + vs.lyricOffset; let idx = -1;
   for (let i = 0; i < timed.length; i++){ if (timed[i].t <= tt) idx = i; else break; }
   if (idx !== lyrIdx){ lyrIdx = idx; lyrChanged = nowMs(); }
-  return {prev: idx > 0 ? timed[idx - 1].text : '', cur: idx >= 0 ? timed[idx].text : '', curSub: idx >= 0 ? timed[idx].sub : '', next: timed[idx + 1] ? timed[idx + 1].text : '', fade: Math.min(1, (nowMs() - lyrChanged) / 380)};
+  return {prev: idx > 0 ? timed[idx - 1].text : '', prevSub: idx > 0 ? timed[idx - 1].sub : '', cur: idx >= 0 ? timed[idx].text : '', curSub: idx >= 0 ? timed[idx].sub : '', next: timed[idx + 1] ? timed[idx + 1].text : '', nextSub: timed[idx + 1] ? timed[idx + 1].sub : '', fade: Math.min(1, (nowMs() - lyrChanged) / 380)};
 }
 $('#vEven').onclick = () => {
   if (!lyr.length) return toast('먼저 가사를 적어 주세요');
@@ -3203,7 +3203,7 @@ function layout(W, H){
     const w = Math.min(ctx.measureText(VM().title || 'Untitled').width, Tt.w || W * .8) + 10 * u, x0 = Tt.align === 'center' ? Tt.x - w / 2 : Tt.x;
     B.title = {x0, y0: Tt.y - Tt.size * ts * .95, x1: x0 + w, y1: Tt.y + Tt.size * ts * .95};
   }
-  if (FXo.lyrics){ const Ly = L.lyrics, sz = Ly.size * vs.lyricSize / 100, x0 = Ly.align === 'center' ? Ly.x - Ly.w / 2 : Ly.x; B.lyrics = {x0, y0: Ly.y - 4 * u, x1: x0 + Ly.w, y1: Ly.y + sz * 3.2 + (vs.lyricPair ? sz * (vs.subSize ?? 62) / 100 * 1.4 : 0)}; }
+  if (FXo.lyrics){ const Ly = L.lyrics, sz = Ly.size * vs.lyricSize / 100, x0 = Ly.align === 'center' ? Ly.x - Ly.w / 2 : Ly.x; B.lyrics = {x0, y0: Ly.y - 4 * u, x1: x0 + Ly.w, y1: Ly.y + sz * 3.2 + (vs.lyricPair ? sz * (vs.subSize ?? 62) / 100 * 1.4 + sz * .56 * Math.max(.7, (vs.subSize ?? 62) / 100) * 2.6 : 0)}; }
   if (FXo.progress){ const P = L.progress; B.progress = {x0: P.x - 10 * u, y0: P.y - 20 * u, x1: P.x + P.w + 10 * u, y1: P.y + 40 * u}; }
   if (FXo.eq && L.eq){ const E = L.eq, x0 = E.align === 'center' ? E.x - E.w / 2 : E.align === 'right' ? E.x - E.w : E.x; B.eq = {x0: x0 - 6 * u, y0: E.y - E.h / 2 - 6 * u, x1: x0 + E.w + 6 * u, y1: E.y + E.h / 2 + 6 * u}; }
   if (FXo.sync && L.sync){ const S = L.sync, w = 190 * u, x0 = S.align === 'right' ? S.x - w : S.x; B.sync = {x0, y0: S.y - 28 * u, x1: x0 + w, y1: S.y + 28 * u}; }
@@ -3603,15 +3603,20 @@ function drawLyrics(B, u, C){
   const size = B.size * vs.lyricSize / 100, small = size * .56;
   if (!Ly) return;
   const e = 1 - Math.pow(1 - Ly.fade, 3), shift = (1 - e) * size * .6;
-  const subPx = size * (vs.subSize ?? 62) / 100, hasSub = vs.lyricPair && Ly.curSub;
-  const yPrev = B.y + small + shift, yCur = yPrev + size * 1.5, ySub = yCur + subPx * 1.4, yNext = (hasSub ? ySub : yCur) + size * 1.12;
+  // 2-line mode: every block (previous, current, next) shows its translation underneath; spacing is reserved so lines never jump
+  const pair = !!vs.lyricPair, sr = (vs.subSize ?? 62) / 100, subPx = size * sr, smallSub = small * Math.max(.7, sr);
+  const yPrev = B.y + small + shift, yPrevSub = yPrev + smallSub * 1.3;
+  const yCur = (pair ? yPrevSub : yPrev) + size * 1.5, ySub = yCur + subPx * 1.4;
+  const yNext = (pair ? ySub : yCur) + size * 1.12, yNextSub = yNext + smallSub * 1.3;
   const draw = (t, y, px, w, a) => { if (!t) return; ctx.font = fontStr(w, px); let s = px; while (ctx.measureText(t).width > B.w && s > px * .6){ s *= .94; ctx.font = fontStr(w, s); } text(fit(t, B.w), B.x, y, ctx.font, col(C.text, a), B.align); };
   draw(Ly.prev, yPrev, small, 400, .3 * e);
+  if (pair) draw(Ly.prevSub, yPrevSub, smallSub, 400, .24 * e);
   ctx.save(); ctx.shadowColor = col(C.accent, .45); ctx.shadowBlur = 14 * u;
   draw(Ly.cur, yCur, size, 600, .35 + .65 * e);
   ctx.restore();
-  if (hasSub) draw(Ly.curSub, ySub, subPx, 500, (.3 + .45 * e));
+  if (pair) draw(Ly.curSub, ySub, subPx, 500, (.3 + .45 * e));
   draw(Ly.next, yNext, small, 400, .38);
+  if (pair) draw(Ly.nextSub, yNextSub, smallSub, 400, .3);
 }
 
 /* ---------- drag objects on the canvas ---------- */
