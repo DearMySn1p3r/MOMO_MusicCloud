@@ -1222,6 +1222,8 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                 </div>
                 <div class="range"><span class="lbl">제목 크기</span><input type="range" min="40" max="220" step="1" data-tbind="o.title.s"><output data-tout="o.title.s" data-fmt="pct"></output></div>
                 <div class="range"><span class="lbl">부제 크기</span><input type="range" min="40" max="220" step="1" data-tbind="o.sub.s"><output data-tout="o.sub.s" data-fmt="pct"></output></div>
+                <div class="range"><span class="lbl">제목 ↔ 부제 간격</span><input type="range" min="-40" max="40" step="1" data-tbind="gapSub"><output data-tout="gapSub" data-fmt="int"></output></div>
+                <div class="range"><span class="lbl">부제 ↔ 태그 간격</span><input type="range" min="-40" max="40" step="1" data-tbind="gapTags"><output data-tout="gapTags" data-fmt="int"></output></div>
                 <div class="range"><span class="lbl">자간</span><input type="range" min="-8" max="20" step="0.5" data-tbind="tracking"><output data-tout="tracking" data-fmt="int"></output></div>
                 <div class="range"><span class="lbl">줄 간격</span><input type="range" min="85" max="150" step="1" data-tbind="lineH"><output data-tout="lineH" data-fmt="pct"></output></div>
                 <div class="range"><span class="lbl">최대 줄 수</span><input type="range" min="1" max="4" step="1" data-tbind="maxLines"><output data-tout="maxLines" data-fmt="int"></output></div>
@@ -1422,7 +1424,7 @@ const DECOS = [
   ['explicit','Explicit','청취 등급 표시','데이터',{x:92,y:84,s:100,r:0}],
   ['header','상단 라인','레이블과 연도를 담은 한 줄','구조',null],
   ['frame','테두리','안쪽의 가는 테두리','구조',null],
-  ['brackets','코너 브래킷','네 귀퉁이 꺾쇠와 + 표시','구조',null],
+  ['brackets','코너 브래킷','네 귀퉁이 꺾쇠와 + 표시','구조',null,[['brkInset','가장자리 여백','range',20,400,5],['brkLen','꺾쇠 길이','range',30,400,5],['brkW','굵기','range',50,300,5]]],
   ['side','세로 텍스트','가장자리를 따라 흐르는 곡 정보','구조',null],
   ['grid','그리드','아주 옅은 격자','구조',null],
   ['dust','별가루','흩뿌려진 점과 작은 별','질감',null],
@@ -1445,7 +1447,7 @@ function defaultDesign(){
   const on = {}, pos = {};
   DECOS.forEach(d => { on[d[0]] = false; if (d[4]) pos[d[0]] = {...d[4]}; });
   ['header','globe','sparkle','target','dust','fade','grain','brackets','percent'].forEach(k => on[k] = true);
-  return {intensity:100, on, pos, pin:{}, pct:87, pctLabel:'Sync', prog:36, tagText:'REC · Hi-Fi · Lossless', bignumText:'', fadeColor:'#2b2b31', fadeAmt:82, fadeReach:62, fadeVig:40, headL:'', headR:'', sideText:'', lockText:'', lockSub:'', explicitText:'', dust:{amt:100, stars:100, size:100, a:100, c:'auto', color:'#ffffff'}, tx:{header:{a:100, c:'auto', upper:true, size:100}, side:{a:100, c:'auto', upper:true, size:100}, tags:{a:100, c:'auto', upper:true}, percent:{a:100, c:'auto', upper:true}, barcode:{a:100, c:'auto', upper:true}, progress:{a:100, c:'auto'}, bignum:{a:100, c:'auto'}, explicit:{a:100, c:'auto'}, target:{a:100, c:'auto'}}};
+  return {intensity:100, on, pos, pin:{}, pct:87, pctLabel:'Sync', brkInset:100, brkLen:100, brkW:100, prog:36, tagText:'REC · Hi-Fi · Lossless', bignumText:'', fadeColor:'#2b2b31', fadeAmt:82, fadeReach:62, fadeVig:40, headL:'', headR:'', sideText:'', lockText:'', lockSub:'', explicitText:'', dust:{amt:100, stars:100, size:100, a:100, c:'auto', color:'#ffffff'}, tx:{header:{a:100, c:'auto', upper:true, size:100}, side:{a:100, c:'auto', upper:true, size:100}, tags:{a:100, c:'auto', upper:true}, percent:{a:100, c:'auto', upper:true}, barcode:{a:100, c:'auto', upper:true}, progress:{a:100, c:'auto'}, bignum:{a:100, c:'auto'}, explicit:{a:100, c:'auto'}, target:{a:100, c:'auto'}}};
 }
 const DEFAULT_COVER = {bg:'#2b2b31', text:'#f7f5f2', deco:'#ffffff', accent:'#f4a3c6', zoom:1, ox:0, oy:0, adjustOn:false,
   bright:100, contrast:100, sat:100, gray:0, blur:0, opacity:100, tintOn:false, tint:'#f4a3c6', tintAmt:30, tintMode:'soft-light'};
@@ -1897,8 +1899,8 @@ function render(ctx, S, preview){
   if (O.frame){ const m = 36 * u; ctx.strokeStyle = LN(.28); ctx.lineWidth = 1.2 * u; ctx.strokeRect(m, m, S - 2*m, S - 2*m); }
 
   if (O.brackets){
-    const m = 52 * u, l = 30 * u;
-    ctx.strokeStyle = LN(.85); ctx.lineWidth = 2 * u; ctx.beginPath();
+    const m = 52 * u * (D.brkInset ?? 100) / 100, l = 30 * u * (D.brkLen ?? 100) / 100;
+    ctx.strokeStyle = LN(.85); ctx.lineWidth = 2 * u * (D.brkW ?? 100) / 100; ctx.beginPath();
     [[m, m, 1, 1], [S - m, m, -1, 1], [m, S - m, 1, -1], [S - m, S - m, -1, -1]].forEach(([x, y, sx, sy]) => { ctx.moveTo(x + sx * l, y); ctx.lineTo(x, y); ctx.lineTo(x, y + sy * l); });
     ctx.stroke();
     ctx.strokeStyle = LN(.5); ctx.lineWidth = 1.2 * u; ctx.beginPath();
@@ -2105,7 +2107,7 @@ function buildDecos(){
           <label class="sw"><input type="checkbox" data-bind="design.on.${k}" aria-label="${n}"><span></span></label>
         </div>
         ${pos || extra || CTX_ROWS[k] || k === 'dust' ? `<div class="dsub">
-          ${(extra || []).map(([f, lab, type, a, b, st]) => type === 'range' ? rg(`design.${f}`, lab, a, b, st, k === 'fade' ? 'pct' : 'int')
+          ${(extra || []).map(([f, lab, type, a, b, st]) => type === 'range' ? rg(`design.${f}`, lab, a, b, st, k === 'fade' || k === 'brackets' ? 'pct' : 'int')
             : type === 'color' ? `<div class="range"><span class="lbl">${lab}</span><div class="color"><input type="color" data-bind="design.${f}" aria-label="${lab}"><span data-out="design.${f}" data-fmt="hex"></span></div><button class="link" data-fadebg title="배경색과 똑같이">배경색</button></div>`
             : `<input class="inp" type="text" data-bind="design.${f}" placeholder="${lab}" aria-label="${lab}">`).join('')}
           ${ctxSub(k)}
@@ -3207,7 +3209,7 @@ const vs = {
   res:'1920x1080', fps:30, template:'minimal', coverSrc:'cover', coverShape:'square', bgMode:'cover', bgDim:62, bgBlur:0, bgX:50, bgY:50, frame:(window.MMC && MMC.FRAME ? MMC.FRAME.base() : {style:'none'}),
   colors:{bg:CS.cover.bg, text:CS.cover.text, line:CS.cover.deco, accent:CS.cover.accent},
   labels:{tl:'Now Playing', tr:'Sync Rate', bl:'Audio Online · MMC-001', cap:'Artwork // MMC-001'}, font:'Paperlogy', titleSize:100, showTitle:true, sens:100, speed:100, lyricSize:100, lyricOffset:0, lyricPair:false, subSize:62,
-  fx:{spectrum:true, ring:true, eq:true, sync:false, particles:true, sparkle:true, orbit:false, reticle:false, globe:false, hud:true, spin:true, beat:true, glow:true, progress:true, brackets:false, vignette:true, grain:true, lyrics:true},
+  fx:{spectrum:true, ring:true, eq:true, sync:false, particles:true, sparkle:true, orbit:false, reticle:false, globe:false, hud:true, spin:true, beat:true, glow:true, progress:true, brackets:false, vignette:true, grain:true, lyrics:true}, brk:{inset:100, len:100, w:100},
   off:Object.fromEntries(OBJ.map(([k]) => [k, {dx:0, dy:0}])),
   lockObj:true, grid:false, snap:true, pin:{}, rot:Object.fromEntries(OBJ.map(([k]) => [k, 0])),
   meta:{title:'', artist:'', album:'', year:''},
@@ -4010,7 +4012,7 @@ function frame(){
   }
 
   if (FXo.brackets){
-    const g = 26 * u, l = 40 * u; ctx.strokeStyle = col(C.line, .8); ctx.lineWidth = 2 * u; ctx.beginPath();
+    const BK = vs.brk || {}, g = 26 * u * (BK.inset ?? 100) / 100, l = 40 * u * (BK.len ?? 100) / 100; ctx.strokeStyle = col(C.line, .8); ctx.lineWidth = 2 * u * (BK.w ?? 100) / 100; ctx.beginPath();
     [[g, g, 1, 1], [W - g, g, -1, 1], [g, H - g, 1, -1], [W - g, H - g, -1, -1]].forEach(([x, y, sx, sy]) => { ctx.moveTo(x + sx * l, y); ctx.lineTo(x, y); ctx.lineTo(x, y + sy * l); });
     ctx.stroke();
   }
@@ -4250,8 +4252,8 @@ $('#vRecCancel').onclick = () => stopRecord(true);
 
 /* ---------- UI ---------- */
 $('#vFxList').innerHTML = `<div class="dlist">${FX.map(([k, n, d]) => `
-  <div class="ditem" data-vfx="${k}"><div class="drow"><span class="dname"><b>${n}</b><small>${d}</small></span>${FX_MOVE.has(k) ? vRowBtns(k, n) : ''}${V_FX_TX[k] || FX_MOVE.has(k) || k === 'particles' ? vAdj(k) : ''}
-  <label class="sw"><input type="checkbox" data-vbind="fx.${k}" aria-label="${n}"><span></span></label></div>${k === 'particles' ? `<div class="dsub np">${vDustSub()}</div>` : ''}${V_FX_TX[k] || FX_MOVE.has(k) ? `<div class="dsub np">${(V_FX_TX[k] || []).map(x => VTXB[x] || '').join('<div class="sep"></div>')}${V_FX_TX[k] && FX_MOVE.has(k) ? '<div class="sep"></div>' : ''}${FX_MOVE.has(k) ? vPosSub(k) : ''}</div>` : ''}</div>`).join('')}</div>`;
+  <div class="ditem" data-vfx="${k}"><div class="drow"><span class="dname"><b>${n}</b><small>${d}</small></span>${FX_MOVE.has(k) ? vRowBtns(k, n) : ''}${V_FX_TX[k] || FX_MOVE.has(k) || k === 'particles' || k === 'brackets' ? vAdj(k) : ''}
+  <label class="sw"><input type="checkbox" data-vbind="fx.${k}" aria-label="${n}"><span></span></label></div>${k === 'particles' ? `<div class="dsub np">${vDustSub()}</div>` : ''}${k === 'brackets' ? `<div class="dsub np"><div class="dsub-h"><span>코너 브래킷</span></div>${vRg('brk.inset', '가장자리 여백', 20, 400, 5, 'pct')}${vRg('brk.len', '꺾쇠 길이', 30, 400, 5, 'pct')}${vRg('brk.w', '굵기', 50, 300, 5, 'pct')}</div>` : ''}${V_FX_TX[k] || FX_MOVE.has(k) ? `<div class="dsub np">${(V_FX_TX[k] || []).map(x => VTXB[x] || '').join('<div class="sep"></div>')}${V_FX_TX[k] && FX_MOVE.has(k) ? '<div class="sep"></div>' : ''}${FX_MOVE.has(k) ? vPosSub(k) : ''}</div>` : ''}</div>`).join('')}</div>`;
 $('#vFont').innerHTML = (M.FONTS || []).map(([f,, lab]) => `<option value="${f}">${lab || f}</option>`).join('');
 const VFMT = {off: v => (v > 0 ? '+' : '') + Math.round(v * 100), deg: v => Math.round(v) + '°', int: v => String(Math.round(v * 10) / 10), pct: v => Math.round(v) + '%', hex: v => String(v).toUpperCase(), sec: v => (v > 0 ? '+' : '') + (+v).toFixed(1) + 's'};
 function syncUI(){
@@ -4516,7 +4518,7 @@ const tb = {
   cshadow:{on:true, color:'#000000', amt:42, blur:70, dist:26}, coverMat:false, pfx:{color:'#ffffff', a:7, border:22, borderColor:'#ffffff', radius:39, blur:55, shadow:22, shadowColor:'#46234a'},
   tx:{header:{size:100, a:100, c:'auto', upper:true}, tags:{size:100, a:100, c:'auto', upper:true}, side:{size:100, a:100, c:'auto', upper:true}, percent:{a:100, c:'auto', upper:true}, progress:{a:100, c:'auto'}, barcode:{a:100, c:'auto', upper:true}, bignum:{a:10, c:'auto'}, target:{a:100, c:'auto'}, stamp:{a:100, c:'auto', upper:true}, explicit:{a:100, c:'auto', upper:true}},
   tcol:{title:{c:'auto', color:'#ffffff'}, sub:{c:'auto', color:'#ffffff'}},
-  stampText:'', explicitText:'', shade:{fade:{c:'auto', color:'#000000', a:100, reach:100}, vig:{c:'black', color:'#000000', a:100}}, oglow:{on:true, blend:'soft-light', color:'#000000', a:50, size:2, spread:0, small:true}, abar:{c:'accent', color:'#ffffff'},
+  stampText:'', explicitText:'', shade:{fade:{c:'auto', color:'#000000', a:100, reach:100}, vig:{c:'black', color:'#000000', a:100}}, oglow:{on:true, blend:'soft-light', color:'#000000', a:50, size:2, spread:0, small:true}, abar:{c:'accent', color:'#ffffff'}, gapSub:0, gapTags:0, brk:{inset:100, len:100, w:100},
   catalog:'', sideText:'', lockText:'', lockSub:'', dust:{amt:100, stars:100, size:100, a:100, c:'auto', color:'#ffffff'},
   tagText:'OFFICIAL AUDIO · HQ', headL:'', headR:'', pctLabel:'SYNC RATE', pct:100, prog:40, bignumText:'01',
   on:{title:true, sub:true, badge:true, cover:true},
@@ -4838,14 +4840,14 @@ function draw(preview = true){
   const sym = (k, fn, box) => { if (!on[k]) return; const p = O[k], x = p.x / 100 * W, y = p.y / 100 * H, sc = u * p.s / 100; ctx.save(); ctx.translate(x, y); if (p.r) ctx.rotate(p.r * Math.PI / 180); ctx.scale(sc, sc); fn(); ctx.restore(); boxes[k] = {x0: x + box[0] * sc, y0: y + box[1] * sc, x1: x + box[2] * sc, y1: y + box[3] * sc}; };
   // decorations: inside a light card they use the text colour so they stay visible
   const pb = boxes.panel, inCard = (x, y) => on.panel && tb.panelStyle === 'card' && pb && x > pb.x0 && x < pb.x1 && y > pb.y0 && y < pb.y1;
-  const deco = k => { if (!on[k] || !DECO[k]) return; const p = O[k], x = p.x / 100 * W, y = p.y / 100 * H; let sc = u * p.s / 100;
+  const deco = k => { if (!on[k] || !DECO[k]) return; const p = O[k], x = p.x / 100 * W, y = p.y / 100 * H + (k === 'tags' ? ((tb.gapSub || 0) + (tb.gapTags || 0)) * u * 2 : 0); let sc = u * p.s / 100;
     const P = inCard(x, y) ? {ln: C.text, ac: C.accent, tx: C.text, knob: C.accent} : {ln: C.line, ac: C.accent, tx: C.text};
     const X = tb.tx && tb.tx[k]; if (X){ P.ta = (X.a ?? 100) / 100; P.up = X.upper !== false; P.tc = X.c === 'text' ? C.text : X.c === 'accent' ? C.accent : X.c === 'line' ? C.line : null; if (k === 'tags' && X.size && X.size !== 100) sc *= X.size / 100; }
     ctx.save(); ctx.translate(x, y); if (p.r) ctx.rotate(p.r * Math.PI / 180); ctx.scale(sc, sc); const bb = DECO[k](P); ctx.restore();
     if (bb) boxes[k] = {x0: x + bb[0] * sc, y0: y + bb[1] * sc, x1: x + bb[2] * sc, y1: y + bb[3] * sc}; };
   ['globe', 'target', 'ornament', 'hearts', 'notes', 'sparkle', 'stamp', 'eq', 'waveform', 'progress', 'percent', 'barcode', 'explicit', 'tags'].forEach(deco);
   if (on.brackets){
-    const g = 46, l = 30; ctx.strokeStyle = col(C.line, .85); ctx.lineWidth = 2; ctx.beginPath();
+    const BK = tb.brk || {}, g = 46 * (BK.inset ?? 100) / 100, l = 30 * (BK.len ?? 100) / 100; ctx.strokeStyle = col(C.line, .85); ctx.lineWidth = 2 * (BK.w ?? 100) / 100; ctx.beginPath();
     [[g, g, 1, 1], [W - g, g, -1, 1], [g, H - g, 1, -1], [W - g, H - g, -1, -1]].forEach(([x, y, sx, sy]) => { ctx.moveTo(x + sx * l, y); ctx.lineTo(x, y); ctx.lineTo(x, y + sy * l); });
     ctx.stroke();
     ctx.strokeStyle = col(C.line, .5); ctx.lineWidth = 1.2; ctx.beginPath();
@@ -4908,7 +4910,7 @@ function draw(preview = true){
     boxes.title = {x0: x0 - 6, y0: blockTop - barH, x1: x0 + wmax + 6, y1: bottom};
   }
   if (on.sub && subText()){
-    const p = O.sub, x = p.x / 100 * W, y0 = p.y / 100 * H; let sz = 42 * u * p.s / 100;
+    const p = O.sub, x = p.x / 100 * W, y0 = p.y / 100 * H + (tb.gapSub || 0) * u * 2; let sz = 42 * u * p.s / 100;
     const maxW = column(x, y0, y0 + sz * 1.2);
     let t = subText().replace(/\s*\n\s*/g, ' '); ctx.font = fs(500, sz); setLS(sz * .01);
     while (ctx.measureText(t).width > maxW && sz > 42 * u * p.s / 100 * .75){ sz *= .95; ctx.font = fs(500, sz); setLS(sz * .01); }
@@ -5105,6 +5107,7 @@ $('[data-fontin="t"]').addEventListener('change', async e => { const f = e.targe
   { const R = tRg, opt = (P, auto) => `<div class="range"><span class="lbl">색</span><select class="sm" data-tbind="${P}.c" style="grid-column:2 / -1">${auto ? '<option value="auto">자동</option>' : ''}<option value="black">검정</option><option value="bg">노래 색 (배경색)</option><option value="accent">포인트색</option><option value="custom">직접 고르기</option></select></div><div class="range"><span class="lbl">직접 고른 색</span><div class="color"><input type="color" data-tbind="${P}.color" aria-label="음영 색"><span data-tout="${P}.color" data-fmt="hex"></span></div></div>`;
     TTXB.fade = `<div class="dsub-h"><span>음영</span></div>` + opt('shade.fade', true) + R('shade.fade.a', '진하기', 0, 200, 5, 'pct') + R('shade.fade.reach', '길이', 40, 160, 5, 'pct');
     TTXB.accentBar = `<div class="dsub-h"><span>포인트 선</span></div><div class="range"><span class="lbl">색</span><select class="sm" data-tbind="abar.c" style="grid-column:2 / -1"><option value="accent">포인트색</option><option value="text">글자색</option><option value="line">라인색</option><option value="custom">직접 고르기</option></select></div><div class="range"><span class="lbl">직접 고른 색</span><div class="color"><input type="color" data-tbind="abar.color" aria-label="포인트 선 색"><span data-tout="abar.color" data-fmt="hex"></span></div></div>`;
+    TTXB.brackets = `<div class="dsub-h"><span>코너 브래킷</span></div>` + R('brk.inset', '가장자리 여백', 20, 400, 5, 'pct') + R('brk.len', '꺾쇠 길이', 30, 400, 5, 'pct') + R('brk.w', '굵기', 50, 300, 5, 'pct');
     TTXB.vignette = `<div class="dsub-h"><span>비네트</span></div>` + opt('shade.vig', false) + R('shade.vig.a', '진하기', 0, 250, 5, 'pct'); }
   { const P = 'dust', R = tRg; TTXB.dust = `<div class="dsub-h"><span>별가루</span></div>` + R(P + '.amt', '양', 0, 300, 5, 'pct') + R(P + '.stars', '반짝이 별', 0, 400, 10, 'pct') + R(P + '.size', '크기', 40, 250, 5, 'pct') + R(P + '.a', '진하기', 5, 100, 1, 'pct') + `<div class="range"><span class="lbl">색</span><select class="sm" data-tbind="${P}.c" style="grid-column:2 / -1"><option value="auto">자동 (라인색 + 포인트색)</option><option value="line">라인색</option><option value="accent">포인트색</option><option value="text">글자색</option><option value="custom">직접 고르기</option></select></div>` + `<div class="range"><span class="lbl">직접 고른 색</span><div class="color"><input type="color" data-tbind="${P}.color" aria-label="별가루 색"><span data-tout="${P}.color" data-fmt="hex"></span></div></div>`; }
   $('#tFixList').innerHTML = `<div class="dlist">${FIX.map(([k, n]) => `<div class="ditem" data-tkey="${k}"><div class="drow"><span class="dname"><b>${n}</b></span>${TTXB[k] ? adj(k) : ''}
@@ -5304,7 +5307,7 @@ const FXS = {
   bgZoom:{pulse:100, drift:100},
   scan:{amt:40, move:true},
   letterbox:{size:9},
-  brackets:{c:'line', color:'#ffffff', a:80, inset:100, pulse:true},
+  brackets:{c:'line', color:'#ffffff', a:80, inset:100, len:100, w:100, pulse:true},
   frame:{c:'line', color:'#ffffff', a:30, inset:100},
   vignette:{amt:60},
   grain:{amt:60}
@@ -5994,7 +5997,7 @@ function fxFront(W, H, u, dt, now){
     if (XS.scan.move){ const by = ((clock * .12) % 1.2 - .1) * H, gr = ctx.createLinearGradient(0, by - 60 * u, 0, by + 60 * u); gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(.5, `rgba(255,255,255,${XS.scan.amt / 100 * .06})`); gr.addColorStop(1, 'rgba(255,255,255,0)'); ctx.fillStyle = gr; ctx.fillRect(0, by - 60 * u, W, 120 * u); } }
   if (X.frame){ const S = XS.frame, m = 30 * u * S.inset / 100; ctx.strokeStyle = col(colorOf(S, C.line), S.a / 100 * (.8 + .2 * Math.sin(clock * 1.2))); ctx.lineWidth = 1.2 * u; ctx.strokeRect(m, m, W - 2 * m, H - 2 * m); }
   if (X.brackets){
-    const S = XS.brackets, g = 26 * u * S.inset / 100, l = 40 * u * (S.pulse ? 1 + bassS * .45 : 1); ctx.strokeStyle = col(colorOf(S, C.line), S.a / 100); ctx.lineWidth = 2 * u; ctx.beginPath();
+    const S = XS.brackets, g = 26 * u * S.inset / 100, l = 40 * u * (S.len ?? 100) / 100 * (S.pulse ? 1 + bassS * .45 : 1); ctx.strokeStyle = col(colorOf(S, C.line), S.a / 100); ctx.lineWidth = 2 * u * (S.w ?? 100) / 100; ctx.beginPath();
     [[g, g, 1, 1], [W - g, g, -1, 1], [g, H - g, 1, -1], [W - g, H - g, -1, -1]].forEach(([x, y, sx, sy]) => { ctx.moveTo(x + sx * l, y); ctx.lineTo(x, y); ctx.lineTo(x, y + sy * l); }); ctx.stroke();
   }
   if (X.vignette){
@@ -6223,7 +6226,7 @@ const FX_UI = {
   bgZoom: RG('fxs.bgZoom.drift', '천천히 흐르기', 0, 200, 5, 'pct') + RG('fxs.bgZoom.pulse', '비트에 커지기', 0, 300, 5, 'pct'),
   scan: RG('fxs.scan.amt', '진하기', 5, 100, 1, 'pct') + SWR('fxs.scan.move', '천천히 흐르기'),
   letterbox: RG('fxs.letterbox.size', '두께', 2, 25, .5, 'int'),
-  brackets: COLS('fxs.brackets', '색', '자동') + RG('fxs.brackets.a', '진하기', 10, 100, 1, 'pct') + RG('fxs.brackets.inset', '안쪽 여백', 30, 400, 5, 'pct') + SWR('fxs.brackets.pulse', '비트에 맞춰 늘었다 줄기'),
+  brackets: COLS('fxs.brackets', '색', '자동') + RG('fxs.brackets.a', '진하기', 10, 100, 1, 'pct') + RG('fxs.brackets.inset', '가장자리 여백', 20, 400, 5, 'pct') + RG('fxs.brackets.len', '꺾쇠 길이', 30, 400, 5, 'pct') + RG('fxs.brackets.w', '굵기', 50, 300, 5, 'pct') + SWR('fxs.brackets.pulse', '비트에 맞춰 늘었다 줄기'),
   frame: COLS('fxs.frame', '색', '자동') + RG('fxs.frame.a', '진하기', 5, 100, 1, 'pct') + RG('fxs.frame.inset', '안쪽 여백', 30, 400, 5, 'pct'),
   vignette: RG('fxs.vignette.amt', '세기', 5, 100, 1, 'pct'),
   grain: RG('fxs.grain.amt', '세기', 5, 100, 1, 'pct')
