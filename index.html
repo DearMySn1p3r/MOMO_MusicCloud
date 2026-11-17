@@ -1239,6 +1239,15 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                   <div class="range"><span class="lbl">번짐</span><input type="range" min="0" max="80" step="1" data-tbind="shadowBlur"><output data-tout="shadowBlur" data-fmt="int"></output></div>
                   <div class="range"><span class="lbl">거리</span><input type="range" min="0" max="40" step="1" data-tbind="shadowDist"><output data-tout="shadowDist" data-fmt="int"></output></div>
                 </div>
+                <div class="sec-h" style="margin:4px 0 8px"><span>외부 광선 <small style="color:var(--faint);font-weight:500">(포토샵식 · 글씨가 잘 보이게)</small></span><label class="sw"><input type="checkbox" data-tbind="oglow.on"><span></span></label></div>
+                <div class="fold-body" id="tOGlowBox">
+                  <div class="range"><span class="lbl">혼합 모드</span><select class="sm" data-tbind="oglow.blend" style="grid-column:2 / -1"><option value="normal">표준</option><option value="multiply">곱하기</option><option value="soft-light">소프트 라이트</option><option value="overlay">오버레이</option><option value="screen">스크린 (밝게)</option></select></div>
+                  <div class="range"><span class="lbl">색</span><div class="color"><input type="color" data-tbind="oglow.color" aria-label="외부 광선 색"><span data-tout="oglow.color" data-fmt="hex"></span></div></div>
+                  <div class="range"><span class="lbl">불투명도</span><input type="range" min="0" max="100" step="1" data-tbind="oglow.a"><output data-tout="oglow.a" data-fmt="pct"></output></div>
+                  <div class="range"><span class="lbl">크기</span><input type="range" min="1" max="40" step="1" data-tbind="oglow.size"><output data-tout="oglow.size" data-fmt="int"></output></div>
+                  <div class="range"><span class="lbl">스프레드</span><input type="range" min="0" max="100" step="1" data-tbind="oglow.spread"><output data-tout="oglow.spread" data-fmt="pct"></output></div>
+                  <div class="sec-h" style="margin:2px 0 8px"><span>작은 글씨(태그 · 상단 줄 등)에도</span><label class="sw"><input type="checkbox" data-tbind="oglow.small"><span></span></label></div>
+                </div>
                 <div class="sec-h" style="margin:0 0 10px"><span>포인트 글로우</span><label class="sw"><input type="checkbox" data-tbind="glow"><span></span></label></div>
               </div>
             </div>
@@ -4472,12 +4481,12 @@ const PRESETS = {
            o:{title:{x:6,y:66,s:140}, sub:{x:6,y:70,s:110}, badge:{x:6,y:16,s:105}, cover:{x:82,y:56,s:66}, glow:{x:82,y:56,s:84}, ornament:{x:92,y:17,s:58}, hearts:{x:69,y:84,s:100}, sparkle:{x:63,y:16,s:62}, orbit:{x:82,y:56,s:50}, tags:{x:6,y:88,s:170}}},
   y2k:    {name:'Y2K 인터페이스', align:'left', bgDim:72, panelStyle:'glass', on:{panel:true, glow:true, ring:true, target:true, sparkle:true, globe:true, tags:true, percent:true, barcode:true, header:true, frame:true, brackets:true, gridBg:true, dust:true, fade:false, vignette:true, grain:true, accentBar:false},
            o:{title:{x:58.5,y:55,s:72}, sub:{x:58.5,y:58.5,s:80}, badge:{x:58.5,y:13,s:90}, cover:{x:29,y:53,s:76}, panel:{x:55,y:21,s:100,w:38,h:61}, ring:{x:29,y:53,s:82}, glow:{x:29,y:53,s:112}, target:{x:15,y:84,s:58}, sparkle:{x:43,y:23,s:68}, globe:{x:88,y:28.5,s:26}, orbit:{x:29,y:53,s:56}, tags:{x:58.5,y:30,s:158}, percent:{x:58.5,y:69.5,s:128}, barcode:{x:90,y:78,s:100}}},
-  photo:  {name:'포토 · 아래', photo:true, align:'left', bgDim:4, fadeDir:'bottom', on:{tags:true, header:true, brackets:true, sparkle:true, progress:true, fade:true, vignette:true, grain:true, accentBar:true},
-           o:{title:{x:6,y:80,s:64}, sub:{x:6,y:82.4,s:78}, badge:{x:6,y:73,s:80}, tags:{x:6,y:89.6,s:112}, sparkle:{x:91,y:22,s:44}, progress:{x:77,y:85,s:54}}},
+  photo:  {name:'포토 · 아래', photo:true, align:'left', bgDim:4, fadeDir:'bottom', on:{tags:true, header:true, brackets:true, sparkle:true, stamp:true, fade:true, vignette:true, grain:true, accentBar:true},
+           o:{title:{x:6,y:80,s:64}, sub:{x:6,y:82.4,s:78}, badge:{x:6,y:73,s:80}, tags:{x:6,y:89.6,s:112}, sparkle:{x:91,y:22,s:44}, stamp:{x:87,y:73,s:64}}},
   photoCenter: {name:'포토 · 가운데', photo:true, align:'center', bgDim:6, fadeDir:'bottom', on:{tags:true, frame:true, brackets:true, sparkle:true, waveform:true, fade:true, vignette:true, grain:true},
            o:{title:{x:50,y:80,s:62}, sub:{x:50,y:82.4,s:76}, badge:{x:50,y:66,s:78}, tags:{x:50,y:89.6,s:108}, sparkle:{x:88,y:22,s:42}, waveform:{x:50,y:69,s:34}}},
   photoSide: {name:'포토 · 옆', photo:true, align:'left', bgDim:4, fadeDir:'side', on:{tags:true, header:true, side:true, eq:true, barcode:true, sparkle:true, fade:true, vignette:true, grain:true, accentBar:true},
-           o:{title:{x:6,y:51,s:68}, sub:{x:6,y:53.4,s:80}, badge:{x:6,y:44,s:80}, tags:{x:6,y:60.6,s:112}, eq:{x:8,y:89,s:58}, barcode:{x:17,y:89.3,s:64}, sparkle:{x:38,y:33,s:42}}},
+           o:{title:{x:6,y:51,s:68}, sub:{x:6,y:53.4,s:80}, badge:{x:6,y:44,s:80}, tags:{x:6,y:60.6,s:112}, eq:{x:9,y:87,s:100}, barcode:{x:24,y:87.5,s:108}, sparkle:{x:38,y:33,s:42}}},
   player: {name:'플레이어 카드', align:'left', bgDim:0, wash:'light', panelStyle:'card', shadow:false, colors:{text:'#2a2230', line:'#ffffff'}, cshadow:{color:'#7a3a5e', amt:30},
            on:{panel:true, tags:true, waveform:true, progress:true, hearts:true, sparkle:true, ornament:true, header:true, dust:true, fade:false, vignette:false, grain:true, accentBar:false},
            o:{title:{x:44.4,y:49,s:62}, sub:{x:44.4,y:51.4,s:70}, badge:{x:44.4,y:8,s:90}, cover:{x:28.1,y:53.9,s:79}, panel:{x:12.5,y:19,s:100,w:75,h:62}, tags:{x:44.4,y:36,s:150}, waveform:{x:64.3,y:61,s:85}, progress:{x:64.3,y:67.4,s:115}, hearts:{x:11,y:80,s:110}, sparkle:{x:90,y:17,s:70}, ornament:{x:91,y:80,s:40}, orbit:{x:28.1,y:53.9,s:46}}}
@@ -4495,7 +4504,7 @@ function applyPresetTo(t, k){
   DECO_KEYS.forEach(n => { t.on[n] = !!P.on[n]; }); t.on.title = t.on.sub = t.on.cover = true;
   t.fadeDir = P.fadeDir || 'auto';
   if (P.photo){ // the picture fills the thumbnail: nothing sits on top of it
-    t.on.cover = false; t.bgBlur = 0;
+    t.on.cover = false; t.bgBlur = 0; t.abar = Object.assign({}, t.abar || {}, {c:'text'});
     let up = false; try { up = !!bgImg; } catch(e){}
     t.bgMode = up ? 'image' : (M.coverArt && M.coverArt()) ? 'art' : 'coverSharp';
   } else if (wasPhoto && t.bgMode !== 'color') t.bgMode = 'cover'; // leaving a photo layout: the blurred cover comes back behind the album cover
@@ -4507,7 +4516,7 @@ const tb = {
   cshadow:{on:true, color:'#000000', amt:42, blur:70, dist:26}, coverMat:false, pfx:{color:'#ffffff', a:7, border:22, borderColor:'#ffffff', radius:39, blur:55, shadow:22, shadowColor:'#46234a'},
   tx:{header:{size:100, a:100, c:'auto', upper:true}, tags:{size:100, a:100, c:'auto', upper:true}, side:{size:100, a:100, c:'auto', upper:true}, percent:{a:100, c:'auto', upper:true}, progress:{a:100, c:'auto'}, barcode:{a:100, c:'auto', upper:true}, bignum:{a:10, c:'auto'}, target:{a:100, c:'auto'}, stamp:{a:100, c:'auto', upper:true}, explicit:{a:100, c:'auto', upper:true}},
   tcol:{title:{c:'auto', color:'#ffffff'}, sub:{c:'auto', color:'#ffffff'}},
-  stampText:'', explicitText:'', shade:{fade:{c:'auto', color:'#000000', a:100, reach:100}, vig:{c:'black', color:'#000000', a:100}},
+  stampText:'', explicitText:'', shade:{fade:{c:'auto', color:'#000000', a:100, reach:100}, vig:{c:'black', color:'#000000', a:100}}, oglow:{on:true, blend:'soft-light', color:'#000000', a:50, size:2, spread:0, small:true}, abar:{c:'accent', color:'#ffffff'},
   catalog:'', sideText:'', lockText:'', lockSub:'', dust:{amt:100, stars:100, size:100, a:100, c:'auto', color:'#ffffff'},
   tagText:'OFFICIAL AUDIO · HQ', headL:'', headR:'', pctLabel:'SYNC RATE', pct:100, prog:40, bignumText:'01',
   on:{title:true, sub:true, badge:true, cover:true},
@@ -4553,7 +4562,20 @@ function loadFonts(){
 /* ---------- decorations (same drawings as the album-cover editor) ---------- */
 const INF = 'Outfit, Paperlogy, "Pretendard Variable", sans-serif';
 const rgbA = (c, a) => typeof c === 'string' ? col(c, a) : `rgba(${c[0]},${c[1]},${c[2]},${Math.max(0, Math.min(1, a))})`;
-function dtext(str, x, y, font, color, align = 'left', sp = 0){ ctx.font = font; ctx.fillStyle = color; ctx.textAlign = align; setLS(sp); ctx.fillText(str, x, y); setLS(0); return ctx.measureText(str).width; }
+// Photoshop-style outer glow under letters: blend mode, colour, opacity, size, spread
+function outerGlow(str, x, y, small){
+  const G = tb.oglow; if (!G || !G.on || (small && G.small === false) || !(G.a > 0)) return;
+  ctx.save(); ctx.globalCompositeOperation = G.blend || 'soft-light'; ctx.globalAlpha *= Math.min(1, G.a / 100);
+  const sz = Math.max(.5, G.size ?? 2), spr = Math.max(0, Math.min(100, G.spread ?? 0)) / 100;
+  // only the glow is painted (the letters are drawn far off-canvas and their shadow is moved back), so the glyphs themselves never get darker
+  const T = ctx.getTransform(), D = 6000 / Math.max(.05, Math.hypot(T.a, T.b));
+  ctx.shadowColor = G.color || '#000000'; ctx.shadowBlur = sz * 2 * (1 - spr * .6); ctx.shadowOffsetX = -T.a * D; ctx.shadowOffsetY = -T.b * D;
+  ctx.fillStyle = '#000'; ctx.strokeStyle = '#000';
+  if (spr > 0){ ctx.lineJoin = 'round'; ctx.lineWidth = sz * spr * 2; ctx.strokeText(str, x + D, y); }
+  for (let i = 0; i < (G.blend === 'normal' ? 1 : 2); i++) ctx.fillText(str, x + D, y);
+  ctx.restore();
+}
+function dtext(str, x, y, font, color, align = 'left', sp = 0){ ctx.font = font; ctx.textAlign = align; setLS(sp); outerGlow(str, x, y, true); ctx.fillStyle = color; ctx.fillText(str, x, y); setLS(0); return ctx.measureText(str).width; }
 function heart(cx, cy, sz){ ctx.beginPath(); ctx.moveTo(cx, cy + sz * .35); ctx.bezierCurveTo(cx - sz * 1.1, cy - sz * .35, cx - sz * .45, cy - sz * 1.05, cx, cy - sz * .45); ctx.bezierCurveTo(cx + sz * .45, cy - sz * 1.05, cx + sz * 1.1, cy - sz * .35, cx, cy + sz * .35); ctx.closePath(); }
 const fmtT = sec => { sec = Math.max(0, Math.floor(sec)); return Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0'); };
 const DECO = {
@@ -4716,6 +4738,7 @@ const pickTC2 = (o, def) => !o || !o.c || o.c === 'auto' ? def : o.c === 'accent
 function paintText(str, x, y, font, color, strokeW, ls = 0){
   ctx.font = font; ctx.textAlign = tb.align; ctx.textBaseline = 'alphabetic'; setLS(ls);
   if (strokeW > 0){ ctx.save(); ctx.lineJoin = 'round'; ctx.miterLimit = 2; ctx.lineWidth = strokeW * 2; ctx.strokeStyle = tb.strokeColor; ctx.strokeText(str, x, y); ctx.restore(); }
+  outerGlow(str, x, y, false);
   ctx.save();
   if (tb.glow){ ctx.shadowColor = col(tb.colors.accent, .9); ctx.shadowBlur = 26 * u; }
   else if (tb.shadow){ ctx.shadowColor = col(tb.shadowColor, tb.shadowAmt / 100); ctx.shadowBlur = tb.shadowBlur * u; ctx.shadowOffsetY = tb.shadowDist * u; }
@@ -4742,6 +4765,10 @@ function draw(preview = true){
   if (on.fade){
     const tx = O.title.x / 100, fd = tb.fadeDir || 'auto', SF = (tb.shade && tb.shade.fade) || {}, fa = (SF.a ?? 100) / 100, fr = (SF.reach ?? 100) / 100;
     const fc = def => SF.c === 'black' ? '#000000' : SF.c === 'bg' ? C.bg : SF.c === 'accent' ? C.accent : SF.c === 'custom' ? (SF.color || '#000000') : def;
+    if ((fd === 'bottom' || fd === 'side') && on.header){ // photo layouts: a light band under the top info line so it stays readable
+      const c0 = fc('#000000'), g = ctx.createLinearGradient(0, 0, 0, H * .22 * fr); g.addColorStop(0, col(c0, .42 * fa)); g.addColorStop(1, col(c0, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H * .22 * fr);
+    }
+    if (fd === 'side' && on.side){ const c0 = fc('#000000'), g = ctx.createLinearGradient(W, 0, W - W * .09, 0); g.addColorStop(0, col(c0, .4 * fa)); g.addColorStop(1, col(c0, 0)); ctx.fillStyle = g; ctx.fillRect(W - W * .09, 0, W * .09, H); }
     if (fd === 'bottom'){ // photo layouts: a soft dark floor under the words, the rest of the picture stays clear
       const c0 = fc('#000000'), g = ctx.createLinearGradient(0, H, 0, H - H * .62 * fr); g.addColorStop(0, col(c0, .72 * fa)); g.addColorStop(.45, col(c0, .32 * fa)); g.addColorStop(1, col(c0, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
     } else if (fd === 'side'){
@@ -4856,7 +4883,7 @@ function draw(preview = true){
       rr(x, y, bw, bh, 7 * u * sc); ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.fill();
       ctx.strokeStyle = col(C.line, .55); ctx.lineWidth = 1.4 * u; ctx.stroke();
       ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(x + padX + dot / 2, y + bh / 2, dot / 2, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = col(C.line, .95); ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(t, x + padX + dot + 10 * u * sc, y + bh / 2 + 1 * u); ctx.textBaseline = 'alphabetic';
+      ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; outerGlow(t, x + padX + dot + 10 * u * sc, y + bh / 2 + 1 * u, true); ctx.fillStyle = col(C.line, .95); ctx.fillText(t, x + padX + dot + 10 * u * sc, y + bh / 2 + 1 * u); ctx.textBaseline = 'alphabetic';
     });
     setLS(0);
     boxes.badge = {x0: x, y0: y, x1: x + bw, y1: y + bh};
@@ -4876,7 +4903,7 @@ function draw(preview = true){
     const x0 = anchorX(x, wmax);
     rotAt(x0 + wmax / 2, (blockTop + bottom) / 2, p.r || 0, () => {
       lines.forEach((l, i) => paintText(l, x, firstBase + i * lhPx, fs(tb.weight, size), pickTC2(tb.tcol && tb.tcol.title, tb.colors.text), tb.stroke * u * p.s / 100, ls));
-      if (on.accentBar){ const bw = 44 * u * p.s / 100, bh = 4 * u * p.s / 100; rr(anchorX(x, bw), blockTop - barH + bh, bw, bh, bh / 2); ctx.fillStyle = col(C.accent, 1); ctx.fill(); }
+      if (on.accentBar){ const bw = 44 * u * p.s / 100, bh = 4 * u * p.s / 100; rr(anchorX(x, bw), blockTop - barH + bh, bw, bh, bh / 2); const AB = tb.abar || {}; ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = 6 * u; ctx.fillStyle = AB.c === 'text' ? C.text : AB.c === 'line' ? C.line : AB.c === 'custom' ? (AB.color || '#ffffff') : C.accent; ctx.fill(); ctx.restore(); }
     });
     boxes.title = {x0: x0 - 6, y0: blockTop - barH, x1: x0 + wmax + 6, y1: bottom};
   }
@@ -4973,7 +5000,7 @@ function syncUI(){
   $$('[data-tpin]', view).forEach(b => { const on = !!tb.pin[b.dataset.tpin]; b.classList.toggle('pinned', on); b.title = on ? '고정 풀기' : '고정'; });
   if (document.activeElement !== $('#tTitle')) $('#tTitle').value = titleText();
   if (document.activeElement !== $('#tSub')) $('#tSub').value = subText();
-  $('#tShadowBox').hidden = !tb.shadow;
+  $('#tShadowBox').hidden = !tb.shadow; $('#tOGlowBox').hidden = !(tb.oglow && tb.oglow.on);
   $('#tSongName').textContent = tb.songName || '노래 불러오기';
   $('#tDropBg').hidden = tb.bgMode !== 'image'; $('#tDropCover').hidden = tb.coverSrc !== 'upload';
   $('#tLock').classList.toggle('unlocked', !tb.lock); $('#tLock span').textContent = tb.lock ? '오브젝트 잠금' : '오브젝트 이동 중';
@@ -5077,6 +5104,7 @@ $('[data-fontin="t"]').addEventListener('change', async e => { const f = e.targe
     <label class="sw"><input type="checkbox" data-tbind="on.${k}" aria-label="${n}"><span></span></label></div><div class="dsub np">${k === 'badge' ? BADGE : ''}${k === 'panel' ? PANEL : ''}${TTXB[k] ? `<div class="dsub-h"><span>글씨</span></div>${TTXB[k]}<div class="sep"></div>` : ''}${posSub(k)}</div></div>`).join('')}</div>`;
   { const R = tRg, opt = (P, auto) => `<div class="range"><span class="lbl">색</span><select class="sm" data-tbind="${P}.c" style="grid-column:2 / -1">${auto ? '<option value="auto">자동</option>' : ''}<option value="black">검정</option><option value="bg">노래 색 (배경색)</option><option value="accent">포인트색</option><option value="custom">직접 고르기</option></select></div><div class="range"><span class="lbl">직접 고른 색</span><div class="color"><input type="color" data-tbind="${P}.color" aria-label="음영 색"><span data-tout="${P}.color" data-fmt="hex"></span></div></div>`;
     TTXB.fade = `<div class="dsub-h"><span>음영</span></div>` + opt('shade.fade', true) + R('shade.fade.a', '진하기', 0, 200, 5, 'pct') + R('shade.fade.reach', '길이', 40, 160, 5, 'pct');
+    TTXB.accentBar = `<div class="dsub-h"><span>포인트 선</span></div><div class="range"><span class="lbl">색</span><select class="sm" data-tbind="abar.c" style="grid-column:2 / -1"><option value="accent">포인트색</option><option value="text">글자색</option><option value="line">라인색</option><option value="custom">직접 고르기</option></select></div><div class="range"><span class="lbl">직접 고른 색</span><div class="color"><input type="color" data-tbind="abar.color" aria-label="포인트 선 색"><span data-tout="abar.color" data-fmt="hex"></span></div></div>`;
     TTXB.vignette = `<div class="dsub-h"><span>비네트</span></div>` + opt('shade.vig', false) + R('shade.vig.a', '진하기', 0, 250, 5, 'pct'); }
   { const P = 'dust', R = tRg; TTXB.dust = `<div class="dsub-h"><span>별가루</span></div>` + R(P + '.amt', '양', 0, 300, 5, 'pct') + R(P + '.stars', '반짝이 별', 0, 400, 10, 'pct') + R(P + '.size', '크기', 40, 250, 5, 'pct') + R(P + '.a', '진하기', 5, 100, 1, 'pct') + `<div class="range"><span class="lbl">색</span><select class="sm" data-tbind="${P}.c" style="grid-column:2 / -1"><option value="auto">자동 (라인색 + 포인트색)</option><option value="line">라인색</option><option value="accent">포인트색</option><option value="text">글자색</option><option value="custom">직접 고르기</option></select></div>` + `<div class="range"><span class="lbl">직접 고른 색</span><div class="color"><input type="color" data-tbind="${P}.color" aria-label="별가루 색"><span data-tout="${P}.color" data-fmt="hex"></span></div></div>`; }
   $('#tFixList').innerHTML = `<div class="dlist">${FIX.map(([k, n]) => `<div class="ditem" data-tkey="${k}"><div class="drow"><span class="dname"><b>${n}</b></span>${TTXB[k] ? adj(k) : ''}
