@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=Sora:wght@300;400;600;700;800&family=Manrope:wght@400;500;700;800&family=Syne:wght@500;700;800&family=Unbounded:wght@400;700;900&family=Michroma&family=Orbitron:wght@500;700;900&family=Bebas+Neue&family=DM+Serif+Display&family=Cormorant+Garamond:wght@500;600;700&family=Instrument+Serif&family=Space+Mono:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&family=IBM+Plex+Sans+KR:wght@400;500;700&family=Gowun+Batang:wght@400;700&family=Nanum+Myeongjo:wght@400;700;800&family=Black+Han+Sans&family=Orbit&family=Do+Hyeon&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Inter:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=Sora:wght@300;400;600;700;800&family=Manrope:wght@400;500;700;800&family=Syne:wght@500;700;800&family=Unbounded:wght@400;700;900&family=Michroma&family=Orbitron:wght@500;700;900&family=Bebas+Neue&family=DM+Serif+Display&family=Cormorant+Garamond:wght@500;600;700&family=Instrument+Serif&family=Space+Mono:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&family=IBM+Plex+Sans+KR:wght@400;500;700&family=Gowun+Batang:wght@400;700&family=Nanum+Myeongjo:wght@400;700;800&family=Black+Han+Sans&family=Orbit&family=Do+Hyeon&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
 <style>
 @font-face{font-family:'Paperlogy';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-1Thin.woff2') format('woff2');font-weight:100;font-display:swap}
@@ -224,6 +224,13 @@ input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;bac
 .dsub.np{padding:4px 12px 10px}
 .dsub-h{display:flex;align-items:center;justify-content:space-between;font-size:11px;font-weight:600;color:var(--muted);margin:8px 0 8px}
 .dsub-h:first-child{margin-top:2px}
+.fx-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:0 0 12px}
+.fx-chip{position:relative;display:block;cursor:pointer}
+.fx-chip input{position:absolute;opacity:0;pointer-events:none}
+.fx-chip span{display:block;border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:7px 9px;font-size:11.5px;font-weight:600;color:var(--muted);text-align:center;transition:.15s}
+.fx-chip input:checked+span{border-color:var(--accent,#ff4fa3);color:var(--text);background:color-mix(in srgb,var(--accent,#ff4fa3) 12%,var(--surface-2))}
+.fx-chip input:focus-visible+span{outline:2px solid var(--accent,#ff4fa3);outline-offset:1px}
+.concept-tiles .tpl span small{display:block;font-weight:500;font-size:9.5px;color:var(--faint);margin-top:1px}
 .dsub .sep{height:1px;background:var(--line);margin:8px 0}
 .ditem.is-on.open .dsub{display:block}
 .dsub .inp{margin-bottom:9px;height:32px}
@@ -267,7 +274,9 @@ input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;bac
 .vol.muted .vol-btn .mx{display:block}
 .vol.muted .vol-btn .w1,.vol.muted .vol-btn .w2,.vol.low .vol-btn .w2{display:none}
 .vplayer input[type=range]{width:100%}
-.seg.txt button{height:30px;font-size:11.5px;font-weight:500}
+.seg.txt button{height:30px;font-size:11.5px;font-weight:500;white-space:nowrap;padding:0 4px}
+.seg.txt:has(> :nth-child(5)){grid-auto-flow:row;grid-template-columns:repeat(3,1fr)}
+.concept-tiles{grid-template-columns:repeat(3,1fr)}
 .tpls{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
 .tpl{border:1px solid var(--line);background:var(--surface-2);border-radius:9px;padding:8px 6px 6px;display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--muted);font-size:11px;font-weight:600}
 .tpl svg{width:100%;height:auto;max-width:76px}
@@ -663,7 +672,8 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
               <div class="sec">
                 <div class="sec-h"><h3>앨범 커버</h3></div>
                 <div class="seg txt">
-                  <button data-vset="coverSrc" data-val="cover">만든 커버 사용</button>
+                  <button data-vset="coverSrc" data-val="cover">만든 커버</button>
+                  <button data-vset="coverSrc" data-val="art">원본 그림</button>
                   <button data-vset="coverSrc" data-val="upload">이미지 올리기</button>
                 </div>
                 <label class="drop" id="vDropCover" hidden>
@@ -676,16 +686,28 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
               <div class="sec">
                 <div class="sec-h"><h3>배경</h3></div>
                 <div class="seg txt">
-                  <button data-vset="bgMode" data-val="color">단색</button>
                   <button data-vset="bgMode" data-val="cover">흐린 커버</button>
+                  <button data-vset="bgMode" data-val="coverSharp">만든 커버</button>
+                  <button data-vset="bgMode" data-val="art">원본 그림</button>
+                  <button data-vset="bgMode" data-val="image">이미지</button>
                   <button data-vset="bgMode" data-val="video">영상</button>
+                  <button data-vset="bgMode" data-val="color">단색</button>
                 </div>
+                <label class="drop" id="vDropBgImg" hidden>
+                  <div class="di" id="vBgImgThumb"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><circle cx="5.5" cy="6.5" r="1.3"/><path d="m2 12 4-4 3 3 2-2 3 3"/></svg></div>
+                  <div><b id="vBgImgName">배경 이미지 불러오기</b><span>화면 전체에 크게 꽉 차게 깔려요</span></div>
+                  <input type="file" accept="image/*">
+                </label>
                 <label class="drop" id="vDropBg" hidden>
                   <div class="di"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.5" y="3" width="13" height="10" rx="2"/><path d="M6.5 6v4l3.5-2z" fill="currentColor" stroke="none"/></svg></div>
                   <div><b id="vBgName">배경 영상 불러오기</b><span>MP4 · WEBM · MOV — 소리 없이 반복 재생돼요</span></div>
                   <input type="file" accept="video/*">
                 </label>
                 <div class="range"><span class="lbl">어둡게</span><input type="range" min="0" max="95" step="1" data-vbind="bgDim"><output data-vout="bgDim" data-fmt="pct"></output></div>
+                <div class="range"><span class="lbl">흐리게</span><input type="range" min="0" max="40" step="1" data-vbind="bgBlur"><output data-vout="bgBlur" data-fmt="int"></output></div>
+                <div class="range"><span class="lbl">가로 위치</span><input type="range" min="0" max="100" step="1" data-vbind="bgX"><output data-vout="bgX" data-fmt="pct"></output></div>
+                <div class="range"><span class="lbl">세로 위치</span><input type="range" min="0" max="100" step="1" data-vbind="bgY"><output data-vout="bgY" data-fmt="pct"></output></div>
+                <p class="note">"만든 커버" · "원본 그림" · "이미지"는 흐리지 않게 화면 전체에 크게 깔려요. 또렷하게 보이려면 "어둡게"를 낮추고, 앞에 있는 앨범 커버는 배치 탭에서 꺼도 돼요. 위치는 사진이 화면보다 길 때 어디를 보여 줄지 정해요.</p><p class="note">"원본 그림"은 앨범 커버 페이지에 넣은 그림을 글씨 · 장식 없이 그대로 써요. 그림이 없으면 만든 커버가 나와요.</p>
                 <div class="field" style="margin:4px 0 6px"><label>배경 색감</label></div>
                 <div class="seg txt">
                   <button data-vset="bgTone" data-val="calm">차분하게</button>
@@ -995,9 +1017,10 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
               </div>
               <div class="sec">
                 <div class="sec-h"><h3>배경</h3></div>
-                <div class="seg txt" style="grid-auto-columns:auto;grid-template-columns:repeat(5,1fr)">
+                <div class="seg txt">
                   <button data-pset="bgMode" data-val="coverBlur">흐린 커버</button>
                   <button data-pset="bgMode" data-val="cover">커버</button>
+                  <button data-pset="bgMode" data-val="art">원본 그림</button>
                   <button data-pset="bgMode" data-val="image">이미지</button>
                   <button data-pset="bgMode" data-val="video">영상</button>
                   <button data-pset="bgMode" data-val="color">단색</button>
@@ -1016,7 +1039,7 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                 <div class="range"><span class="lbl">흐리게</span><input type="range" min="0" max="40" step="1" data-pbind="bgBlur"><output data-pout="bgBlur" data-fmt="int"></output></div>
                 <div class="range"><span class="lbl">가로 위치</span><input type="range" min="0" max="100" step="1" data-pbind="bgX"><output data-pout="bgX" data-fmt="pct"></output></div>
                 <div class="range"><span class="lbl">세로 위치</span><input type="range" min="0" max="100" step="1" data-pbind="bgY"><output data-pout="bgY" data-fmt="pct"></output></div>
-                <p class="note">"흐리게"는 커버 · 이미지 배경에 적용돼요. 위치는 사진이 화면보다 길 때 어디를 보여 줄지 정해요.</p>
+                <p class="note">"흐리게"는 커버 · 이미지 배경에 적용돼요. 위치는 사진이 화면보다 길 때 어디를 보여 줄지 정해요.</p><p class="note">"원본 그림"은 앨범 커버 페이지에 넣은 그림을 글씨 · 장식 없이 그대로 써요. 그림이 없으면 만든 커버가 나와요.</p>
               </div>
               <div class="sec">
                 <div class="sec-h"><h3>커버 이미지</h3><button class="link" id="pRefreshCover">커버 다시 가져오기</button></div>
@@ -1024,6 +1047,7 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                 <p class="note">커버가 없는 곡에는 아래 기본 커버가 나와요.</p>
                 <div class="seg txt">
                   <button data-pset="coverSrc" data-val="cover">만든 커버</button>
+                  <button data-pset="coverSrc" data-val="art">원본 그림</button>
                   <button data-pset="coverSrc" data-val="upload">이미지 올리기</button>
                 </div>
                 <label class="drop" id="pDropCover" hidden>
@@ -1176,6 +1200,9 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                   <button class="tpl" data-tpreset="big"><svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><path d="M7 11h34M7 18h28" stroke-width="3"/><rect x="44" y="17" width="13" height="13" rx="1" transform="rotate(-8 50 23)"/><path d="M50 4l1.5 3 3 1.5-3 1.5-1.5 3-1.5-3-3-1.5 3-1.5z" stroke-opacity=".7"/><path d="M7 28h12" stroke-opacity=".6"/></svg><span>포스터</span></button>
                   <button class="tpl" data-tpreset="y2k"><svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><path d="M3 7V3h4M61 7V3h-4M3 29v4h4M61 29v4h-4" stroke-opacity=".7"/><rect x="9" y="11" width="15" height="15" rx="1"/><circle cx="16.5" cy="18.5" r="11" stroke-dasharray="1 2" stroke-opacity=".6"/><rect x="31" y="8" width="26" height="21" rx="2.5"/><path d="M35 14h14M35 18h10M35 24h7"/></svg><span>Y2K 인터페이스</span></button>
                   <button class="tpl" data-tpreset="player"><svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><rect x="8" y="7" width="48" height="23" rx="4"/><rect x="11" y="10" width="15" height="15" rx="2"/><path d="M30 13h16M30 17h10"/><path d="M30 22h22" stroke-dasharray="1 1.2"/><circle cx="41" cy="26.5" r="1.6"/></svg><span>플레이어 카드</span></button>
+                  <button class="tpl" data-tpreset="photo"><svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><rect x="2.5" y="2.5" width="59" height="31" rx="2" fill="currentColor" fill-opacity=".16" stroke="none"/><path d="M2.5 26l14-10 10 7 9-6 26 13" fill="currentColor" fill-opacity=".14" stroke-opacity=".55"/><circle cx="48" cy="9" r="3" stroke-opacity=".7"/><path d="M7 25h24M7 29h14" stroke-width="1.6"/></svg><span>포토 · 아래</span></button>
+                  <button class="tpl" data-tpreset="photoCenter"><svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><rect x="2.5" y="2.5" width="59" height="31" rx="2" fill="currentColor" fill-opacity=".16" stroke="none"/><path d="M2.5 26l14-10 10 7 9-6 26 13" fill="currentColor" fill-opacity=".14" stroke-opacity=".55"/><circle cx="48" cy="9" r="3" stroke-opacity=".7"/><path d="M20 25h24M25 29h14" stroke-width="1.6"/></svg><span>포토 · 가운데</span></button>
+                  <button class="tpl" data-tpreset="photoSide"><svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3"/><rect x="2.5" y="2.5" width="59" height="31" rx="2" fill="currentColor" fill-opacity=".16" stroke="none"/><path d="M2.5 26l14-10 10 7 9-6 26 13" fill="currentColor" fill-opacity=".14" stroke-opacity=".55"/><circle cx="48" cy="9" r="3" stroke-opacity=".7"/><path d="M7 15h20M7 19h13" stroke-width="1.6"/></svg><span>포토 · 옆</span></button>
                 </div>
               </div>
               <div class="sec">
@@ -1221,15 +1248,21 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
                 <div class="sec-h"><h3>배경</h3><button class="link" id="tColorsFromCover">커버 색 가져오기</button></div>
                 <div class="seg txt">
                   <button data-tset="bgMode" data-val="cover">흐린 커버</button>
+                  <button data-tset="bgMode" data-val="coverSharp">만든 커버</button>
+                  <button data-tset="bgMode" data-val="art">원본 그림</button>
                   <button data-tset="bgMode" data-val="image">이미지</button>
                   <button data-tset="bgMode" data-val="color">단색</button>
                 </div>
                 <label class="drop" id="tDropBg" hidden>
                   <div class="di" id="tBgThumb"></div>
-                  <div><b id="tBgName">배경 이미지 불러오기</b><span>16:9에 꽉 차게 맞춰져요</span></div>
+                  <div><b id="tBgName">배경 이미지 불러오기</b><span>화면 전체에 크게 꽉 차게 깔려요</span></div>
                   <input type="file" accept="image/*">
                 </label>
                 <div class="range"><span class="lbl">어둡게</span><input type="range" min="0" max="90" step="1" data-tbind="bgDim"><output data-tout="bgDim" data-fmt="pct"></output></div>
+                <div class="range"><span class="lbl">흐리게</span><input type="range" min="0" max="40" step="1" data-tbind="bgBlur"><output data-tout="bgBlur" data-fmt="int"></output></div>
+                <div class="range"><span class="lbl">가로 위치</span><input type="range" min="0" max="100" step="1" data-tbind="bgX"><output data-tout="bgX" data-fmt="pct"></output></div>
+                <div class="range"><span class="lbl">세로 위치</span><input type="range" min="0" max="100" step="1" data-tbind="bgY"><output data-tout="bgY" data-fmt="pct"></output></div>
+                <p class="note">"만든 커버" · "원본 그림" · "이미지"는 흐리지 않게 화면 전체에 크게 깔려요. 또렷하게 보이려면 "어둡게"를 낮추고, 앞의 앨범 커버는 꾸밈 탭에서 꺼도 돼요.</p><p class="note">"원본 그림"은 앨범 커버 페이지에 넣은 그림을 글씨 · 장식 없이 그대로 써요. 그림이 없으면 만든 커버가 나와요.</p>
                 <div class="colors4">
                   <div class="field"><label>배경색</label><div class="color"><input type="color" data-tbind="colors.bg"><span data-tout="colors.bg" data-fmt="hex"></span></div></div>
                   <div class="field"><label>포인트</label><div class="color"><input type="color" data-tbind="colors.accent"><span data-tout="colors.accent" data-fmt="hex"></span></div></div>
@@ -1238,7 +1271,8 @@ kbd{font:inherit;font-size:10px;border:1px solid currentColor;border-radius:4px;
               <div class="sec">
                 <div class="sec-h"><h3>앨범 커버</h3><button class="link" id="tRefreshCover">다시 가져오기</button></div>
                 <div class="seg txt">
-                  <button data-tset="coverSrc" data-val="cover">만든 커버 사용</button>
+                  <button data-tset="coverSrc" data-val="cover">만든 커버</button>
+                  <button data-tset="coverSrc" data-val="art">원본 그림</button>
                   <button data-tset="coverSrc" data-val="upload">이미지 올리기</button>
                 </div>
                 <label class="drop" id="tDropCover" hidden>
@@ -2739,8 +2773,375 @@ const FXK = (() => {
   }
   return {grain, vignette, glow, shadowShape};
 })();
-window.MMC = {FXK, addUserFont, lyricsFromTag, AUTO_ART, state, parseID3, buildMp3, render, AU, FONTS, toast, download, bindVol, STORE, autosave, deepAssign, fileOf, attachResets, refreshResets, makeHistory, EDITORS, normDeg};
+// the original picture loaded on the album-cover page (no text or decorations on it)
+const coverArt = () => (IMG.el && IMG.el.naturalWidth) ? IMG.el : null;
+window.MMC = {coverArt, FXK, addUserFont, lyricsFromTag, AUTO_ART, state, parseID3, buildMp3, render, AU, FONTS, toast, download, bindVol, STORE, autosave, deepAssign, fileOf, attachResets, refreshResets, makeHistory, EDITORS, normDeg};
 window.MMC.ready = restoreCover().catch(e => { console.error(e); });
+})();
+</script>
+<script>
+/* ===================== FRAMES (concept templates · video · playlist) =====================
+   A frame is drawn last, over the finished picture. Frames that "fit" shrink the picture
+   into their window (film, glass); the others lie on top (cinema bars, camcorder …).
+   Effects (grain, dust, flicker, light leak, gate weave, colour fringe, tracking, beat glow) move with the song. */
+(() => {
+'use strict';
+const M = window.MMC; if (!M) return;
+const CONCEPTS = [
+  ['cinema', '시네마', '2.39:1 · 크레딧'],
+  ['film', '필름 롤', '필름 띠 · 빛 번짐'],
+  ['vhs', '홈비디오', 'REC · 타임코드'],
+  ['glass', '글래스', '유리 창 · 흐린 배경'],
+  ['chrome', '크롬', '은빛 테두리 · 반짝임'],
+  ['live', '라이브', 'LIVE · 하단 자막바'],
+  ['archive', '아카이브', '전시 라벨 · 재단선'],
+  ['dream', '드림', '오로라 빛 · 별'],
+  ['signal', '시그널', '레이더 · 주파수']
+];
+const ICON = {
+  none: '<path d="M14 26 50 10" stroke-opacity=".5"/>',
+  cinema: '<rect x="1" y="1" width="62" height="7" fill="currentColor" stroke="none"/><rect x="1" y="28" width="62" height="7" fill="currentColor" stroke="none"/><path d="M27 31.5h10" stroke="var(--panel,#fff)" stroke-width="1.2"/><path d="M21 31.5h3M40 31.5h3" stroke="var(--panel,#fff)" stroke-width=".6"/><path d="M28 4.5h8" stroke="var(--panel,#fff)" stroke-width=".7"/>',
+  film: '<rect x="1" y="1" width="62" height="6" fill="currentColor" stroke="none"/><rect x="1" y="29" width="62" height="6" fill="currentColor" stroke="none"/>' + Array.from({length: 8}, (_, i) => `<rect x="${4 + i * 7.6}" y="2.6" width="3" height="2.6" rx=".6" fill="var(--panel,#fff)" stroke="none"/><rect x="${4 + i * 7.6}" y="30.8" width="3" height="2.6" rx=".6" fill="var(--panel,#fff)" stroke="none"/>`).join('') + '<rect x="3" y="9" width="58" height="18" rx="1.5" stroke-opacity=".5"/>',
+  vhs: '<path d="M6 10V6h4M58 10V6h-4M6 26v4h4M58 26v4h-4"/><circle cx="12.5" cy="11" r="1.6" fill="#ff4f5e" stroke="none"/><path d="M16 11h5" stroke-width="1.4"/><rect x="48" y="9.6" width="6" height="3" rx=".5"/><path d="M11 26h9M44 26h9" stroke-width="1.3"/>',
+  glass: '<rect x="1.5" y="1.5" width="61" height="33" rx="2" fill="currentColor" fill-opacity=".12" stroke="none"/><rect x="13" y="6" width="38" height="21" rx="3.5"/><path d="M15.5 9h12" stroke-opacity=".45"/><path d="M27 31h10" stroke-width="1.2"/><path d="M29 33h6" stroke-opacity=".5"/>',
+  chrome: '<rect x="5" y="5" width="54" height="26" rx="6" stroke-width="1.8"/><rect x="8.5" y="8.5" width="47" height="19" rx="4" stroke-opacity=".3"/><rect x="25" y="3" width="14" height="4" rx="2" fill="currentColor" stroke="none"/><path d="M58 4.5l.9 2 2 .9-2 .9-.9 2-.9-2-2-.9 2-.9z" fill="currentColor" stroke="none"/>',
+  live: '<rect x="5" y="4.5" width="10" height="4" rx="1"/><rect x="49" y="4.5" width="10" height="4" rx="2" fill="#ff3b4a" stroke="none"/><rect x="5" y="20" width="11" height="3" fill="#ff4fa3" stroke="none"/><rect x="5" y="23" width="28" height="7" rx="1" fill="currentColor" fill-opacity=".28" stroke="none"/><path d="M8 26h14" stroke-width="1.2"/><path d="M5 30h12" stroke="#ff4fa3"/>',
+  archive: '<rect x="6" y="5" width="52" height="26" stroke-opacity=".55"/><path d="M2 5h2.5M6 1v2.5M62 5h-2.5M58 1v2.5M2 31h2.5M6 35v-2.5M62 31h-2.5M58 35v-2.5"/><rect x="9" y="22" width="15" height="6" fill="currentColor" fill-opacity=".35" stroke="none"/><path d="M9 9h8M48 9h7" stroke-width="1"/><circle cx="53" cy="25" r="2"/><path d="M50 25h6M53 22v6" stroke-width=".6"/>',
+  signal: '<path d="M5 10V5h5M59 10V5h-5M5 26v5h5M59 26v5h-5" stroke-width="1.2"/><path d="M3 12h1.5M3 15h2.5M3 18h1.5M3 21h2.5M3 24h1.5" stroke-opacity=".6"/><circle cx="52" cy="24" r="5"/><path d="M52 24l3.5-3.5" stroke="#ff4fa3"/><circle cx="50" cy="22.5" r=".8" fill="currentColor" stroke="none"/><path d="M9 28v-2M11 28v-4M13 28v-3M15 28v-5M17 28v-2" stroke-width="1.2"/><path d="M9 8h9" stroke-width="1"/><circle cx="20.5" cy="8" r="1" fill="#ff4fa3" stroke="none"/>',
+  dream: '<rect x="3" y="3" width="58" height="30" rx="6" stroke="#c8b8ff" stroke-width="2.6" stroke-opacity=".55"/><rect x="3" y="3" width="58" height="30" rx="6" stroke="#ffb8e0" stroke-opacity=".7"/><path d="M13 8l.9 2 2 .9-2 .9-.9 2-.9-2-2-.9 2-.9zM51 21.5l.7 1.5 1.5.7-1.5.7-.7 1.5-.7-1.5-1.5-.7 1.5-.7z" fill="currentColor" stroke="none"/><path d="M27 29h10" stroke-opacity=".6"/>'
+};
+const FXL = [['grain', '필름 그레인'], ['dust', '먼지 · 스크래치'], ['flicker', '영사기 깜빡임'], ['leak', '빛 번짐'], ['weave', '화면 흔들림'], ['chroma', '색 번짐'], ['tracking', '트래킹 노이즈'], ['pulse', '비트에 맞춰 빛남']];
+const FX0 = {grain:false, dust:false, flicker:false, leak:false, weave:false, chroma:false, tracking:false, pulse:false};
+const DEF = {
+  none:    {color:'#000000', fit:false, fx:{}},
+  cinema:  {color:'#050506', fit:false, fx:{grain:true, dust:true, flicker:true}},
+  film:    {color:'#17130f', fit:true,  fx:{grain:true, dust:true, leak:true, weave:true}},
+  vhs:     {color:'#ffffff', fit:false, fx:{grain:true, chroma:true, tracking:true}},
+  glass:   {color:'#ffffff', fit:true,  fx:{pulse:true}},
+  chrome:  {color:'#c9ceda', fit:false, fx:{pulse:true}},
+  live:    {color:'#ffffff', fit:false, fx:{}},
+  archive: {color:'#ffffff', fit:false, fx:{grain:true}},
+  dream:   {color:'#ffc8ec', fit:false, fx:{pulse:true, leak:true}},
+  signal:  {color:'#ffffff', fit:false, fx:{pulse:true, grain:true}}
+};
+const base = () => ({style:'none', color:'#000000', fit:false, size:100, amt:100, text1:'', text2:'', fx:Object.assign({}, FX0)});
+const defaults = st => { if (!DEF[st]) st = 'none'; const d = DEF[st]; return Object.assign(base(), {color: d.color, fit: d.fit, style: st, fx: Object.assign({}, FX0, d.fx)}); };
+const hexRgb = h => { h = String(h || '#000').replace('#', ''); if (h.length === 3) h = h.split('').map(c => c + c).join(''); const n = parseInt(h, 16) || 0; return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
+const rgba = (h, a) => { const [r, g, b] = hexRgb(h); return `rgba(${r},${g},${b},${Math.max(0, Math.min(1, a))})`; };
+const shade = (h, k) => { const [r, g, b] = hexRgb(h); const f = v => Math.round(Math.max(0, Math.min(255, v * k))); return `rgb(${f(r)},${f(g)},${f(b)})`; };
+const pad2 = n => String(Math.floor(Math.max(0, n))).padStart(2, '0');
+const mmss = s => `${pad2(s / 60)}:${pad2(s % 60)}`;
+const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+const SANS = 'Outfit, Paperlogy, "Pretendard Variable", sans-serif', MONO = 'ui-monospace, "SF Mono", Menlo, Consolas, monospace';
+const rng = seed => { let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; };
+const fxOf = F => F.fx || {grain: F.grain !== false};
+const cinemaBar = (W, H, z) => (W > H * 1.2 ? Math.max(H * .06, (H - W / 2.39) / 2) : H * .1) * z;
+
+// the window the picture is fitted into (null = the frame lies on top of the picture)
+function inner(F, W, H){
+  if (!F || !DEF[F.style] || F.style === 'none' || !F.fit) return null;
+  const z = (F.size || 100) / 100;
+  let t, b, l, r;
+  switch (F.style){
+    case 'cinema': t = b = cinemaBar(W, H, z); break;
+    case 'film':   t = b = H * .085 * z; break;
+    case 'glass':  t = b = H * .09 * z; break;
+    default:       t = b = l = r = Math.min(W, H) * .05 * z;
+  }
+  const ih = H - t - b;
+  if (l == null){ const iw = W * ih / H; return {x: (W - iw) / 2, y: t, w: iw, h: ih}; }
+  const iw = W - l - r, s = Math.min(iw / W, ih / H), w2 = W * s, h2 = H * s;
+  return {x: l + (iw - w2) / 2, y: t + (ih - h2) / 2, w: w2, h: h2};
+}
+function unmap(F, W, H, p){ const R = inner(F, W, H); if (!R) return p; return Object.assign({}, p, {x: (p.x - R.x) * W / R.w, y: (p.y - R.y) * H / R.h}); }
+
+let tmp = null, tmp2 = null, noiseC = null;
+function noise(){ if (noiseC) return noiseC; noiseC = document.createElement('canvas'); noiseC.width = noiseC.height = 160; const x = noiseC.getContext('2d'), d = x.createImageData(160, 160); for (let i = 0; i < d.data.length; i += 4){ const v = Math.random() * 255; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 255; } x.putImageData(d, 0, 0); return noiseC; }
+function grain(ctx, W, H, a, clock){ const p = ctx.createPattern(noise(), 'repeat'); if (!p) return; ctx.save(); ctx.globalCompositeOperation = 'overlay'; ctx.globalAlpha = a; const o = Math.floor((clock || 0) * 24) % 8; ctx.translate(o * 19, o * 31); ctx.fillStyle = p; ctx.fillRect(-200, -200, W + 400, H + 400); ctx.restore(); }
+function sp(ctx, v){ if ('letterSpacing' in ctx) ctx.letterSpacing = v + 'px'; }
+function txt(ctx, s, x, y, font, color, align = 'left', spc = 0){ ctx.font = font; ctx.fillStyle = color; ctx.textAlign = align; ctx.textBaseline = 'alphabetic'; sp(ctx, spc); ctx.fillText(s, x, y); sp(ctx, 0); }
+function tw(ctx, s, font, spc = 0){ ctx.font = font; sp(ctx, spc); const w = ctx.measureText(s).width; sp(ctx, 0); return w; }
+function fitText(ctx, s, maxW, font, spc = 0){ if (tw(ctx, s, font, spc) <= maxW) return s; while (s.length > 1 && tw(ctx, s + '…', font, spc) > maxW) s = s.slice(0, -1); return s + '…'; }
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+function star(ctx, x, y, s){ ctx.beginPath(); ctx.moveTo(x, y - s); ctx.quadraticCurveTo(x, y, x + s, y); ctx.quadraticCurveTo(x, y, x, y + s); ctx.quadraticCurveTo(x, y, x - s, y); ctx.quadraticCurveTo(x, y, x, y - s); ctx.fill(); }
+function brackets(ctx, x0, y0, x1, y1, l){ ctx.beginPath(); [[x0, y0, 1, 1], [x1, y0, -1, 1], [x0, y1, 1, -1], [x1, y1, -1, -1]].forEach(([x, y, sx, sy]) => { ctx.moveTo(x + sx * l, y); ctx.lineTo(x, y); ctx.lineTo(x, y + sy * l); }); ctx.stroke(); }
+
+// draw the frame. info = {title, artist, year, time (s), clock (s), accent, level (0..1 beat), progress (0..1)}
+function apply(ctx, cv, W, H, F, info = {}){
+  if (!F || !F.style || F.style === 'none' || !DEF[F.style]) return;
+  const z = (F.size || 100) / 100, u = Math.min(W, H) / 1000, R = inner(F, W, H), C = F.color || DEF[F.style].color, X = fxOf(F), K = (F.amt ?? 100) / 100;
+  const clock = info.clock || 0, lv = Math.max(0, Math.min(1, info.level || 0)), fr = Math.floor(clock * 24), r = rng(fr * 9973 + 7), prog = Math.max(0, Math.min(1, info.progress || 0));
+  const PH = ['Untitled Track', 'Artist Name', 'Album Title'], clean = v => (v && !PH.includes(v)) ? v : '';
+  const title = clean(info.title) || 'Untitled', artist = clean(info.artist), year = info.year || String(new Date().getFullYear()), accent = info.accent || '#ff4fa3', t = info.time || 0;
+  const glow = X.pulse ? lv * K : 0;
+  ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none'; ctx.shadowBlur = 0; ctx.shadowColor = 'transparent';
+  // ---- picture: copy it when it has to move or shrink
+  const wx = X.weave ? (Math.sin(clock * 11.3) * .6 + (r() - .5) * .9) * 2.2 * u * K : 0, wy = X.weave ? (Math.sin(clock * 7.7) * .7 + (r() - .5) * .8) * 2.6 * u * K : 0;
+  const rad = F.style === 'glass' ? 18 * u * z : F.style === 'film' ? 5 * u : 0;
+  const clipR = (A) => { ctx.beginPath(); if (rad && ctx.roundRect) ctx.roundRect(A.x, A.y, A.w, A.h, rad); else ctx.rect(A.x, A.y, A.w, A.h); ctx.clip(); };
+  if (R || X.weave || X.chroma || X.tracking){
+    if (!tmp) tmp = document.createElement('canvas');
+    if (tmp.width !== W || tmp.height !== H){ tmp.width = W; tmp.height = H; }
+    const tx = tmp.getContext('2d'); tx.clearRect(0, 0, W, H); tx.drawImage(cv, 0, 0);
+    if (R){
+      if (F.style === 'glass'){ // the picture itself, blurred, behind the glass window
+        ctx.fillStyle = '#0c0b10'; ctx.fillRect(0, 0, W, H);
+        ctx.filter = `blur(${Math.round(34 * u)}px) brightness(.62) saturate(1.25)`; ctx.drawImage(tmp, -60 * u, -60 * u, W + 120 * u, H + 120 * u); ctx.filter = 'none';
+        ctx.fillStyle = rgba(C, .04); ctx.fillRect(0, 0, W, H);
+      } else { ctx.fillStyle = C; ctx.fillRect(0, 0, W, H); }
+      ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = 40 * u; ctx.shadowOffsetY = 14 * u; ctx.fillStyle = '#000'; rr(ctx, R.x, R.y, R.w, R.h, rad); ctx.fill(); ctx.restore();
+      ctx.save(); clipR(R); ctx.drawImage(tmp, R.x + wx - 2 * u, R.y + wy - 2 * u, R.w + 4 * u, R.h + 4 * u); ctx.restore();
+    } else if (X.weave) ctx.drawImage(tmp, wx - 3 * u, wy - 3 * u, W + 6 * u, H + 6 * u);
+    const Rr = R || {x: 0, y: 0, w: W, h: H};
+    if (X.chroma){
+      ctx.save(); clipR(Rr); ctx.globalCompositeOperation = 'screen'; ctx.globalAlpha = .13 * K;
+      ctx.filter = 'sepia(1) saturate(6) hue-rotate(-50deg)'; ctx.drawImage(tmp, Rr.x + 4 * u * K, Rr.y, Rr.w, Rr.h);
+      ctx.filter = 'sepia(1) saturate(6) hue-rotate(150deg)'; ctx.drawImage(tmp, Rr.x - 4 * u * K, Rr.y, Rr.w, Rr.h); ctx.restore();
+    }
+    if (X.tracking){
+      const bh = (12 + 14 * r()) * u * K, by = Rr.y + ((clock * .16) % 1) * (Rr.h + bh) - bh, sx = (6 + r() * 8) * u * K;
+      ctx.save(); clipR(Rr);
+      ctx.drawImage(tmp, 0, Math.max(0, (by - Rr.y) * H / Rr.h), W, bh * H / Rr.h, Rr.x + sx, by, Rr.w, bh);
+      ctx.fillStyle = 'rgba(255,255,255,.06)'; ctx.fillRect(Rr.x, by, Rr.w, bh);
+      for (let i = 0; i < 5; i++){ ctx.fillStyle = `rgba(255,255,255,${.08 + r() * .2})`; ctx.fillRect(Rr.x + r() * Rr.w, by + r() * bh, (20 + r() * 110) * u, Math.max(1, u)); }
+      ctx.restore();
+    }
+  }
+  const area = R || {x: 0, y: 0, w: W, h: H};
+  // ---- effects on the picture
+  if (X.flicker){ const f = (.02 + r() * .045) * K; ctx.save(); clipR(area); ctx.fillStyle = `rgba(0,0,0,${f})`; ctx.fillRect(area.x, area.y, area.w, area.h); if (r() < .05){ ctx.fillStyle = `rgba(255,250,235,${.035 * K})`; ctx.fillRect(area.x, area.y, area.w, area.h); } ctx.restore(); }
+  if (X.leak){
+    const ly = area.y + area.h * (.35 + .25 * Math.sin(clock * .23)), lx = area.x + area.w * (Math.sin(clock * .11) > 0 ? .02 : .98), rd = area.h * (.55 + .1 * Math.sin(clock * .7));
+    const warm = F.style === 'dream' ? ['rgba(200,170,255,', 'rgba(255,160,220,'] : ['rgba(255,140,60,', 'rgba(255,70,110,'];
+    ctx.save(); ctx.globalCompositeOperation = 'screen'; clipR(area);
+    const g = ctx.createRadialGradient(lx, ly, 0, lx, ly, rd); g.addColorStop(0, warm[0] + (.38 * K) + ')'); g.addColorStop(.45, warm[1] + (.16 * K) + ')'); g.addColorStop(1, warm[1] + '0)');
+    ctx.fillStyle = g; ctx.fillRect(area.x, area.y, area.w, area.h); ctx.restore();
+  }
+  if (X.dust){
+    const dr = rng(Math.floor(clock * 12) * 131 + 3);
+    ctx.save(); clipR(area);
+    for (let i = 0; i < 8; i++){ const x = area.x + dr() * area.w, y = area.y + dr() * area.h, s = (1 + dr() * 3) * u; ctx.fillStyle = dr() < .6 ? `rgba(15,12,10,${.32 * K})` : `rgba(255,250,240,${.32 * K})`; ctx.beginPath(); ctx.ellipse(x, y, s, s * (.4 + dr() * .8), dr() * 3, 0, Math.PI * 2); ctx.fill(); }
+    if (dr() < .7){ const x = area.x + dr() * area.w; ctx.strokeStyle = `rgba(255,250,235,${(.07 + dr() * .1) * K})`; ctx.lineWidth = Math.max(1, .9 * u); ctx.beginPath(); ctx.moveTo(x, area.y); ctx.lineTo(x + (dr() - .5) * 6 * u, area.y + area.h); ctx.stroke(); }
+    if (dr() < .2){ ctx.strokeStyle = `rgba(20,16,12,${.28 * K})`; ctx.lineWidth = Math.max(1, 1.1 * u); const x = area.x + dr() * area.w, y = area.y + dr() * area.h; ctx.beginPath(); ctx.moveTo(x, y); ctx.bezierCurveTo(x + 14 * u, y - 10 * u, x + 22 * u, y + 12 * u, x + 34 * u, y + 2 * u); ctx.stroke(); }
+    ctx.restore();
+  }
+  // ---- the frame itself
+  switch (F.style){
+    case 'cinema': {
+      const bar = cinemaBar(W, H, z), ink = '#f4f1ea';
+      ctx.fillStyle = C; ctx.fillRect(0, 0, W, bar); ctx.fillRect(0, H - bar, W, bar);
+      if (R){ ctx.fillRect(0, 0, R.x, H); ctx.fillRect(R.x + R.w, 0, W - R.x - R.w, H); }
+      // soft edge where the picture meets the bars
+      [[bar, 1], [H - bar, -1]].forEach(([y, d]) => { const g = ctx.createLinearGradient(0, y, 0, y + d * 18 * u); g.addColorStop(0, 'rgba(0,0,0,.4)'); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.fillStyle = g; ctx.fillRect(0, Math.min(y, y + d * 18 * u), W, 18 * u); });
+      const fs1 = Math.max(9, Math.min(bar * .13, 15 * u)), fs2 = Math.max(11, Math.min(bar * .2, 24 * u));
+      const top = (F.text1 || (artist ? `${artist} presents` : 'momo music presents')).toUpperCase(), bot = (F.text2 || title).toUpperCase();
+      txt(ctx, fitText(ctx, top, W * .6, `500 ${fs1}px ${SANS}`, fs1 * .7), W / 2, bar * .56 + fs1 * .35, `500 ${fs1}px ${SANS}`, rgba(ink, .55), 'center', fs1 * .7);
+      const by = H - bar / 2 + fs2 * .36, bt = fitText(ctx, bot, W * .5, `600 ${fs2}px ${SANS}`, fs2 * .5), bw = tw(ctx, bt, `600 ${fs2}px ${SANS}`, fs2 * .5);
+      txt(ctx, bt, W / 2 + fs2 * .25, by, `600 ${fs2}px ${SANS}`, rgba(ink, .92), 'center', fs2 * .5);
+      ctx.strokeStyle = rgba(ink, .35); ctx.lineWidth = Math.max(1, u); ctx.beginPath(); ctx.moveTo(W / 2 - bw / 2 - 26 * u, by - fs2 * .36); ctx.lineTo(W / 2 - bw / 2 - 58 * u, by - fs2 * .36); ctx.moveTo(W / 2 + bw / 2 + 26 * u, by - fs2 * .36); ctx.lineTo(W / 2 + bw / 2 + 58 * u, by - fs2 * .36); ctx.stroke();
+      const fs3 = Math.max(8, fs1 * .9);
+      txt(ctx, `${pad2(t / 3600)}:${pad2(t / 60 % 60)}:${pad2(t % 60)}`, 48 * u, H - bar / 2 + fs3 * .36, `500 ${fs3}px ${MONO}`, rgba(ink, .38), 'left', fs3 * .2);
+      txt(ctx, `${year}  ·  2.39:1`, W - 48 * u, H - bar / 2 + fs3 * .36, `500 ${fs3}px ${MONO}`, rgba(ink, .38), 'right', fs3 * .2);
+      const v = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * .4, W / 2, H / 2, Math.max(W, H) * .72); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,.28)'); ctx.fillStyle = v; ctx.fillRect(0, bar, W, H - 2 * bar);
+      break;
+    }
+    case 'film': {
+      const band = H * .085 * z, hw = band * .26, hh = band * .36, gap = band * .56, amber = '#f0a24a';
+      ctx.fillStyle = C; ctx.fillRect(0, 0, W, band); ctx.fillRect(0, H - band, W, band);
+      if (R){ ctx.fillRect(0, 0, R.x, H); ctx.fillRect(R.x + R.w, 0, W - R.x - R.w, H); }
+      const off = (clock * 30 * u) % gap;
+      ctx.fillStyle = 'rgba(244,236,220,.9)';
+      for (let x = -gap + off; x < W + gap; x += gap){ rr(ctx, x, band * .2, hw, hh, hw * .3); ctx.fill(); rr(ctx, x, H - band * .2 - hh, hw, hh, hw * .3); ctx.fill(); }
+      const ef = Math.max(8, band * .13), edge = (F.text1 || 'MMC 400').toUpperCase(), fno = Math.floor(clock * 1.5);
+      for (let i = 0; i < 3; i++){ const x = W * (.12 + i * .32); txt(ctx, i === 0 ? edge : `▸ ${pad2((14 + i * 2 + fno) % 99)}`, x, band * .2 + hh + ef * 1.45, `600 ${ef}px ${MONO}`, rgba(amber, .8), 'left', ef * .15); txt(ctx, `${pad2((15 + i * 2 + fno) % 99)}A`, x + W * .16, band * .2 + hh + ef * 1.45, `600 ${ef}px ${MONO}`, rgba(amber, .55), 'left', ef * .15); }
+      txt(ctx, fitText(ctx, (F.text2 || title).toUpperCase(), W * .4, `600 ${ef}px ${MONO}`, ef * .15), W * .12, H - band * .2 - hh - ef * .55, `600 ${ef}px ${MONO}`, rgba(amber, .7), 'left', ef * .15);
+      if (R){ // halation: a faint warm glow just inside the picture edge
+        ctx.save(); clipR(R); ctx.shadowColor = 'rgba(255,90,40,.45)'; ctx.shadowBlur = 16 * u; ctx.strokeStyle = 'rgba(255,120,60,.25)'; ctx.lineWidth = 4 * u; rr(ctx, R.x - 2 * u, R.y - 2 * u, R.w + 4 * u, R.h + 4 * u, rad); ctx.stroke(); ctx.restore();
+      }
+      const v = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * .35, W / 2, H / 2, Math.max(W, H) * .75); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,.3)'); ctx.fillStyle = v; ctx.save(); clipR(area); ctx.fillRect(0, 0, W, H); ctx.restore();
+      break;
+    }
+    case 'vhs': {
+      const m = Math.min(W, H) * .06 * z, fs = Math.max(12, 26 * u * z), col = C, osd = (s, x, y, al = 'left', sc = 1) => { txt(ctx, s, x + 2 * u, y + 2 * u, `700 ${fs * sc}px ${MONO}`, 'rgba(0,0,0,.45)', al, fs * .12); txt(ctx, s, x, y, `700 ${fs * sc}px ${MONO}`, rgba(col, .95), al, fs * .12); };
+      ctx.strokeStyle = rgba(col, .85); ctx.lineWidth = Math.max(1.5, 2.2 * u); brackets(ctx, m, m, W - m, H - m, 30 * u * z);
+      const x0 = m + 30 * u, y0 = m + 30 * u + fs;
+      if (Math.floor(clock * 1.25) % 2 === 0){ ctx.fillStyle = '#ff3b4a'; ctx.beginPath(); ctx.arc(x0 + fs * .32, y0 - fs * .36, fs * .3, 0, Math.PI * 2); ctx.fill(); }
+      osd('REC', x0 + fs * .85, y0);
+      osd('SP', x0, y0 + fs * 1.45, 'left', .72);
+      const bw = fs * 1.5, bh = fs * .72, bx = W - m - 30 * u - bw, by = y0 - bh * .9;
+      osd(F.text1 || '▶ PLAY', bx - fs * .7, y0, 'right', .8);
+      ctx.strokeStyle = rgba(col, .95); ctx.lineWidth = Math.max(1.5, 2 * u); ctx.strokeRect(bx, by, bw, bh); ctx.fillStyle = rgba(col, .95); ctx.fillRect(bx + bw, by + bh * .3, bw * .07, bh * .4);
+      const bars = 1 + Math.floor((1 - prog) * 2.99); for (let i = 0; i < bars; i++) ctx.fillRect(bx + bw * (.1 + i * .3), by + bh * .2, bw * .22, bh * .6);
+      const d = new Date(), date = (F.text2 || `${MONTHS[d.getMonth()]}. ${pad2(d.getDate())} ${d.getFullYear()}`).toUpperCase();
+      const yb = H - m - 30 * u;
+      osd(date, x0, yb, 'left', .8);
+      osd(`${pad2(t / 3600)}:${pad2(t / 60 % 60)}:${pad2(t % 60)}`, W - m - 30 * u, yb, 'right', .8);
+      break;
+    }
+    case 'glass': {
+      const A = R || {x: W * .06, y: H * .09, w: W * .88, h: H * .82};
+      if (!R){ ctx.save(); ctx.fillStyle = 'rgba(10,9,14,.38)'; ctx.beginPath(); ctx.rect(0, 0, W, H); if (ctx.roundRect) ctx.roundRect(A.x, A.y, A.w, A.h, rad); ctx.fill('evenodd'); ctx.restore(); }
+      // glass sheen on the window
+      ctx.save(); rr(ctx, A.x, A.y, A.w, A.h, rad); ctx.clip();
+      const sh = ctx.createLinearGradient(A.x, A.y, A.x + A.w * .4, A.y + A.h); sh.addColorStop(0, rgba('#ffffff', .14)); sh.addColorStop(.35, rgba('#ffffff', .02)); sh.addColorStop(1, rgba('#ffffff', 0)); ctx.fillStyle = sh; ctx.fillRect(A.x, A.y, A.w, A.h); ctx.restore();
+      ctx.save(); ctx.shadowColor = rgba(C, .25 + glow * .6); ctx.shadowBlur = (10 + glow * 40) * u; ctx.strokeStyle = rgba(C, .5 + glow * .3); ctx.lineWidth = Math.max(1, 1.4 * u); rr(ctx, A.x, A.y, A.w, A.h, rad); ctx.stroke(); ctx.restore();
+      ctx.strokeStyle = rgba('#ffffff', .18); ctx.lineWidth = Math.max(1, u); rr(ctx, A.x + 6 * u, A.y + 6 * u, A.w - 12 * u, A.h - 12 * u, Math.max(0, rad - 5 * u)); ctx.stroke();
+      const fs = Math.max(9, 13 * u * z), ty = A.y / 2 + fs * .36;
+      ctx.fillStyle = rgba(C, .9); star(ctx, A.x + fs * .5, ty - fs * .36, fs * .5);
+      txt(ctx, (F.text1 || 'NOW PLAYING').toUpperCase(), A.x + fs * 1.4, ty, `600 ${fs}px ${SANS}`, rgba(C, .82), 'left', fs * .3);
+      txt(ctx, mmss(t), A.x + A.w, ty, `500 ${fs}px ${MONO}`, rgba(C, .7), 'right', fs * .1);
+      const by = A.y + A.h + (H - A.y - A.h) * .42, f2 = Math.max(10, 15 * u * z), lab = fitText(ctx, F.text2 || `${title}${artist ? '   ·   ' + artist : ''}`, W * .6, `500 ${f2}px ${SANS}`, f2 * .12);
+      txt(ctx, lab, W / 2, by + f2 * .36, `500 ${f2}px ${SANS}`, rgba(C, .9), 'center', f2 * .12);
+      const pw = 150 * u, py = by + f2 * 1.25; ctx.fillStyle = rgba(C, .2); rr(ctx, W / 2 - pw / 2, py, pw, Math.max(2, 2.4 * u), 2 * u); ctx.fill(); ctx.fillStyle = rgba(C, .9); rr(ctx, W / 2 - pw / 2, py, pw * prog, Math.max(2, 2.4 * u), 2 * u); ctx.fill();
+      break;
+    }
+    case 'chrome': {
+      const m = 30 * u * z, rd = 34 * u * z, a = clock * .25;
+      const cx = W / 2, cy = H / 2, gx = Math.cos(a) * W * .6, gy = Math.sin(a) * H * .6;
+      const g = ctx.createLinearGradient(cx - gx, cy - gy, cx + gx, cy + gy); g.addColorStop(0, '#ffffff'); g.addColorStop(.22, C); g.addColorStop(.45, '#ffffff'); g.addColorStop(.62, shade(C, .55)); g.addColorStop(.8, '#f4f6fb'); g.addColorStop(1, shade(C, .75));
+      ctx.save(); ctx.shadowColor = `rgba(255,255,255,${.25 + glow * .6})`; ctx.shadowBlur = (8 + glow * 36) * u; ctx.strokeStyle = g; ctx.lineWidth = Math.max(2, 3.6 * u * z); rr(ctx, m, m, W - 2 * m, H - 2 * m, rd); ctx.stroke(); ctx.restore();
+      ctx.strokeStyle = 'rgba(0,0,0,.35)'; ctx.lineWidth = Math.max(1, u); rr(ctx, m + 2.4 * u * z, m + 2.4 * u * z, W - 2 * m - 4.8 * u * z, H - 2 * m - 4.8 * u * z, rd - 2 * u); ctx.stroke();
+      ctx.strokeStyle = 'rgba(255,255,255,.28)'; rr(ctx, m + 11 * u, m + 11 * u, W - 2 * m - 22 * u, H - 2 * m - 22 * u, Math.max(0, rd - 9 * u)); ctx.stroke();
+      // the chrome name plate sitting on the top edge
+      const fs = Math.max(10, 14 * u * z), lab = (F.text1 || artist || 'MOMO MUSIC').toUpperCase(), lw = tw(ctx, lab, `700 ${fs}px ${SANS}`, fs * .35) + fs * 2.6, lh = fs * 2;
+      const pg = ctx.createLinearGradient(0, m - lh / 2, 0, m + lh / 2); pg.addColorStop(0, '#ffffff'); pg.addColorStop(.48, C); pg.addColorStop(.52, shade(C, .78)); pg.addColorStop(1, '#ffffff');
+      ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = 10 * u; ctx.shadowOffsetY = 3 * u; ctx.fillStyle = pg; rr(ctx, W / 2 - lw / 2, m - lh / 2, lw, lh, lh / 2); ctx.fill(); ctx.restore();
+      ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = Math.max(1, u); rr(ctx, W / 2 - lw / 2, m - lh / 2, lw, lh, lh / 2); ctx.stroke();
+      txt(ctx, lab, W / 2 + fs * .17, m + fs * .36, `700 ${fs}px ${SANS}`, '#2a2a33', 'center', fs * .35);
+      // twinkling four-point glints on two corners
+      [[W - m - rd * .3, m + rd * .3, 0], [m + rd * .3, H - m - rd * .3, 1.7]].forEach(([x, y, ph]) => { const s = (13 + 7 * Math.sin(clock * 2.2 + ph) + glow * 10) * u; ctx.save(); ctx.shadowColor = '#ffffff'; ctx.shadowBlur = 14 * u; ctx.fillStyle = '#ffffff'; star(ctx, x, y, s); ctx.restore(); });
+      break;
+    }
+    case 'live': {
+      const m = 52 * u * z, fs = Math.max(10, 14 * u * z), ink = C;
+      // channel bug, top left
+      const bug = (F.text1 || 'MOMO TV').toUpperCase(), bw = tw(ctx, bug, `700 ${fs}px ${SANS}`, fs * .25) + fs * 1.6, bh = fs * 2;
+      ctx.fillStyle = 'rgba(10,10,14,.35)'; rr(ctx, m, m, bw, bh, 5 * u); ctx.fill(); ctx.strokeStyle = rgba(ink, .7); ctx.lineWidth = Math.max(1, 1.3 * u); rr(ctx, m, m, bw, bh, 5 * u); ctx.stroke();
+      txt(ctx, bug, m + bw / 2 + fs * .12, m + bh / 2 + fs * .36, `700 ${fs}px ${SANS}`, rgba(ink, .95), 'center', fs * .25);
+      // LIVE pill, top right
+      const lw = tw(ctx, 'LIVE', `700 ${fs}px ${SANS}`, fs * .2) + fs * 2.9, lx = W - m - lw;
+      ctx.fillStyle = '#ff3b4a'; rr(ctx, lx, m, lw, bh, bh / 2); ctx.fill();
+      ctx.fillStyle = `rgba(255,255,255,${.55 + .45 * Math.abs(Math.sin(clock * 2.4))})`; ctx.beginPath(); ctx.arc(lx + fs * .95, m + bh / 2, fs * .26, 0, Math.PI * 2); ctx.fill();
+      txt(ctx, 'LIVE', lx + fs * 1.75, m + bh / 2 + fs * .36, `700 ${fs}px ${SANS}`, '#fff', 'left', fs * .2);
+      txt(ctx, mmss(t), lx - fs * .8, m + bh / 2 + fs * .36, `600 ${fs}px ${MONO}`, rgba(ink, .85), 'right', fs * .1);
+      // lower third
+      const tf = Math.max(14, 30 * u * z), af = Math.max(10, 16 * u * z), nf = Math.max(8, 11 * u * z);
+      const tt = fitText(ctx, F.text2 || title, W * .5, `700 ${tf}px ${SANS}`), at = artist ? fitText(ctx, artist, W * .5, `400 ${af}px ${SANS}`) : '';
+      const w = Math.max(tw(ctx, tt, `700 ${tf}px ${SANS}`), tw(ctx, at, `400 ${af}px ${SANS}`), 300 * u) + 52 * u, h = tf * (at ? 2.6 : 1.9), y = H - m - h, x = m;
+      const nt = 'NOW PLAYING', nw = tw(ctx, nt, `800 ${nf}px ${SANS}`, nf * .3) + nf * 2.2, nh = nf * 2.2;
+      ctx.fillStyle = accent; ctx.fillRect(x, y - nh, nw, nh); txt(ctx, nt, x + nf * 1.1, y - nh / 2 + nf * .36, `800 ${nf}px ${SANS}`, '#fff', 'left', nf * .3);
+      ctx.fillStyle = 'rgba(10,10,16,.62)'; ctx.fillRect(x, y, w, h); ctx.fillStyle = accent; ctx.fillRect(x, y, Math.max(3, 4 * u), h);
+      txt(ctx, tt, x + 26 * u, y + tf * 1.25, `700 ${tf}px ${SANS}`, rgba(ink, .98), 'left');
+      if (at) txt(ctx, at, x + 26 * u, y + tf * 1.25 + af * 1.55, `400 ${af}px ${SANS}`, rgba(ink, .7), 'left');
+      ctx.fillStyle = 'rgba(255,255,255,.14)'; ctx.fillRect(x, y + h - 3 * u, w, 3 * u); ctx.fillStyle = accent; ctx.fillRect(x, y + h - 3 * u, w * prog, 3 * u);
+      break;
+    }
+    case 'archive': {
+      const m = 40 * u * z, ink = C, fs = Math.max(8, 12 * u * z);
+      ctx.strokeStyle = rgba(ink, .38); ctx.lineWidth = Math.max(1, u); ctx.strokeRect(m, m, W - 2 * m, H - 2 * m);
+      // crop marks outside each corner
+      const o = 10 * u, l = 16 * u; ctx.strokeStyle = rgba(ink, .75); ctx.beginPath();
+      [[m, m, -1, -1], [W - m, m, 1, -1], [m, H - m, -1, 1], [W - m, H - m, 1, 1]].forEach(([x, y, sx, sy]) => { ctx.moveTo(x + sx * o, y); ctx.lineTo(x + sx * (o + l), y); ctx.moveTo(x, y + sy * o); ctx.lineTo(x, y + sy * (o + l)); }); ctx.stroke();
+      txt(ctx, (F.text1 || 'ARCHIVE  No. 01').toUpperCase(), m + 22 * u, m + 22 * u + fs, `500 ${fs}px ${MONO}`, rgba(ink, .8), 'left', fs * .2);
+      txt(ctx, `—  ${year}`, W - m - 22 * u, m + 22 * u + fs, `500 ${fs}px ${MONO}`, rgba(ink, .8), 'right', fs * .2);
+      // museum label, bottom left
+      const tf = Math.max(11, 17 * u * z), af = Math.max(9, 13 * u * z), nf = Math.max(8, 11 * u * z);
+      const tt = fitText(ctx, F.text2 || title, W * .32, `700 ${tf}px ${SANS}`), at = artist || 'Unknown artist', dur = prog > .001 ? t / prog : 0;
+      const lw = Math.max(tw(ctx, tt, `700 ${tf}px ${SANS}`), tw(ctx, at, `400 ${af}px ${SANS}`), 200 * u) + 36 * u, lh = tf + af + nf + 52 * u, lx = m + 22 * u, ly = H - m - 22 * u - lh;
+      ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.25)'; ctx.shadowBlur = 14 * u; ctx.shadowOffsetY = 4 * u; ctx.fillStyle = 'rgba(250,249,246,.94)'; ctx.fillRect(lx, ly, lw, lh); ctx.restore();
+      txt(ctx, tt, lx + 18 * u, ly + 16 * u + tf, `700 ${tf}px ${SANS}`, '#1d1b1a', 'left');
+      txt(ctx, at, lx + 18 * u, ly + 16 * u + tf + 8 * u + af, `400 ${af}px ${SANS}`, 'rgba(29,27,26,.75)', 'left');
+      txt(ctx, `Digital audio, ${year}${dur ? '  ·  ' + mmss(dur) : ''}`, lx + 18 * u, ly + lh - 14 * u, `400 ${nf}px ${MONO}`, 'rgba(29,27,26,.5)', 'left', nf * .05);
+      // registration mark + running time, bottom right
+      const rx = W - m - 34 * u, ry = H - m - 34 * u, rr0 = 9 * u; ctx.strokeStyle = rgba(ink, .8); ctx.lineWidth = Math.max(1, u); ctx.beginPath(); ctx.arc(rx, ry, rr0, 0, Math.PI * 2); ctx.moveTo(rx - rr0 * 1.7, ry); ctx.lineTo(rx + rr0 * 1.7, ry); ctx.moveTo(rx, ry - rr0 * 1.7); ctx.lineTo(rx, ry + rr0 * 1.7); ctx.stroke();
+      txt(ctx, mmss(t), rx - rr0 * 2.6, ry + fs * .36, `500 ${fs}px ${MONO}`, rgba(ink, .8), 'right', fs * .15);
+      break;
+    }
+    case 'signal': {
+      const m = 38 * u * z, ink = C, fs = Math.max(8, 12 * u * z), l = 28 * u * z;
+      ctx.save(); ctx.shadowColor = rgba(ink, .35 + glow * .6); ctx.shadowBlur = (4 + glow * 22) * u; ctx.strokeStyle = rgba(ink, .9); ctx.lineWidth = Math.max(1.2, 1.6 * u); brackets(ctx, m, m, W - m, H - m, l); ctx.restore();
+      ctx.strokeStyle = rgba(ink, .22); ctx.lineWidth = Math.max(1, u); ctx.beginPath(); ctx.moveTo(m + l + 14 * u, m); ctx.lineTo(W - m - l - 14 * u, m); ctx.moveTo(m + l + 14 * u, H - m); ctx.lineTo(W - m - l - 14 * u, H - m); ctx.stroke();
+      // ruler on the left edge with a pointer that follows the song
+      const y0 = H * .28, y1 = H * .72; ctx.strokeStyle = rgba(ink, .55); ctx.beginPath();
+      for (let i = 0, y = y0; y <= y1; y += 12 * u, i++){ const w = i % 5 === 0 ? 12 * u : 6 * u; ctx.moveTo(m, y); ctx.lineTo(m + w, y); } ctx.stroke();
+      const py = y0 + (y1 - y0) * prog; ctx.fillStyle = accent; ctx.beginPath(); ctx.moveTo(m + 16 * u, py); ctx.lineTo(m + 24 * u, py - 5 * u); ctx.lineTo(m + 24 * u, py + 5 * u); ctx.closePath(); ctx.fill();
+      // top: label + blinking lock dot / frequency
+      const tx = m + 22 * u, ty = m + 22 * u + fs, lab = (F.text1 || 'SIGNAL').toUpperCase();
+      txt(ctx, lab, tx, ty, `600 ${fs}px ${MONO}`, rgba(ink, .9), 'left', fs * .3);
+      const lw = tw(ctx, lab, `600 ${fs}px ${MONO}`, fs * .3);
+      ctx.fillStyle = Math.floor(clock * 2) % 2 ? rgba(accent, .35) : accent; ctx.beginPath(); ctx.arc(tx + lw + fs * .9, ty - fs * .36, fs * .3, 0, Math.PI * 2); ctx.fill();
+      txt(ctx, 'LOCKED', tx + lw + fs * 1.6, ty, `500 ${fs}px ${MONO}`, rgba(ink, .55), 'left', fs * .3);
+      const freq = F.text2 || `${(88.1 + ((info.title || '').length * 3.7 % 19.8)).toFixed(1)} MHz`;
+      txt(ctx, freq.toUpperCase(), W - m - 22 * u, ty, `600 ${fs}px ${MONO}`, rgba(ink, .9), 'right', fs * .2);
+      txt(ctx, `T+${mmss(t)}`, W - m - 22 * u, ty + fs * 1.7, `500 ${fs * .9}px ${MONO}`, rgba(ink, .55), 'right', fs * .2);
+      // bottom left: level meter that moves with the beat
+      const n = 18, bw = 4 * u, gp = 3 * u, mh = 30 * u, bx = m + 22 * u, by = H - m - 22 * u;
+      for (let i = 0; i < n; i++){ const v = Math.max(.08, Math.min(1, lv * (.55 + .45 * Math.sin(i * 1.7 + clock * 9)) + .12 * Math.sin(i * .9 + clock * 3) + .1)); ctx.fillStyle = i > n * .75 ? rgba(accent, .9) : rgba(ink, .8); ctx.fillRect(bx + i * (bw + gp), by - mh * v, bw, mh * v); }
+      txt(ctx, 'LVL', bx, by - mh - 8 * u, `500 ${fs * .85}px ${MONO}`, rgba(ink, .5), 'left', fs * .2);
+      // bottom right: radar with a sweeping beam
+      const rcx = W - m - 22 * u - 36 * u, rcy = H - m - 22 * u - 36 * u, R0 = 36 * u, a = clock * 1.6;
+      ctx.strokeStyle = rgba(ink, .55); ctx.lineWidth = Math.max(1, u); ctx.beginPath(); ctx.arc(rcx, rcy, R0, 0, Math.PI * 2); ctx.stroke();
+      ctx.strokeStyle = rgba(ink, .25); ctx.beginPath(); ctx.arc(rcx, rcy, R0 * .55, 0, Math.PI * 2); ctx.moveTo(rcx - R0, rcy); ctx.lineTo(rcx + R0, rcy); ctx.moveTo(rcx, rcy - R0); ctx.lineTo(rcx, rcy + R0); ctx.stroke();
+      ctx.save(); ctx.beginPath(); ctx.moveTo(rcx, rcy); ctx.arc(rcx, rcy, R0, a - .9, a); ctx.closePath();
+      if (ctx.createConicGradient){ const cg = ctx.createConicGradient(a - .9, rcx, rcy); cg.addColorStop(0, rgba(accent, 0)); cg.addColorStop(.9 / (Math.PI * 2), rgba(accent, .55)); cg.addColorStop(.9 / (Math.PI * 2) + .001, rgba(accent, 0)); ctx.fillStyle = cg; } else ctx.fillStyle = rgba(accent, .25);
+      ctx.fill(); ctx.restore();
+      ctx.strokeStyle = accent; ctx.lineWidth = Math.max(1, 1.4 * u); ctx.beginPath(); ctx.moveTo(rcx, rcy); ctx.lineTo(rcx + Math.cos(a) * R0, rcy + Math.sin(a) * R0); ctx.stroke();
+      [[.7, 2.1], [.45, 4.4], [.82, 5.6]].forEach(([d, ang]) => { const diff = ((a - ang) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2), al = Math.max(0, 1 - diff / 2.4); if (al <= 0) return; ctx.fillStyle = rgba(ink, al); ctx.beginPath(); ctx.arc(rcx + Math.cos(ang) * R0 * d, rcy + Math.sin(ang) * R0 * d, 2.4 * u, 0, Math.PI * 2); ctx.fill(); });
+      break;
+    }
+    case 'dream': {
+      if (!tmp2) tmp2 = document.createElement('canvas');
+      const s2 = .5; if (tmp2.width !== Math.round(W * s2) || tmp2.height !== Math.round(H * s2)){ tmp2.width = Math.round(W * s2); tmp2.height = Math.round(H * s2); }
+      const x2 = tmp2.getContext('2d'), w2 = tmp2.width, h2 = tmp2.height; x2.globalCompositeOperation = 'source-over'; x2.clearRect(0, 0, w2, h2);
+      if (x2.createConicGradient){ const cg = x2.createConicGradient(clock * .12, w2 / 2, h2 / 2); [C, '#c9b8ff', '#a9e4ff', '#ffe3bf', C].forEach((c, i) => cg.addColorStop(i / 4, c)); x2.fillStyle = cg; }
+      else x2.fillStyle = C;
+      x2.fillRect(0, 0, w2, h2);
+      x2.globalCompositeOperation = 'destination-out';
+      const mg = x2.createRadialGradient(w2 / 2, h2 / 2, Math.min(w2, h2) * .2, w2 / 2, h2 / 2, Math.max(w2, h2) * .62); mg.addColorStop(0, 'rgba(0,0,0,1)'); mg.addColorStop(.6, 'rgba(0,0,0,.8)'); mg.addColorStop(1, 'rgba(0,0,0,0)'); x2.fillStyle = mg; x2.fillRect(0, 0, w2, h2);
+      ctx.save(); ctx.globalCompositeOperation = 'screen'; ctx.globalAlpha = Math.min(1, (.55 + glow * .5) * z); ctx.drawImage(tmp2, 0, 0, W, H); ctx.restore();
+      // a thin soft rim
+      const m = 22 * u * z; ctx.save(); ctx.shadowColor = rgba(C, .8); ctx.shadowBlur = (14 + glow * 30) * u; ctx.strokeStyle = rgba('#ffffff', .45 + glow * .3); ctx.lineWidth = Math.max(1, 1.2 * u); rr(ctx, m, m, W - 2 * m, H - 2 * m, 36 * u * z); ctx.stroke(); ctx.restore();
+      // twinkling stars near the edges
+      const sr = rng(77);
+      for (let i = 0; i < 8; i++){
+        const side = i % 4, p = .12 + sr() * .76, d = (.04 + sr() * .07);
+        const x = side === 0 ? W * p : side === 1 ? W * (1 - d) : side === 2 ? W * p : W * d, y = side === 0 ? H * d * 1.4 : side === 2 ? H * (1 - d * 1.4) : H * p;
+        const tw0 = .5 + .5 * Math.sin(clock * (1.2 + sr()) + i * 1.9), s = (5 + sr() * 9) * u * (.4 + .6 * tw0);
+        ctx.save(); ctx.globalAlpha = .35 + .65 * tw0; ctx.shadowColor = C; ctx.shadowBlur = 10 * u; ctx.fillStyle = '#ffffff'; star(ctx, x, y, s); ctx.restore();
+      }
+      const fs = Math.max(9, 14 * u * z), lab = fitText(ctx, (F.text1 || title), W * .5, `500 ${fs}px ${SANS}`, fs * .35);
+      const lw = tw(ctx, lab, `500 ${fs}px ${SANS}`, fs * .35), ly = H - m - 26 * u;
+      ctx.save(); ctx.shadowColor = rgba(C, .9); ctx.shadowBlur = 12 * u; txt(ctx, lab, W / 2 + fs * .17, ly, `500 ${fs}px ${SANS}`, 'rgba(255,255,255,.92)', 'center', fs * .35);
+      ctx.fillStyle = '#fff'; star(ctx, W / 2 - lw / 2 - fs * 1.1, ly - fs * .36, fs * .45); star(ctx, W / 2 + lw / 2 + fs * 1.1, ly - fs * .36, fs * .45); ctx.restore();
+      if (F.text2) txt(ctx, F.text2, W / 2, m + 30 * u + fs, `500 ${fs * .85}px ${SANS}`, 'rgba(255,255,255,.75)', 'center', fs * .3);
+      break;
+    }
+  }
+  if (X.grain) grain(ctx, W, H, (F.style === 'cinema' || F.style === 'film' || F.style === 'vhs' ? .1 : .06) * K, clock);
+  ctx.restore();
+}
+// concept tiles (go in the template section)
+const conceptTiles = attr => `<div class="dsub-h" style="margin-top:4px"><span>컨셉 · 이미지 한 장 + 테두리</span></div><div class="tpls concept-tiles">${CONCEPTS.map(([k, n, s]) => `<button class="tpl" ${attr}="${k}" title="${n} · ${s}"><svg viewBox="0 0 64 36" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="63" height="35" rx="3" stroke-opacity=".35"/>${ICON[k]}</svg><span>${n}<small>${s}</small></span></button>`).join('')}</div><p class="note" style="margin-top:-4px">앨범 커버 없이 배경 이미지 한 장을 화면 전체에 깔고 테두리를 씌워요. 배경 이미지를 따로 올렸으면 그걸, 없으면 앨범 커버 페이지의 원본 그림을 써요.</p>`;
+// settings for the chosen concept's frame (shown only while a concept is on)
+function ui(a, o, p = 'frame'){
+  const rg = (k, lab, min, max, step, fmt) => `<div class="range"><span class="lbl">${lab}</span><input type="range" min="${min}" max="${max}" step="${step}" ${a}="${p}.${k}"><output ${o}="${p}.${k}" data-fmt="${fmt}"></output></div>`;
+  return `<div class="frame-opts" hidden><div class="sep"></div>
+      <div class="dsub-h"><span>테두리 · 효과 조정</span></div>
+      <div class="range"><span class="lbl">색</span><div class="color"><input type="color" ${a}="${p}.color" aria-label="테두리 색"><span ${o}="${p}.color" data-fmt="hex"></span></div></div>
+      ${rg('size', '두께 · 크기', 50, 200, 1, 'pct')}
+      <div class="sec-h" style="margin:2px 0 8px"><span>화면을 테두리 안쪽에 맞추기</span><label class="sw"><input type="checkbox" ${a}="${p}.fit" aria-label="안쪽에 맞추기"><span></span></label></div>
+      <div class="fx-grid">${FXL.map(([k, n]) => `<label class="fx-chip"><input type="checkbox" ${a}="${p}.fx.${k}"><span>${n}</span></label>`).join('')}</div>
+      ${rg('amt', '효과 세기', 0, 200, 5, 'pct')}
+      <div class="grid2">
+        <div class="field full"><label>문구 1 <small style="color:var(--faint)">(비우면 자동)</small></label><input type="text" ${a}="${p}.text1" maxlength="60"></div>
+        <div class="field full"><label>문구 2 <small style="color:var(--faint)">(비우면 자동)</small></label><input type="text" ${a}="${p}.text2" maxlength="60"></div>
+      </div>
+    </div>`;
+}
+function sync(view, F){ view.querySelectorAll('.frame-opts').forEach(el => el.hidden = !F || !DEF[F.style] || F.style === 'none'); }
+// older saved frames: missing effect switches, or a frame style that no longer exists
+function normalize(F){ if (!F || typeof F !== 'object') return base(); if (!DEF[F.style]) F.style = 'none'; if (!F.fx || typeof F.fx !== 'object') F.fx = Object.assign({}, FX0, {grain: F.grain !== false && F.style !== 'none'}); else Object.keys(FX0).forEach(k => { if (!(k in F.fx)) F.fx[k] = false; }); if (F.amt == null) F.amt = 100; return F; }
+M.FRAME = {CONCEPTS, conceptTiles, ICON, FXL, defaults, base, inner, unmap, apply, ui, sync, normalize};
 })();
 </script>
 <script>
@@ -2794,7 +3195,7 @@ const TXD = {
 };
 const vs = {
   tx:JSON.parse(JSON.stringify(TXD)),
-  res:'1920x1080', fps:30, template:'minimal', coverSrc:'cover', coverShape:'square', bgMode:'cover', bgDim:62,
+  res:'1920x1080', fps:30, template:'minimal', coverSrc:'cover', coverShape:'square', bgMode:'cover', bgDim:62, bgBlur:0, bgX:50, bgY:50, frame:(window.MMC && MMC.FRAME ? MMC.FRAME.base() : {style:'none'}),
   colors:{bg:CS.cover.bg, text:CS.cover.text, line:CS.cover.deco, accent:CS.cover.accent},
   labels:{tl:'Now Playing', tr:'Sync Rate', bl:'Audio Online · MMC-001', cap:'Artwork // MMC-001'}, font:'Paperlogy', titleSize:100, showTitle:true, sens:100, speed:100, lyricSize:100, lyricOffset:0, lyricPair:false, subSize:62,
   fx:{spectrum:true, ring:true, eq:true, sync:false, particles:true, sparkle:true, orbit:false, reticle:false, globe:false, hud:true, spin:true, beat:true, glow:true, progress:true, brackets:false, vignette:true, grain:true, lyrics:true},
@@ -2962,9 +3363,10 @@ function toneBlur(tone){
 function refreshCover(){
   const s = snap.getContext('2d');
   s.clearRect(0, 0, 1000, 1000);
-  if (vs.coverSrc === 'upload' && upImg){
-    const sc = Math.max(1000 / upImg.naturalWidth, 1000 / upImg.naturalHeight), w = upImg.naturalWidth * sc, h = upImg.naturalHeight * sc;
-    s.drawImage(upImg, (1000 - w) / 2, (1000 - h) / 2, w, h);
+  const art = vs.coverSrc === 'art' && M.coverArt ? M.coverArt() : null, pic = vs.coverSrc === 'upload' && upImg ? upImg : art;
+  if (pic){
+    const sc = Math.max(1000 / pic.naturalWidth, 1000 / pic.naturalHeight), w = pic.naturalWidth * sc, h = pic.naturalHeight * sc;
+    s.drawImage(pic, (1000 - w) / 2, (1000 - h) / 2, w, h);
   } else { try { M.render(s, 1000, false); } catch(e){ console.error(e); } }
   const b = blur.getContext('2d'); b.clearRect(0, 0, 240, 240);
   b.filter = 'blur(12px)'; b.drawImage(snap, -30, -30, 300, 300); b.filter = 'none'; coverVer++;
@@ -2986,6 +3388,22 @@ function loadCoverFile(f, quiet){
   im.onload = () => { upImg = im; vs.coverSrc = 'upload'; $('#vCoverName').textContent = f.name; $('#vCoverThumb').innerHTML = `<img src="${url}" alt="">`; refreshCover(); syncUI(); if (!quiet) M.STORE.put('video-cover', f, f.name); res(); };
   im.onerror = () => { toast('이미지를 열 수 없어요'); res(); };
   im.src = url;
+  });
+}
+// cover-fit with a chosen focus point (px, py in %)
+function fitAt(src, W, H, zoom, px, py){
+  const sw = src.videoWidth || src.naturalWidth || src.width, sh = src.videoHeight || src.naturalHeight || src.height;
+  if (!sw || !sh) return;
+  const sc = Math.max(W / sw, H / sh) * (zoom || 1), w = sw * sc, h = sh * sc;
+  ctx.drawImage(src, (W - w) * px / 100, (H - h) * py / 100, w, h);
+}
+let bgImgV = null;
+function loadBgImage(f, quiet){
+  return new Promise(res => {
+    const url = URL.createObjectURL(f), im = new Image();
+    im.onload = () => { bgImgV = im; $('#vBgImgName').textContent = f.name; $('#vBgImgThumb').innerHTML = `<img src="${url}" alt="">`; if (!quiet){ vs.bgMode = 'image'; toast('배경 이미지를 화면 전체에 넣었어요'); M.STORE.put('video-bgimg', f, f.name); } syncUI(); res(true); };
+    im.onerror = () => { toast('이미지를 열 수 없어요'); res(false); };
+    im.src = url;
   });
 }
 function drawFit(src, W, H, zoom){
@@ -3162,6 +3580,21 @@ function layout(W, H){
     L.eq = {x: L.title.x, y: L.title.y - L.title.size * 1.3, w: 120 * u, h: 30 * u, align:'left'};
     L.spectrum = specBottom(70, 140, .4);
     L.capOk = true; L.coverBrackets = true; L.tl = true; L.bl = true;
+  } else if (T === 'scene'){ // concept: one picture fills the screen, no album cover — title up top, lyrics like subtitles
+    L.cover = {x: W / 2, y: H * .45, s: Math.min(W, H) * .4}; // anchor for effects only, not drawn
+    if (port){
+      L.title = {x: W * .09, y: H * .17, align:'left', size: 56 * u, w: W * .8};
+      L.lyrics = {x: W / 2, y: H * .64, w: W * .84, align:'center', size: 44 * u};
+      L.progress = {x: W * .12, w: W * .76, y: H * .84};
+    } else {
+      L.title = {x: W * .085, y: H * .3, align:'left', size: 52 * u, w: W * .55};
+      L.lyrics = {x: W / 2, y: H * .66, w: W * .78, align:'center', size: 40 * u};
+      L.progress = {x: W * .3, w: W * .4, y: H * .84};
+    }
+    L.eq = {x: L.title.x, y: L.title.y - L.title.size * 1.3, w: 120 * u, h: 30 * u, align:'left'};
+    L.sync = {x: W * .925, y: L.title.y - L.title.size * .2, align:'right'};
+    L.globe = {x: W - 140 * u, y: H - 190 * u, r: 40 * u};
+    L.spectrum = specBottom(60, 140, .3);
   } else { // hud — framed interface: title & time on top, cover inside a progress dial, timeline ruler at the bottom
     const g = 40 * u; L.frame = g;
     if (port){
@@ -3197,7 +3630,7 @@ function layout(W, H){
   L.scaleR = L.cover.s * .5 * 1.42 + 22 * u;
   // hit boxes (canvas px) for dragging + text areas particles avoid
   const B = {}, ts = vs.titleSize / 100;
-  { const c = L.cover; const r = (T === 'hud' ? L.scaleR + 12 * u : c.s / 2); B.cover = {x0: c.x - r, y0: c.y - r, x1: c.x + r, y1: c.y + r}; }
+  if (T !== 'scene'){ const c = L.cover; const r = (T === 'hud' ? L.scaleR + 12 * u : c.s / 2); B.cover = {x0: c.x - r, y0: c.y - r, x1: c.x + r, y1: c.y + r}; }
   if (vs.showTitle){
     const Tt = L.title; ctx.font = fontStr(700, Tt.size * ts);
     const w = Math.min(ctx.measureText(VM().title || 'Untitled').width, Tt.w || W * .8) + 10 * u, x0 = Tt.align === 'center' ? Tt.x - w / 2 : Tt.x;
@@ -3280,6 +3713,10 @@ function frame(){
   const tone = vs.bgTone || 'calm', bgC = tone === 'calm' ? mixHex(C.bg, '#0e0e12', .82) : tone === 'soft' ? mixHex(C.bg, '#0e0e12', .5) : C.bg;
   ctx.fillStyle = bgC; ctx.fillRect(0, 0, W, H);
   if (vs.bgMode === 'cover') drawFit(toneBlur(tone), W, H, 1.08 + bassS * .03 * k);
+  else if (vs.bgMode === 'coverSharp' || vs.bgMode === 'art' || (vs.bgMode === 'image' && bgImgV)){ // a sharp picture over the whole screen
+    const bl = vs.bgBlur || 0; if (bl) ctx.filter = `blur(${bl * u}px)`;
+    fitAt(vs.bgMode === 'image' ? bgImgV : vs.bgMode === 'art' ? (M.coverArt && M.coverArt()) || snap : snap, W, H, (1 + bl * .006) * (1 + bassS * .02 * k), vs.bgX ?? 50, vs.bgY ?? 50); ctx.filter = 'none';
+  }
   else if (vs.bgMode === 'video' && bgReady){ if (tone !== 'song') ctx.filter = tone === 'calm' ? 'saturate(.35) brightness(.85)' : 'saturate(.7)'; drawFit(bgv, W, H, 1); ctx.filter = 'none'; }
   if (vs.bgMode !== 'color'){ ctx.fillStyle = col(bgC, vs.bgDim / 100); ctx.fillRect(0, 0, W, H); }
   const wh = (vs.waveSize ?? 100) / 100, rh0 = (vs.ringSize ?? 100) / 100;
@@ -3395,7 +3832,8 @@ function frame(){
     ctx.restore();
   }
 
-  // cover
+  // cover (concept templates have none)
+  if (vs.template !== 'scene'){
   rb('cover', cvr);
   ctx.save();
   { const SH = vs.shadow || {}; ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
@@ -3421,6 +3859,7 @@ function frame(){
   }
   ctx.restore();
   re();
+  }
 
   // reticle drifting over the cover (no label, stays inside)
   if (FXo.reticle){
@@ -3588,6 +4027,7 @@ function frame(){
   }
   lastL = L;
   ctx.restore();
+  if (M.FRAME) M.FRAME.apply(ctx, cv, W, H, vs.frame, {title: m.title, artist: m.artist, year: m.year, time: cur, clock: t, accent: C.accent, level: bassS, progress: prog});
 
   // UI updates
   if (VT) return;
@@ -3621,7 +4061,7 @@ function drawLyrics(B, u, C){
 
 /* ---------- drag objects on the canvas ---------- */
 let drag = null, hover = null, guides = [], lastL = null, sel = null;
-function cpt(e){ const r = cv.getBoundingClientRect(); return {x: (e.clientX - r.left) / r.width * cv.width, y: (e.clientY - r.top) / r.height * cv.height, r}; }
+function cpt(e){ const r = cv.getBoundingClientRect(), p = {x: (e.clientX - r.left) / r.width * cv.width, y: (e.clientY - r.top) / r.height * cv.height, r}; return M.FRAME ? M.FRAME.unmap(vs.frame, cv.width, cv.height, p) : p; }
 function hitObj(pt){
   if (!lastL) return null;
   const B = lastL.boxes, keys = Object.keys(B).sort((a, b) => (B[a].x1 - B[a].x0) * (B[a].y1 - B[a].y0) - (B[b].x1 - B[b].x0) * (B[b].y1 - B[b].y0));
@@ -3813,7 +4253,8 @@ function syncUI(){
   $$('[data-vtx]', view).forEach(d => d.classList.toggle('is-on', !!(vs.tx[d.dataset.vtx] || {}).on));
   if (typeof pinUI === 'function') pinUI();
   $('#vDropCover').hidden = vs.coverSrc !== 'upload';
-  $('#vDropBg').hidden = vs.bgMode !== 'video';
+  $('#vDropBg').hidden = vs.bgMode !== 'video'; $('#vDropBgImg').hidden = vs.bgMode !== 'image';
+  if (M.FRAME){ M.FRAME.sync(view, vs.frame); view.querySelectorAll('[data-vconcept]').forEach(b => b.classList.toggle('on', vs.template === 'scene' && b.dataset.vconcept === vs.frame.style)); }
   $('#vRes').value = vs.res; $('#vFps').value = String(vs.fps);
   $('#vTShadowBox').hidden = !(vs.tshadow && vs.tshadow.on);
   $('#vSubSizeRow').style.display = vs.lyricPair ? '' : 'none';
@@ -3837,7 +4278,9 @@ $('#vMetaFromSong').onclick = async () => {
 };
 view.addEventListener('click', e => {
   const b = e.target.closest('[data-vset]'); if (!b) return;
+  const wasScene = vs.template === 'scene';
   setV(b.dataset.vset, b.dataset.val);
+  if (b.dataset.vset === 'template' && wasScene && M.FRAME){ vs.frame = Object.assign(M.FRAME.defaults('none'), {text1: vs.frame.text1 || '', text2: vs.frame.text2 || ''}); vs.showTitle = true; }
   if (b.dataset.vset === 'template') vs.coverShape = b.dataset.val === 'center' ? 'circle' : 'square';
   if (b.dataset.vset === 'template' || b.dataset.vset === 'res') OBJ.forEach(([k]) => vs.off[k] = {dx:0, dy:0});
   if (b.dataset.vset === 'coverSrc') refreshCover();
@@ -3860,6 +4303,24 @@ const isImage = f => f.type.startsWith('image/');
 setupDrop($('#vDropAudio'), isAudio, loadAudioFile, '음악 파일을 넣어 주세요');
 setupDrop($('#vDropCover'), isImage, loadCoverFile, '이미지 파일을 넣어 주세요');
 setupDrop($('#vDropBg'), isVideo, loadBgVideo, '영상 파일을 넣어 주세요');
+setupDrop($('#vDropBgImg'), isImage, f => loadBgImage(f), '이미지 파일을 넣어 주세요');
+if (M.FRAME){
+  view.addEventListener('click', e => { const b = e.target.closest('[data-frame-style]'); if (!b) return; if (M.EDITORS.video) M.EDITORS.video.checkpoint(); const keep = {text1: vs.frame.text1 || '', text2: vs.frame.text2 || ''}; vs.frame = Object.assign(M.FRAME.defaults(b.dataset.frameStyle), keep); syncUI(); });
+  // concept templates: one picture over the whole screen + frame + effects, no album cover
+  const CONCEPT_FX = {cinema:['vignette'], film:['particles', 'progress'], vhs:['progress'], glass:['sparkle'], chrome:['sparkle', 'spectrum', 'progress'], live:['spectrum'], archive:['progress'], dream:['sparkle', 'particles', 'progress'], signal:['particles', 'progress']};
+  const ALLFX = ['spectrum', 'ring', 'eq', 'sync', 'particles', 'sparkle', 'orbit', 'reticle', 'globe', 'hud', 'spin', 'beat', 'glow', 'progress', 'brackets', 'vignette', 'grain'];
+  view.querySelector('[data-vset="template"]').parentElement.insertAdjacentHTML('afterend', M.FRAME.conceptTiles('data-vconcept') + M.FRAME.ui('data-vbind', 'data-vout'));
+  view.addEventListener('click', e => {
+    const b = e.target.closest('[data-vconcept]'); if (!b) return;
+    const k = b.dataset.vconcept, keep = {text1: vs.frame.text1 || '', text2: vs.frame.text2 || ''}, name = M.FRAME.CONCEPTS.find(c => c[0] === k)[1];
+    if (M.EDITORS.video) M.EDITORS.video.checkpoint();
+    vs.template = 'scene'; vs.coverShape = 'square'; OBJ.forEach(([o]) => vs.off[o] = {dx:0, dy:0});
+    ALLFX.forEach(f => { if (f in vs.fx) vs.fx[f] = CONCEPT_FX[k].includes(f); });
+    vs.frame = Object.assign(M.FRAME.defaults(k), keep); vs.showTitle = !['live', 'archive'].includes(k);
+    vs.bgMode = bgImgV ? 'image' : (M.coverArt && M.coverArt()) ? 'art' : 'coverSharp'; vs.bgBlur = 0; vs.bgDim = Math.min(vs.bgDim, 22);
+    syncUI(); toast(`'${name}' 컨셉을 적용했어요 · 앨범 커버 없이 배경 그림 한 장으로 나와요` + (vs.bgMode === 'coverSharp' ? ' (소스 탭에서 배경 이미지를 올리면 그 그림이 깔려요)' : ''));
+  });
+}
 view.addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); });
 view.addEventListener('drop', e => {
   e.preventDefault(); e.stopPropagation();
@@ -3948,6 +4409,7 @@ setSize(false); syncUI(); lockUI(); refreshCover(); frame();
   const a = await S.get('video-audio'); if (a){ loadAudioFile.quiet = true; loadAudioFile(M.fileOf(a)); loadAudioFile.quiet = false; }
   const c = await S.get('video-cover'); if (c) await loadCoverFile(M.fileOf(c), true);
   const b = await S.get('video-bg'); if (b){ loadBgVideo.quiet = true; loadBgVideo(M.fileOf(b)); loadBgVideo.quiet = false; }
+  const bi = await S.get('video-bgimg'); if (bi) await loadBgImage(M.fileOf(bi), true);
   if (saved){
     if (saved.vs) M.deepAssign(vs, saved.vs);
     vs.lockObj = true;
@@ -3990,14 +4452,15 @@ function rr(x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x,
 function rng(seed){ let a = seed >>> 0; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 
 /* ---------- state ---------- */
-const OBJ = [['title','제목'],['sub','부제'],['badge','배지'],['cover','앨범 커버'],['panel','패널'],['tags','태그'],['ring','커버 링'],['glow','하이라이트 빛'],['orbit','궤도선'],['sparkle','반짝이'],['hearts','하트'],['globe','지구본'],['target','조준점'],['ornament','엠블럼'],['percent','퍼센트'],['progress','재생 바'],['waveform','웨이브폼'],['barcode','바코드'],['bignum','트랙 넘버']];
+const OBJ = [['title','제목'],['sub','부제'],['badge','배지'],['cover','앨범 커버'],['panel','패널'],['tags','태그'],['ring','커버 링'],['glow','하이라이트 빛'],['orbit','궤도선'],['sparkle','반짝이'],['hearts','하트'],['globe','지구본'],['target','조준점'],['ornament','엠블럼'],['percent','퍼센트'],['progress','재생 바'],['waveform','웨이브폼'],['barcode','바코드'],['bignum','트랙 넘버'],['stamp','원형 스탬프'],['eq','이퀄라이저'],['notes','음표'],['explicit','Explicit 배지']];
 const FIX = [['header','상단 라인','위쪽 정보 줄'],['frame','테두리','안쪽 얇은 테두리'],['side','세로 텍스트','오른쪽 세로 글자'],['gridBg','그리드','은은한 격자'],['accentBar','포인트 선','제목 위 짧은 선'],['brackets','코너 브래킷','네 귀퉁이 꺾쇠'],['dust','별가루','흩뿌려진 점과 작은 별'],['fade','글자 쪽 음영','글자가 잘 보이게 어둡게'],['vignette','비네트','가장자리 음영'],['grain','그레인','필름 질감']];
-const DECO_KEYS = ['panel','tags','ring','glow','orbit','sparkle','hearts','globe','target','ornament','percent','progress','waveform','barcode','bignum','header','frame','side','gridBg','accentBar','brackets','dust','fade','vignette','grain'];
+const DECO_KEYS = ['stamp','eq','notes','explicit','panel','tags','ring','glow','orbit','sparkle','hearts','globe','target','ornament','percent','progress','waveform','barcode','bignum','header','frame','side','gridBg','accentBar','brackets','dust','fade','vignette','grain'];
 // every object has a default spot; each layout overrides what it uses
 // title.y = bottom of the title block (long titles grow upward), sub.y = top of the subtitle, panel x/y = top-left
 const BASE_O = {title:{x:7,y:58,s:100}, sub:{x:7,y:62,s:100}, badge:{x:7,y:11,s:100}, cover:{x:74,y:50,s:96}, panel:{x:55,y:20,s:100,w:38,h:60}, tags:{x:7,y:76,s:170},
   ring:{x:74,y:50,s:96}, glow:{x:74,y:50,s:110}, orbit:{x:74,y:50,s:60}, sparkle:{x:92,y:14,s:80}, hearts:{x:40,y:20,s:100}, globe:{x:90,y:84,s:40}, target:{x:56,y:18,s:70}, ornament:{x:90,y:18,s:60},
-  percent:{x:60,y:70,s:130}, progress:{x:66,y:84,s:85}, waveform:{x:66,y:76,s:62}, barcode:{x:90,y:90,s:100}, bignum:{x:52,y:12,s:70}};
+  percent:{x:60,y:70,s:130}, progress:{x:66,y:84,s:85}, waveform:{x:66,y:76,s:62}, barcode:{x:90,y:90,s:100}, bignum:{x:52,y:12,s:70},
+  stamp:{x:47,y:17,s:90}, eq:{x:12,y:90,s:90}, notes:{x:36,y:30,s:90}, explicit:{x:94,y:85,s:110}};
 const PRESETS = {
   left:   {name:'스포트라이트', align:'left', on:{ring:true, glow:true, sparkle:true, globe:true, tags:true, bignum:true, header:true, side:true, dust:true, fade:true, vignette:true, grain:true, accentBar:true},
            o:{title:{x:7,y:56,s:100}, sub:{x:7,y:60,s:100}, badge:{x:7,y:18,s:100}, cover:{x:73,y:52,s:98}, ring:{x:73,y:52,s:98}, glow:{x:73,y:52,s:115}, sparkle:{x:89,y:22,s:75}, globe:{x:91,y:86,s:38}, orbit:{x:73,y:52,s:58}, tags:{x:7,y:77,s:170}, bignum:{x:50,y:14,s:72}}},
@@ -4009,6 +4472,12 @@ const PRESETS = {
            o:{title:{x:6,y:66,s:140}, sub:{x:6,y:70,s:110}, badge:{x:6,y:16,s:105}, cover:{x:82,y:56,s:66}, glow:{x:82,y:56,s:84}, ornament:{x:92,y:17,s:58}, hearts:{x:69,y:84,s:100}, sparkle:{x:63,y:16,s:62}, orbit:{x:82,y:56,s:50}, tags:{x:6,y:88,s:170}}},
   y2k:    {name:'Y2K 인터페이스', align:'left', bgDim:72, panelStyle:'glass', on:{panel:true, glow:true, ring:true, target:true, sparkle:true, globe:true, tags:true, percent:true, barcode:true, header:true, frame:true, brackets:true, gridBg:true, dust:true, fade:false, vignette:true, grain:true, accentBar:false},
            o:{title:{x:58.5,y:55,s:72}, sub:{x:58.5,y:58.5,s:80}, badge:{x:58.5,y:13,s:90}, cover:{x:29,y:53,s:76}, panel:{x:55,y:21,s:100,w:38,h:61}, ring:{x:29,y:53,s:82}, glow:{x:29,y:53,s:112}, target:{x:15,y:84,s:58}, sparkle:{x:43,y:23,s:68}, globe:{x:88,y:28.5,s:26}, orbit:{x:29,y:53,s:56}, tags:{x:58.5,y:30,s:158}, percent:{x:58.5,y:69.5,s:128}, barcode:{x:90,y:78,s:100}}},
+  photo:  {name:'포토 · 아래', photo:true, align:'left', bgDim:6, fadeDir:'bottom', on:{tags:true, header:true, sparkle:true, fade:true, vignette:true, grain:true, accentBar:true},
+           o:{title:{x:5,y:76,s:118}, sub:{x:5,y:80,s:104}, badge:{x:5,y:10,s:100}, tags:{x:5,y:91,s:160}, sparkle:{x:93,y:14,s:70}}},
+  photoCenter: {name:'포토 · 가운데', photo:true, align:'center', bgDim:8, fadeDir:'bottom', on:{tags:true, sparkle:true, fade:true, vignette:true, grain:true, frame:true},
+           o:{title:{x:50,y:78,s:104}, sub:{x:50,y:82,s:96}, badge:{x:50,y:8,s:92}, tags:{x:50,y:93,s:150}, sparkle:{x:91,y:16,s:68}}},
+  photoSide: {name:'포토 · 옆', photo:true, align:'left', bgDim:4, fadeDir:'side', on:{tags:true, header:true, side:true, eq:true, fade:true, vignette:true, grain:true, accentBar:true},
+           o:{title:{x:5,y:47,s:110}, sub:{x:5,y:51,s:100}, badge:{x:5,y:14,s:100}, tags:{x:5,y:70,s:160}, eq:{x:9,y:90,s:90}}},
   player: {name:'플레이어 카드', align:'left', bgDim:0, wash:'light', panelStyle:'card', shadow:false, colors:{text:'#2a2230', line:'#ffffff'}, cshadow:{color:'#7a3a5e', amt:30},
            on:{panel:true, tags:true, waveform:true, progress:true, hearts:true, sparkle:true, ornament:true, header:true, dust:true, fade:false, vignette:false, grain:true, accentBar:false},
            o:{title:{x:44.4,y:49,s:62}, sub:{x:44.4,y:51.4,s:70}, badge:{x:44.4,y:8,s:90}, cover:{x:28.1,y:53.9,s:79}, panel:{x:12.5,y:19,s:100,w:75,h:62}, tags:{x:44.4,y:36,s:150}, waveform:{x:64.3,y:61,s:85}, progress:{x:64.3,y:67.4,s:115}, hearts:{x:11,y:80,s:110}, sparkle:{x:90,y:17,s:70}, ornament:{x:91,y:80,s:40}, orbit:{x:28.1,y:53.9,s:46}}}
@@ -4018,20 +4487,27 @@ const MINI = n => n === 'panel' ? 1 : (n === 'cover' || n === 'ring' || n === 'g
 const presetO = k => { const P = PRESETS[k] || PRESETS.left, o = JSON.parse(JSON.stringify(BASE_O)); Object.keys(P.o).forEach(n => Object.assign(o[n], P.o[n])); Object.keys(o).forEach(n => { o[n].s = Math.round(o[n].s * MINI(n)); }); return o; };
 const panelDefaults = st => st === 'card' ? {color:'#ffffff', a:80, border:95, borderColor:'#ffffff', radius:39, blur:55, shadow:22, shadowColor:'#46234a'} : {color:'#ffffff', a:7, border:22, borderColor:'#ffffff', radius:39, blur:55, shadow:22, shadowColor:'#46234a'};
 function applyPresetTo(t, k){
-  const P = PRESETS[k] || PRESETS.left;
+  const P = PRESETS[k] || PRESETS.left, wasPhoto = !!(PRESETS[t.preset] && PRESETS[t.preset].photo);
   t.preset = k; t.align = P.align; t.o = presetO(k); t.tilt = P.tilt || 0; t.bgDim = P.bgDim ?? 30; t.wash = P.wash || 'dark'; t.panelStyle = P.panelStyle || 'glass';
   t.cshadow = Object.assign({on:true, color:'#000000', amt:42, blur:70, dist:26}, P.cshadow || {}); t.coverMat = !!P.coverMat;
   t.pfx = panelDefaults(t.panelStyle);
   t.colors.text = (P.colors && P.colors.text) || '#ffffff'; t.colors.line = (P.colors && P.colors.line) || '#ffffff'; t.shadow = P.shadow ?? true;
   DECO_KEYS.forEach(n => { t.on[n] = !!P.on[n]; }); t.on.title = t.on.sub = t.on.cover = true;
+  t.fadeDir = P.fadeDir || 'auto';
+  if (P.photo){ // the picture fills the thumbnail: nothing sits on top of it
+    t.on.cover = false; t.bgBlur = 0;
+    let up = false; try { up = !!bgImg; } catch(e){}
+    t.bgMode = up ? 'image' : (M.coverArt && M.coverArt()) ? 'art' : 'coverSharp';
+  } else if (wasPhoto && t.bgMode !== 'color') t.bgMode = 'cover'; // leaving a photo layout: the blurred cover comes back behind the album cover
 }
 const tb = {
-  v:4, preset:'left', bgMode:'cover', bgDim:30, wash:'dark', panelStyle:'glass', coverSrc:'cover', coverShape:'square', tilt:0,
+  v:4, preset:'left', fadeDir:'auto', bgMode:'cover', bgDim:30, bgBlur:0, bgX:50, bgY:50, frame:(window.MMC && MMC.FRAME ? MMC.FRAME.base() : {style:'none'}), wash:'dark', panelStyle:'glass', coverSrc:'cover', coverShape:'square', tilt:0,
   colors:{bg:CS.cover.bg, text:'#ffffff', accent:CS.cover.accent, line:'#ffffff'},
   title:null, sub:null, songName:'', badge:'', font:'Paperlogy', weight:'800', align:'left', tracking:-2, lineH:104, maxLines:3, stroke:0, strokeColor:'#000000', shadow:true, shadowColor:'#000000', shadowAmt:35, shadowBlur:30, shadowDist:4, glow:false,
   cshadow:{on:true, color:'#000000', amt:42, blur:70, dist:26}, coverMat:false, pfx:{color:'#ffffff', a:7, border:22, borderColor:'#ffffff', radius:39, blur:55, shadow:22, shadowColor:'#46234a'},
-  tx:{header:{size:100, a:100, c:'auto', upper:true}, tags:{size:100, a:100, c:'auto', upper:true}, side:{size:100, a:100, c:'auto', upper:true}, percent:{a:100, c:'auto', upper:true}, progress:{a:100, c:'auto'}, barcode:{a:100, c:'auto', upper:true}, bignum:{a:10, c:'auto'}, target:{a:100, c:'auto'}},
+  tx:{header:{size:100, a:100, c:'auto', upper:true}, tags:{size:100, a:100, c:'auto', upper:true}, side:{size:100, a:100, c:'auto', upper:true}, percent:{a:100, c:'auto', upper:true}, progress:{a:100, c:'auto'}, barcode:{a:100, c:'auto', upper:true}, bignum:{a:10, c:'auto'}, target:{a:100, c:'auto'}, stamp:{a:100, c:'auto', upper:true}, explicit:{a:100, c:'auto', upper:true}},
   tcol:{title:{c:'auto', color:'#ffffff'}, sub:{c:'auto', color:'#ffffff'}},
+  stampText:'', explicitText:'',
   catalog:'', sideText:'', lockText:'', lockSub:'', dust:{amt:100, stars:100, size:100, a:100, c:'auto', color:'#ffffff'},
   tagText:'OFFICIAL AUDIO · HQ', headL:'', headR:'', pctLabel:'SYNC RATE', pct:100, prog:40, bignumText:'01',
   on:{title:true, sub:true, badge:true, cover:true},
@@ -4052,9 +4528,10 @@ const blurC = document.createElement('canvas'); blurC.width = 320; blurC.height 
 let upCover = null, bgImg = null;
 function refreshCover(){
   const s = snap.getContext('2d'); s.clearRect(0, 0, 1000, 1000);
-  if (tb.coverSrc === 'upload' && upCover){
-    const sc = Math.max(1000 / upCover.naturalWidth, 1000 / upCover.naturalHeight), w = upCover.naturalWidth * sc, h = upCover.naturalHeight * sc;
-    s.drawImage(upCover, (1000 - w) / 2, (1000 - h) / 2, w, h);
+  const art = tb.coverSrc === 'art' && M.coverArt ? M.coverArt() : null, pic = tb.coverSrc === 'upload' && upCover ? upCover : art;
+  if (pic){
+    const sc = Math.max(1000 / pic.naturalWidth, 1000 / pic.naturalHeight), w = pic.naturalWidth * sc, h = pic.naturalHeight * sc;
+    s.drawImage(pic, (1000 - w) / 2, (1000 - h) / 2, w, h);
   } else { try { M.render(s, 1000, false); } catch(e){ console.error(e); } }
   const b = blurC.getContext('2d'); b.clearRect(0, 0, 320, 180); b.filter = 'blur(14px) saturate(1.2)'; b.drawImage(snap, -40, -110, 400, 400); b.filter = 'none';
   draw();
@@ -4156,6 +4633,34 @@ const DECO = {
     for (let i = 0; i < n; i++){ const v = pk && pk.length ? pk[Math.floor(i / n * pk.length)] : Math.abs(Math.sin(i * .21) * .6 + Math.sin(i * .07) * .3 + r() * .25); const h = Math.max(.08, Math.min(1, v)) * bh, px = -W2 / 2 + i * bw + (bw - w) / 2; ctx.fillStyle = i / n < ph ? rgbA(P.ac, .95) : rgbA(P.ln, .5); rr(px, -h / 2, w, h, w / 2); ctx.fill(); }
     return [-W2 / 2, -bh / 2, W2 / 2, bh / 2]; },
   barcode(P){ const bw = 130, bh = 36, r = rng(7), ta = P.ta ?? 1; let cx = -bw; ctx.fillStyle = rgbA(P.tc || P.tx, .85 * ta); while (cx < 0){ const w = (r() < .55 ? 1 : r() < .75 ? 2 : 3) * 1.3; if (r() > .38) ctx.fillRect(cx, -16 - bh, Math.min(w, -cx), bh); cx += w + 1.3; } const cat = tb.catalog || 'MMC-0001'; dtext(P.up === false ? cat : cat.toUpperCase(), -bw, 0, `500 9.5px ${INF}`, rgbA(P.tc || P.tx, .65 * ta), 'left', 2); return [-bw, -16 - bh, 0, 4]; },
+  stamp(P){
+    const ta = P.ta ?? 1, raw = tb.stampText || 'OFFICIAL AUDIO ✦ NEW MUSIC ✦ ', msg = (P.up === false ? raw : raw.toUpperCase()) + ' ';
+    ctx.strokeStyle = rgbA(P.tc || P.ln, .85 * ta); ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(0, 0, 78, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = rgbA(P.tc || P.ln, .4 * ta); ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(0, 0, 50, 0, Math.PI * 2); ctx.stroke();
+    ctx.font = `600 12px ${INF}`; ctx.fillStyle = rgbA(P.tc || P.tx, .92 * ta); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const chars = [...msg], step = Math.PI * 2 / chars.length;
+    chars.forEach((ch, i) => { ctx.save(); ctx.rotate(-Math.PI / 2 + i * step); ctx.translate(64, 0); ctx.rotate(Math.PI / 2); ctx.fillText(ch, 0, 0); ctx.restore(); });
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = rgbA(P.ac, .95); ctx.beginPath(); ctx.moveTo(-12, -16); ctx.lineTo(18, 0); ctx.lineTo(-12, 16); ctx.closePath(); ctx.fill();
+    return [-80, -80, 80, 80];
+  },
+  eq(P){ const hs = [.35, .7, .5, .95, .6, .8, .4, .65, .3], bw = 9, gap = 5, n = hs.length, x0 = -(n * (bw + gap) - gap) / 2;
+    hs.forEach((h, i) => { ctx.fillStyle = i % 3 === 1 ? rgbA(P.ac, .95) : rgbA(P.ln, .8); rr(x0 + i * (bw + gap), -h * 70, bw, h * 70, 3); ctx.fill(); });
+    ctx.fillStyle = rgbA(P.ln, .3); ctx.fillRect(x0 - 6, 3, n * (bw + gap) - gap + 12, 1.5);
+    return [x0 - 6, -70, -x0 + 6, 6]; },
+  notes(P){
+    const note = (x, y, s, fill) => { ctx.save(); ctx.translate(x, y); ctx.fillStyle = fill; ctx.strokeStyle = fill; ctx.lineWidth = s * .12;
+      ctx.beginPath(); ctx.ellipse(0, 0, s * .34, s * .25, -.45, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(s * .3, -s * .05); ctx.lineTo(s * .3, -s * 1.1); ctx.quadraticCurveTo(s * .62, -s * .85, s * .72, -s * .5); ctx.stroke(); ctx.restore(); };
+    note(-22, 10, 46, rgbA(P.ln, .9)); note(26, -14, 34, rgbA(P.ac, .95));
+    ctx.fillStyle = rgbA(P.ln, .8); star4(36, -62, 8); ctx.fill();
+    return [-40, -72, 52, 24];
+  },
+  explicit(P){ const ta = P.ta ?? 1, raw = tb.explicitText || 'EXPLICIT', t = P.up === false ? raw : raw.toUpperCase();
+    ctx.font = `600 10.5px ${INF}`; setLS(2); const tw = ctx.measureText(t).width, bw = tw + 22, bh = 24; setLS(0);
+    rr(-bw, -bh, bw, bh, 4); ctx.strokeStyle = rgbA(P.tc || P.tx, .8 * ta); ctx.lineWidth = 1.2; ctx.stroke();
+    dtext(t, -bw / 2, -bh / 2 + 3.8, `600 10.5px ${INF}`, rgbA(P.tc || P.tx, .85 * ta), 'center', 2);
+    return [-bw, -bh, 0, 0]; },
   bignum(P){ const t = String(tb.bignumText || '').trim() || '01', sz = 360; ctx.font = `800 ${sz}px Outfit, Paperlogy, sans-serif`; setLS(-8); const w = ctx.measureText(t).width; ctx.fillStyle = rgbA(P.tc || P.ln, (tb.tx && tb.tx.bignum ? tb.tx.bignum.a : 10) / 100); ctx.textAlign = 'right'; ctx.fillText(t, 0, sz * .74); setLS(0); return [-w, 0, 0, sz * .76]; }
 };
 /* ---------- render ---------- */
@@ -4222,7 +4727,10 @@ function draw(preview = true){
   // background
   ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H);
   if (tb.bgMode === 'cover') drawFit(blurC);
-  else if (tb.bgMode === 'image' && bgImg) drawFit(bgImg);
+  else if (tb.bgMode === 'coverSharp' || tb.bgMode === 'art' || (tb.bgMode === 'image' && bgImg)){ // a sharp picture over the whole screen
+    const src = tb.bgMode === 'image' ? bgImg : tb.bgMode === 'art' ? (M.coverArt && M.coverArt()) || snap : snap, sw = src.naturalWidth || src.width, sh = src.naturalHeight || src.height, bl = tb.bgBlur || 0;
+    if (sw && sh){ const sc = Math.max(W / sw, H / sh) * (1 + bl * .006), w = sw * sc, h = sh * sc; if (bl) ctx.filter = `blur(${bl * u}px)`; ctx.drawImage(src, (W - w) * (tb.bgX ?? 50) / 100, (H - h) * (tb.bgY ?? 50) / 100, w, h); ctx.filter = 'none'; }
+  }
   else {
     const g = ctx.createRadialGradient(W * .75, H * .3, 0, W * .75, H * .3, W * .7);
     g.addColorStop(0, col(C.accent, .32)); g.addColorStop(1, col(C.accent, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
@@ -4232,8 +4740,15 @@ function draw(preview = true){
   if (on.gridBg){ ctx.strokeStyle = col(C.line, .05); ctx.lineWidth = 1; ctx.beginPath(); for (let gx = 0; gx <= W; gx += 64){ ctx.moveTo(gx + .5, 0); ctx.lineTo(gx + .5, H); } for (let gy = 0; gy <= H; gy += 64){ ctx.moveTo(0, gy + .5); ctx.lineTo(W, gy + .5); } ctx.stroke(); }
   if (on.frame){ const m = 26; ctx.strokeStyle = col(C.line, .28); ctx.lineWidth = 1.2; ctx.strokeRect(m, m, W - 2 * m, H - 2 * m); }
   if (on.fade){
-    const tx = O.title.x / 100, g = tb.align === 'center' ? ctx.createLinearGradient(0, H, 0, H * .25) : tx < .45 ? ctx.createLinearGradient(0, 0, W * .75, 0) : ctx.createLinearGradient(W, 0, W * .25, 0);
-    g.addColorStop(0, col(C.bg, .7)); g.addColorStop(.55, col(C.bg, .3)); g.addColorStop(1, col(C.bg, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    const tx = O.title.x / 100, fd = tb.fadeDir || 'auto';
+    if (fd === 'bottom'){ // photo layouts: a soft dark floor under the words, the rest of the picture stays clear
+      const g = ctx.createLinearGradient(0, H, 0, H * .38); g.addColorStop(0, 'rgba(0,0,0,.72)'); g.addColorStop(.45, 'rgba(0,0,0,.32)'); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    } else if (fd === 'side'){
+      const g = tx < .45 ? ctx.createLinearGradient(0, 0, W * .62, 0) : ctx.createLinearGradient(W, 0, W * .38, 0); g.addColorStop(0, 'rgba(0,0,0,.66)'); g.addColorStop(.5, 'rgba(0,0,0,.26)'); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    } else {
+      const g = tb.align === 'center' ? ctx.createLinearGradient(0, H, 0, H * .25) : tx < .45 ? ctx.createLinearGradient(0, 0, W * .75, 0) : ctx.createLinearGradient(W, 0, W * .25, 0);
+      g.addColorStop(0, col(C.bg, .7)); g.addColorStop(.55, col(C.bg, .3)); g.addColorStop(1, col(C.bg, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    }
   }
   if (on.dust){
     const r = rng(7 + titleText().length), keep = ['title', 'sub', 'badge'].map(k => prevBoxes[k]).filter(Boolean);
@@ -4300,7 +4815,7 @@ function draw(preview = true){
     const X = tb.tx && tb.tx[k]; if (X){ P.ta = (X.a ?? 100) / 100; P.up = X.upper !== false; P.tc = X.c === 'text' ? C.text : X.c === 'accent' ? C.accent : X.c === 'line' ? C.line : null; if (k === 'tags' && X.size && X.size !== 100) sc *= X.size / 100; }
     ctx.save(); ctx.translate(x, y); if (p.r) ctx.rotate(p.r * Math.PI / 180); ctx.scale(sc, sc); const bb = DECO[k](P); ctx.restore();
     if (bb) boxes[k] = {x0: x + bb[0] * sc, y0: y + bb[1] * sc, x1: x + bb[2] * sc, y1: y + bb[3] * sc}; };
-  ['globe', 'target', 'ornament', 'hearts', 'sparkle', 'waveform', 'progress', 'percent', 'barcode', 'tags'].forEach(deco);
+  ['globe', 'target', 'ornament', 'hearts', 'notes', 'sparkle', 'stamp', 'eq', 'waveform', 'progress', 'percent', 'barcode', 'explicit', 'tags'].forEach(deco);
   if (on.brackets){
     const g = 46, l = 30; ctx.strokeStyle = col(C.line, .85); ctx.lineWidth = 2; ctx.beginPath();
     [[g, g, 1, 1], [W - g, g, -1, 1], [g, H - g, 1, -1], [W - g, H - g, -1, -1]].forEach(([x, y, sx, sy]) => { ctx.moveTo(x + sx * l, y); ctx.lineTo(x, y); ctx.lineTo(x, y + sy * l); });
@@ -4407,7 +4922,7 @@ function noise(){ if (NZ) return NZ; NZ = document.createElement('canvas'); NZ.w
 let rq = 0; const sched = () => { if (rq) return; rq = requestAnimationFrame(() => { rq = 0; draw(true); }); };
 
 /* ---------- drag ---------- */
-function pt(e){ const r = cv.getBoundingClientRect(); return {x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H}; }
+function pt(e){ const r = cv.getBoundingClientRect(), p = {x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H}; return p; }
 function hit(p){ const ks = Object.keys(boxes).filter(k => !tb.pin[k]).sort((a, b) => (boxes[a].x1 - boxes[a].x0) * (boxes[a].y1 - boxes[a].y0) - (boxes[b].x1 - boxes[b].x0) * (boxes[b].y1 - boxes[b].y0)); return ks.find(k => p.x >= boxes[k].x0 && p.x <= boxes[k].x1 && p.y >= boxes[k].y0 && p.y <= boxes[k].y1) || null; }
 cv.addEventListener('pointerdown', e => {
   if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
@@ -4525,7 +5040,7 @@ const TTXB = {}; // detail-text panels, shown inside each decoration's 조정
   const TTX = [['header','상단 라인',[['headL','왼쪽 문구','비우면 아티스트',40],['headR','오른쪽 문구','비우면 앨범 · 연도',40]], true],
     ['tags','태그',[['tagText','문구 ( · 로 구분)','',60]], true], ['side','세로 텍스트',[['sideText','문구','비우면 제목 — 아티스트 — 연도',80]], true], ['target','조준점',[['lockText','첫 줄','비우면 LOCK 01',20],['lockSub','둘째 줄','비우면 좌표',30]], false],
     ['percent','퍼센트',[['pctLabel','라벨','',24]], false], ['progress','재생 바 시간',[], false],
-    ['barcode','바코드 번호',[['catalog','번호','비우면 MMC-0001',24]], false], ['bignum','트랙 넘버',[['bignumText','숫자 · 문구','',6]], false]];
+    ['barcode','바코드 번호',[['catalog','번호','비우면 MMC-0001',24]], false], ['bignum','트랙 넘버',[['bignumText','숫자 · 문구','',6]], false], ['stamp','원형 스탬프',[['stampText','문구','비우면 OFFICIAL AUDIO ✦ NEW MUSIC ✦',40]], false], ['explicit','Explicit 배지',[['explicitText','문구','비우면 EXPLICIT',20]], false]];
   const rngT = (k, lbl, key, min, max, st, fmt) => `<div class="range"><span class="lbl">${lbl}</span><input type="range" min="${min}" max="${max}" step="${st}" data-tbind="tx.${k}.${key}"><output data-tout="tx.${k}.${key}" data-fmt="${fmt}"></output></div>`;
   const body = ([k, , fields, sized]) => {
     let h = fields.map(([path, lab, ph, max]) => `<div class="field full" style="margin-bottom:8px"><label>${lab}</label><input type="text" data-tbind="${path}" maxlength="${max}" placeholder="${ph}"></div>`).join('');
@@ -4766,7 +5281,17 @@ const PRESETS = {
   side:   {name:'커버 옆 제목', on:['cover','title','progress','list','tl','count','glow','eq'], fx:['particles','bokeh','bgZoom','vignette','grain'], bg:'color', dim:62, list:'all', shape:'square'},
   center: {name:'가운데', on:['cover','title','progress','next','list','tl','count','ring','glow','sparkle'], fx:['particles','lightleak','vignette','grain'], bg:'color', dim:62, list:'window', shape:'circle'},
   wide:   {name:'와이드', on:['title','progress','ticker','tl','count','eq'], fx:['particles','bokeh','lightleak','bgZoom','vignette','grain'], bg:'image', dim:45, list:'all', shape:'square'},
-  minimal:{name:'미니멀', on:['cover','title','progress','ticker','tl','clock'], fx:['particles','vignette','grain'], bg:'color', dim:70, list:'all', shape:'square'}
+  minimal:{name:'미니멀', on:['cover','title','progress','ticker','tl','clock'], fx:['particles','vignette','grain'], bg:'color', dim:70, list:'all', shape:'square'},
+  // concepts: one picture over the whole screen + a frame, no album cover
+  cinema:   {name:'시네마', concept:true, on:['title','progress','next'], fx:['vignette'], dim:22, list:'all', shape:'square'},
+  film:     {name:'필름 롤', concept:true, on:['title','progress','next'], fx:['particles'], dim:20, list:'all', shape:'square'},
+  vhs:      {name:'홈비디오', concept:true, on:['title','progress','next'], fx:[], dim:20, list:'all', shape:'square'},
+  glass:    {name:'글래스', concept:true, on:['title','progress','next'], fx:[], dim:14, list:'all', shape:'square'},
+  chrome:   {name:'크롬', concept:true, on:['title','progress','next','sparkle'], fx:['particles'], dim:22, list:'all', shape:'square'},
+  live:     {name:'라이브', concept:true, on:['next','spectrum'], fx:[], dim:16, list:'all', shape:'square'},
+  archive:  {name:'아카이브', concept:true, on:['progress','next'], fx:[], dim:18, list:'all', shape:'square'},
+  dream:    {name:'드림', concept:true, on:['title','progress','next','sparkle'], fx:['particles'], dim:20, list:'all', shape:'square'},
+  signal:   {name:'시그널', concept:true, on:['title','progress','next'], fx:['particles'], dim:24, list:'all', shape:'square'}
 };
 const MOVE_FX = ['lightleak', 'vignette'];
 let bgImg = null, bgImgC = null;
@@ -4775,13 +5300,22 @@ function applyPreset(t, k){
   OBJ.forEach(([o]) => { t.on[o] = P.on.includes(o); t.o[o] = {dx:0, dy:0, s:100, r:0}; });
   MOVE_FX.forEach(f => { t.o[f] = {dx:0, dy:0, s:100, r:0}; });
   FXL.forEach(([f]) => { t.fx[f] = P.fx.includes(f); });
-  t.bgMode = P.bg === 'image' && !bgImg ? 'color' : P.bg; t.bgDim = P.dim; t.st.list.mode = P.list; t.st.cover.shape = P.shape; t.pin = {};
+  t.bgDim = P.dim; t.st.list.mode = P.list; t.st.cover.shape = P.shape; t.pin = {};
+  const keep = t.frame ? {text1: t.frame.text1 || '', text2: t.frame.text2 || ''} : {};
+  if (P.concept){
+    t.bgMode = bgImg ? 'image' : (M.coverArt && M.coverArt()) ? 'art' : 'cover'; t.bgBlur = 0;
+    if (M.FRAME) t.frame = Object.assign(M.FRAME.defaults(P.frame || k), keep);
+  } else {
+    t.bgMode = P.bg === 'image' && !bgImg ? 'color' : P.bg;
+    if (M.FRAME && t.frame && PRESETS[t._last] && PRESETS[t._last].concept) t.frame = Object.assign(M.FRAME.defaults('none'), keep);
+  }
+  t._last = t.preset;
 }
 
 /* ---------- state ---------- */
 const ps = {
   mode:'files', gap:0, split:'artist-title', singleText:'', name:'',
-  preset:'side', bgMode:'coverBlur', bgDim:62, bgBlur:0, bgX:50, bgY:50,
+  preset:'side', bgMode:'coverBlur', bgDim:62, bgBlur:0, bgX:50, bgY:50, frame:(window.MMC && MMC.FRAME ? MMC.FRAME.base() : {style:'none'}),
   coverSrc:'cover', trackArt:true,
   colors:{bg:CS.cover.bg, text:'#f7f5f2', line:'#ffffff', accent:CS.cover.accent},
   font:'Paperlogy', weight:'700', tshadow:{on:true, color:'#000000', amt:40, blur:18, dist:3},
@@ -4791,6 +5325,10 @@ const ps = {
 };
 applyPreset(ps, 'side');
 const PDEF = clone(ps);
+if (M.FRAME){
+  view.querySelector('[data-ppreset="side"]').parentElement.insertAdjacentHTML('afterend', M.FRAME.conceptTiles('data-ppreset') + M.FRAME.ui('data-pbind', 'data-pout'));
+  view.addEventListener('click', e => { const b = e.target.closest('[data-frame-style]'); if (!b) return; if (M.EDITORS.playlist) M.EDITORS.playlist.checkpoint(); const keep = {text1: ps.frame.text1 || '', text2: ps.frame.text2 || ''}; ps.frame = Object.assign(M.FRAME.defaults(b.dataset.frameStyle), keep); syncUI(); });
+}
 const getP = p => p.split('.').reduce((o, k) => o == null ? o : o[k], ps);
 const setP = (p, v) => { const ks = p.split('.'); const l = ks.pop(); ks.reduce((o, k) => o[k], ps)[l] = v; };
 const pDef = p => { const v = p.split('.').reduce((o, k) => o == null ? o : o[k], PDEF); return (v !== null && typeof v === 'object') ? undefined : v; };
@@ -4845,7 +5383,8 @@ const defArt = document.createElement('canvas'); defArt.width = defArt.height = 
 let defBlur = makeBlur(defArt), upImg = null;
 function refreshDefault(){
   const x = defArt.getContext('2d'); x.clearRect(0, 0, 640, 640);
-  if (ps.coverSrc === 'upload' && upImg){ const sw = upImg.naturalWidth, sh = upImg.naturalHeight, sc = Math.max(640 / sw, 640 / sh); x.drawImage(upImg, (640 - sw * sc) / 2, (640 - sh * sc) / 2, sw * sc, sh * sc); }
+  const art = ps.coverSrc === 'art' && M.coverArt ? M.coverArt() : null, pic = ps.coverSrc === 'upload' && upImg ? upImg : art;
+  if (pic){ const sw = pic.naturalWidth, sh = pic.naturalHeight, sc = Math.max(640 / sw, 640 / sh); x.drawImage(pic, (640 - sw * sc) / 2, (640 - sh * sc) / 2, sw * sc, sh * sc); }
   else { try { M.render(x, 640, false); } catch(e){ console.error(e); } }
   defBlur = makeBlur(defArt); softCache = new WeakMap();
 }
@@ -5448,6 +5987,7 @@ function bgSrc(v){
   switch (ps.bgMode){
     case 'coverBlur': return v.blur;
     case 'cover': return soft(v.art);
+    case 'art': { const a = M.coverArt && M.coverArt(); return soft(a || v.art); }
     case 'image': return bgImgC ? soft(bgImgC) : null;
     case 'video': return bgReady ? bgv : v.blur;
     default: return null;
@@ -5523,6 +6063,7 @@ function frame(){
     }
   }
   ctx.restore();
+  if (M.FRAME) M.FRAME.apply(ctx, cv, W, H, ps.frame, {title: it ? it.title : (ps.name || ''), artist: it ? it.artist : '', year: String(new Date().getFullYear()), time: g, clock, accent: C.accent, level: bassS, progress: TL.total ? g / TL.total : 0});
 
   // UI
   if (VT) return;
@@ -5539,7 +6080,7 @@ function frame(){
 }
 
 /* ---------- moving objects on the canvas ---------- */
-function cpt(e){ const r = cv.getBoundingClientRect(); return {x: (e.clientX - r.left) / r.width * cv.width, y: (e.clientY - r.top) / r.height * cv.height}; }
+function cpt(e){ const r = cv.getBoundingClientRect(), p = {x: (e.clientX - r.left) / r.width * cv.width, y: (e.clientY - r.top) / r.height * cv.height}; return M.FRAME ? M.FRAME.unmap(ps.frame, cv.width, cv.height, p) : p; }
 function hitObj(pt){
   const keys = Object.keys(OB).filter(k => !ps.pin[k]).map(k => ({k, a: aabb(k)})).sort((p, q) => (p.a.x1 - p.a.x0) * (p.a.y1 - p.a.y0) - (q.a.x1 - q.a.x0) * (q.a.y1 - q.a.y0));
   for (const {k} of keys){
@@ -5679,7 +6220,7 @@ view.addEventListener('click', e => {
   const b = e.target.closest('[data-ppreset]'); if (!b) return;
   if (M.EDITORS.playlist) M.EDITORS.playlist.checkpoint();
   applyPreset(ps, b.dataset.ppreset); sel = null; syncUI();
-  toast(`'${PRESETS[ps.preset].name}' 템플릿을 적용했어요` + (b.dataset.ppreset === 'wide' && !bgImg ? ' · 배경에 이미지를 올리면 화면에 꽉 차게 나와요' : ''));
+  toast(`'${PRESETS[ps.preset].name}' ${PRESETS[ps.preset].concept ? '컨셉' : '템플릿'}을 적용했어요` + ((b.dataset.ppreset === 'wide' || PRESETS[ps.preset].concept) && !bgImg ? ' · 배경에 이미지를 올리면 그 그림이 화면에 꽉 차게 나와요' : ''));
 });
 
 /* ---------- track list UI ---------- */
@@ -5811,6 +6352,7 @@ function syncOuts(){
   if (M.refreshResets) M.refreshResets(view, pDef, getP);
 }
 function syncUI(){
+  if (M.FRAME) M.FRAME.sync(view, ps.frame);
   $$('[data-pbind]', view).forEach(el => { const v = getP(el.dataset.pbind); if (el.type === 'checkbox') el.checked = !!v; else if (document.activeElement !== el || el.type === 'range' || el.type === 'color') el.value = v ?? ''; });
   $$('[data-pout]', view).forEach(o => o.textContent = (PF[o.dataset.fmt] || (v => v))(getP(o.dataset.pout)));
   $$('[data-pset]', view).forEach(b => b.classList.toggle('on', String(getP(b.dataset.pset)) === b.dataset.val));
