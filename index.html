@@ -4507,7 +4507,7 @@ const tb = {
   cshadow:{on:true, color:'#000000', amt:42, blur:70, dist:26}, coverMat:false, pfx:{color:'#ffffff', a:7, border:22, borderColor:'#ffffff', radius:39, blur:55, shadow:22, shadowColor:'#46234a'},
   tx:{header:{size:100, a:100, c:'auto', upper:true}, tags:{size:100, a:100, c:'auto', upper:true}, side:{size:100, a:100, c:'auto', upper:true}, percent:{a:100, c:'auto', upper:true}, progress:{a:100, c:'auto'}, barcode:{a:100, c:'auto', upper:true}, bignum:{a:10, c:'auto'}, target:{a:100, c:'auto'}, stamp:{a:100, c:'auto', upper:true}, explicit:{a:100, c:'auto', upper:true}},
   tcol:{title:{c:'auto', color:'#ffffff'}, sub:{c:'auto', color:'#ffffff'}},
-  stampText:'', explicitText:'',
+  stampText:'', explicitText:'', shade:{fade:{c:'auto', color:'#000000', a:100, reach:100}, vig:{c:'black', color:'#000000', a:100}},
   catalog:'', sideText:'', lockText:'', lockSub:'', dust:{amt:100, stars:100, size:100, a:100, c:'auto', color:'#ffffff'},
   tagText:'OFFICIAL AUDIO · HQ', headL:'', headR:'', pctLabel:'SYNC RATE', pct:100, prog:40, bignumText:'01',
   on:{title:true, sub:true, badge:true, cover:true},
@@ -4740,14 +4740,15 @@ function draw(preview = true){
   if (on.gridBg){ ctx.strokeStyle = col(C.line, .05); ctx.lineWidth = 1; ctx.beginPath(); for (let gx = 0; gx <= W; gx += 64){ ctx.moveTo(gx + .5, 0); ctx.lineTo(gx + .5, H); } for (let gy = 0; gy <= H; gy += 64){ ctx.moveTo(0, gy + .5); ctx.lineTo(W, gy + .5); } ctx.stroke(); }
   if (on.frame){ const m = 26; ctx.strokeStyle = col(C.line, .28); ctx.lineWidth = 1.2; ctx.strokeRect(m, m, W - 2 * m, H - 2 * m); }
   if (on.fade){
-    const tx = O.title.x / 100, fd = tb.fadeDir || 'auto';
+    const tx = O.title.x / 100, fd = tb.fadeDir || 'auto', SF = (tb.shade && tb.shade.fade) || {}, fa = (SF.a ?? 100) / 100, fr = (SF.reach ?? 100) / 100;
+    const fc = def => SF.c === 'black' ? '#000000' : SF.c === 'bg' ? C.bg : SF.c === 'accent' ? C.accent : SF.c === 'custom' ? (SF.color || '#000000') : def;
     if (fd === 'bottom'){ // photo layouts: a soft dark floor under the words, the rest of the picture stays clear
-      const g = ctx.createLinearGradient(0, H, 0, H * .38); g.addColorStop(0, 'rgba(0,0,0,.72)'); g.addColorStop(.45, 'rgba(0,0,0,.32)'); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+      const c0 = fc('#000000'), g = ctx.createLinearGradient(0, H, 0, H - H * .62 * fr); g.addColorStop(0, col(c0, .72 * fa)); g.addColorStop(.45, col(c0, .32 * fa)); g.addColorStop(1, col(c0, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
     } else if (fd === 'side'){
-      const g = tx < .45 ? ctx.createLinearGradient(0, 0, W * .62, 0) : ctx.createLinearGradient(W, 0, W * .38, 0); g.addColorStop(0, 'rgba(0,0,0,.66)'); g.addColorStop(.5, 'rgba(0,0,0,.26)'); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+      const c0 = fc('#000000'), g = tx < .45 ? ctx.createLinearGradient(0, 0, W * .62 * fr, 0) : ctx.createLinearGradient(W, 0, W - W * .62 * fr, 0); g.addColorStop(0, col(c0, .66 * fa)); g.addColorStop(.5, col(c0, .26 * fa)); g.addColorStop(1, col(c0, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
     } else {
-      const g = tb.align === 'center' ? ctx.createLinearGradient(0, H, 0, H * .25) : tx < .45 ? ctx.createLinearGradient(0, 0, W * .75, 0) : ctx.createLinearGradient(W, 0, W * .25, 0);
-      g.addColorStop(0, col(C.bg, .7)); g.addColorStop(.55, col(C.bg, .3)); g.addColorStop(1, col(C.bg, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+      const c0 = fc(C.bg), g = tb.align === 'center' ? ctx.createLinearGradient(0, H, 0, H - H * .75 * fr) : tx < .45 ? ctx.createLinearGradient(0, 0, W * .75 * fr, 0) : ctx.createLinearGradient(W, 0, W - W * .75 * fr, 0);
+      g.addColorStop(0, col(c0, .7 * fa)); g.addColorStop(.55, col(c0, .3 * fa)); g.addColorStop(1, col(c0, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
     }
   }
   if (on.dust){
@@ -4888,7 +4889,7 @@ function draw(preview = true){
     { const bx0 = anchorX(x, w); rotAt(bx0 + w / 2, y0 + sz * .58, p.r || 0, () => paintText(t, x, y, fs(500, sz), col(pickTC2(tb.tcol && tb.tcol.sub, tb.colors.text), .82), tb.stroke * .6 * u * p.s / 100, sz * .01)); }
     const x0 = anchorX(x, w); boxes.sub = {x0: x0 - 6, y0, x1: x0 + w + 6, y1: y0 + sz * 1.15};
   }
-  if (on.vignette){ const g = ctx.createRadialGradient(W / 2, H / 2, H * .45, W / 2, H / 2, W * .72); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.34)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+  if (on.vignette){ const SV = (tb.shade && tb.shade.vig) || {}, vc = SV.c === 'bg' ? C.bg : SV.c === 'accent' ? C.accent : SV.c === 'custom' ? (SV.color || '#000000') : '#000000', g = ctx.createRadialGradient(W / 2, H / 2, H * .45, W / 2, H / 2, W * .72); g.addColorStop(0, col(vc, 0)); g.addColorStop(1, col(vc, .34 * (SV.a ?? 100) / 100)); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
   if (on.grain){
     const nc = noise(); const p = ctx.createPattern(nc, 'repeat');
     if (p){ ctx.globalCompositeOperation = 'overlay'; ctx.globalAlpha = .055; ctx.fillStyle = p; ctx.fillRect(0, 0, W, H); ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1; }
@@ -5074,6 +5075,9 @@ $('[data-fontin="t"]').addEventListener('change', async e => { const f = e.targe
   const BADGE = `<div class="dsub-h"><span>문구</span></div><input class="inp" type="text" data-tbind="badge" maxlength="24" placeholder="비워 두면 안 보여요" aria-label="배지 문구"><div class="sep"></div>`;
   $('#tObjList').innerHTML = `<div class="dlist">${OBJ.map(([k, n]) => `<div class="ditem" data-tkey="${k}"><div class="drow"><span class="dname"><b>${n}</b></span>${pin(k, n)}${adj(k)}
     <label class="sw"><input type="checkbox" data-tbind="on.${k}" aria-label="${n}"><span></span></label></div><div class="dsub np">${k === 'badge' ? BADGE : ''}${k === 'panel' ? PANEL : ''}${TTXB[k] ? `<div class="dsub-h"><span>글씨</span></div>${TTXB[k]}<div class="sep"></div>` : ''}${posSub(k)}</div></div>`).join('')}</div>`;
+  { const R = tRg, opt = (P, auto) => `<div class="range"><span class="lbl">색</span><select class="sm" data-tbind="${P}.c" style="grid-column:2 / -1">${auto ? '<option value="auto">자동</option>' : ''}<option value="black">검정</option><option value="bg">노래 색 (배경색)</option><option value="accent">포인트색</option><option value="custom">직접 고르기</option></select></div><div class="range"><span class="lbl">직접 고른 색</span><div class="color"><input type="color" data-tbind="${P}.color" aria-label="음영 색"><span data-tout="${P}.color" data-fmt="hex"></span></div></div>`;
+    TTXB.fade = `<div class="dsub-h"><span>음영</span></div>` + opt('shade.fade', true) + R('shade.fade.a', '진하기', 0, 200, 5, 'pct') + R('shade.fade.reach', '길이', 40, 160, 5, 'pct');
+    TTXB.vignette = `<div class="dsub-h"><span>비네트</span></div>` + opt('shade.vig', false) + R('shade.vig.a', '진하기', 0, 250, 5, 'pct'); }
   { const P = 'dust', R = tRg; TTXB.dust = `<div class="dsub-h"><span>별가루</span></div>` + R(P + '.amt', '양', 0, 300, 5, 'pct') + R(P + '.stars', '반짝이 별', 0, 400, 10, 'pct') + R(P + '.size', '크기', 40, 250, 5, 'pct') + R(P + '.a', '진하기', 5, 100, 1, 'pct') + `<div class="range"><span class="lbl">색</span><select class="sm" data-tbind="${P}.c" style="grid-column:2 / -1"><option value="auto">자동 (라인색 + 포인트색)</option><option value="line">라인색</option><option value="accent">포인트색</option><option value="text">글자색</option><option value="custom">직접 고르기</option></select></div>` + `<div class="range"><span class="lbl">직접 고른 색</span><div class="color"><input type="color" data-tbind="${P}.color" aria-label="별가루 색"><span data-tout="${P}.color" data-fmt="hex"></span></div></div>`; }
   $('#tFixList').innerHTML = `<div class="dlist">${FIX.map(([k, n]) => `<div class="ditem" data-tkey="${k}"><div class="drow"><span class="dname"><b>${n}</b></span>${TTXB[k] ? adj(k) : ''}
     <label class="sw"><input type="checkbox" data-tbind="on.${k}" aria-label="${n}"><span></span></label></div>${TTXB[k] ? `<div class="dsub np">${TTXB[k]}</div>` : ''}</div>`).join('')}</div>`;
