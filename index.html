@@ -3629,6 +3629,12 @@ function layout(W, H){
     L.globe = {x: W - g - 130 * u, y: H - g - (port ? 260 : 190) * u, r: 40 * u};
     L.bl = true; L.blY = L.progress.y - 44 * u; L.tlAboveTitle = true;
   }
+  // a two-line title grows upward too: lift whatever sits right above it (the dotted EQ) so they don't touch
+  if (L.title && vs.showTitle){
+    const TL = titleLines(VM().title || 'Untitled', L.title.w || (L.port ? W * .84 : W * .8), L.title.size * vs.titleSize / 100, vs.titleWeight || 700);
+    L.titleLift = TL.lines.length > 1 ? TL.size * 1.08 / 2 : 0;
+    if (L.titleLift && L.eq && L.eq.y < L.title.y) L.eq.y -= L.titleLift + 8 * u;
+  }
   // per-object offsets (dragged on the canvas)
   const O = vs.off, sh = (o, k) => { if (o && O[k]){ o.x += O[k].dx * W; o.y += O[k].dy * H; } };
   sh(L.cover, 'cover'); sh(L.title, 'title'); sh(L.lyrics, 'lyrics'); sh(L.progress, 'progress');
@@ -3943,8 +3949,8 @@ function frame(){
     rb('title');
     if (L.tlAboveTitle && FXo.hud && LB.tl && X('tl').on){
       const z = tz('tl');
-      ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(T.x + 4 * u, T.y - T.size * ts - 18 * u, 3.5 * u * z * (.75 + .25 * Math.sin(t * 4)), 0, Math.PI * 2); ctx.fill();
-      text(tu('tl', LB.tl), T.x + 16 * u, T.y - T.size * ts - 14 * u, fontStr(600, 12 * u * z), tc('tl', .94), 'left', 2 * u * z);
+      ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(T.x + 4 * u, T.y - (L.titleLift || 0) - T.size * ts - 18 * u, 3.5 * u * z * (.75 + .25 * Math.sin(t * 4)), 0, Math.PI * 2); ctx.fill();
+      text(tu('tl', LB.tl), T.x + 16 * u, T.y - (L.titleLift || 0) - T.size * ts - 14 * u, fontStr(600, 12 * u * z), tc('tl', .94), 'left', 2 * u * z);
     }
     const maxW = T.w || (L.port ? W * .84 : W * .8);
     const TL = titleLines(m.title || 'Untitled', maxW, T.size * ts, vs.titleWeight || 700), lh = TL.size * 1.08, two = TL.lines.length > 1, shift = two ? lh / 2 : 0;
