@@ -3643,9 +3643,10 @@ function layout(W, H){
   const B = {}, ts = vs.titleSize / 100;
   if (T !== 'scene'){ const c = L.cover; const r = (T === 'hud' ? L.scaleR + 12 * u : c.s / 2); B.cover = {x0: c.x - r, y0: c.y - r, x1: c.x + r, y1: c.y + r}; }
   if (vs.showTitle){
-    const Tt = L.title; ctx.font = fontStr(700, Tt.size * ts);
-    const w = Math.min(ctx.measureText(VM().title || 'Untitled').width, Tt.w || W * .8) + 10 * u, x0 = Tt.align === 'center' ? Tt.x - w / 2 : Tt.x;
-    B.title = {x0, y0: Tt.y - Tt.size * ts * .95, x1: x0 + w, y1: Tt.y + Tt.size * ts * .95};
+    const Tt = L.title, mw = Tt.w || (L.port ? W * .84 : W * .8), TL = titleLines(VM().title || 'Untitled', mw, Tt.size * ts, vs.titleWeight || 700), sh2 = TL.lines.length > 1 ? TL.size * 1.08 / 2 : 0;
+    ctx.font = fontStr(vs.titleWeight || 700, TL.size);
+    const w = Math.min(Math.max(...TL.lines.map(s => ctx.measureText(s).width)), mw) + 10 * u, x0 = Tt.align === 'center' ? Tt.x - w / 2 : Tt.align === 'right' ? Tt.x - w : Tt.x;
+    B.title = {x0, y0: Tt.y - sh2 - Tt.size * ts * .95, x1: x0 + w, y1: Tt.y + sh2 + Tt.size * ts * .95};
   }
   if (FXo.lyrics){ const Ly = L.lyrics, sz = Ly.size * vs.lyricSize / 100, x0 = Ly.align === 'center' ? Ly.x - Ly.w / 2 : Ly.x; B.lyrics = {x0, y0: Ly.y - 4 * u, x1: x0 + Ly.w, y1: Ly.y + sz * 3.2 + (vs.lyricPair ? sz * (vs.subSize ?? 62) / 100 * 1.4 + sz * .56 * Math.max(.7, (vs.subSize ?? 62) / 100) * 2.6 : 0)}; }
   if (FXo.progress){ const P = L.progress; B.progress = {x0: P.x - 10 * u, y0: P.y - 20 * u, x1: P.x + P.w + 10 * u, y1: P.y + 40 * u}; }
@@ -3690,6 +3691,33 @@ function text(t, x, y, font, color, align, sp){
   else ctx.fillText(t, x, y);
 }
 function fit(t, maxW){ if (ctx.measureText(t).width <= maxW) return t; let s = t; while (s.length > 1 && ctx.measureText(s + '…').width > maxW) s = s.slice(0, -1); return s + '…'; }
+// long song titles: two lines (shrinking a little if needed) instead of being cut off with "…"
+function titleLines(t, maxW, size, weight){
+  ctx.font = fontStr(weight, size); if (ctx.measureText(t).width <= maxW) return {lines: [t], size};
+  for (const k of [.86, .78, .72]){
+    const sz = size * k; ctx.font = fontStr(weight, sz);
+    const words = t.split(/(\s+)/), lines = ['']; let ok = true;
+    for (const w of words){
+      const cur = lines[lines.length - 1], next = cur + w;
+      if (ctx.measureText(next).width <= maxW){ lines[lines.length - 1] = next; continue; }
+      if (/^\s+$/.test(w)){ lines.push(''); continue; }
+      if (cur.trim() && ctx.measureText(w).width <= maxW){ lines.push(w); continue; }
+      // a single word that doesn't fit: break it by letters (Korean titles often have few spaces)
+      let rest = w;
+      while (rest){
+        const c = lines[lines.length - 1]; let n = 0;
+        while (n < rest.length && ctx.measureText(c + rest.slice(0, n + 1)).width <= maxW) n++;
+        if (n === 0){ if (!c) n = 1; else { lines.push(''); continue; } }
+        lines[lines.length - 1] = c + rest.slice(0, n); rest = rest.slice(n);
+        if (rest) lines.push('');
+      }
+    }
+    const L2 = lines.map(s => s.trim()).filter(Boolean);
+    if (L2.length <= 2) return {lines: L2, size: sz};
+    if (k === .72){ ctx.font = fontStr(weight, sz); return {lines: [L2[0], fit(L2.slice(1).join(' '), maxW)], size: sz}; }
+  }
+  return {lines: [fit(t, maxW)], size};
+}
 function wrap2(t, maxW){
   if (ctx.measureText(t).width <= maxW) return [t];
   const words = t.split(' '); let a = '', i = 0;
@@ -3918,17 +3946,18 @@ function frame(){
       ctx.fillStyle = col(C.accent, 1); ctx.beginPath(); ctx.arc(T.x + 4 * u, T.y - T.size * ts - 18 * u, 3.5 * u * z * (.75 + .25 * Math.sin(t * 4)), 0, Math.PI * 2); ctx.fill();
       text(tu('tl', LB.tl), T.x + 16 * u, T.y - T.size * ts - 14 * u, fontStr(600, 12 * u * z), tc('tl', .94), 'left', 2 * u * z);
     }
-    ctx.font = fontStr(vs.titleWeight || 700, T.size * ts);
     const maxW = T.w || (L.port ? W * .84 : W * .8);
+    const TL = titleLines(m.title || 'Untitled', maxW, T.size * ts, vs.titleWeight || 700), lh = TL.size * 1.08, two = TL.lines.length > 1, shift = two ? lh / 2 : 0;
+    ctx.font = fontStr(vs.titleWeight || 700, TL.size);
     const TS = vs.tshadow || {}; ctx.save();
     if (TS.on){ ctx.shadowColor = col(TS.color || '#000000', (TS.amt ?? 45) / 100); ctx.shadowBlur = (TS.blur ?? 24) * u; ctx.shadowOffsetY = (TS.dist ?? 4) * u; }
     const vPick = (o, def) => !o || !o.c || o.c === 'auto' ? def : o.c === 'accent' ? C.accent : o.c === 'line' ? C.line : o.c === 'text' ? C.text : (o.color || def);
-    text(fit(m.title || 'Untitled', maxW), T.x, T.y, ctx.font, col(vPick(vs.tcol && vs.tcol.title, C.text), 1), T.align);
+    TL.lines.forEach((ln, i) => text(ln, T.x, T.y - shift + i * lh, ctx.font, col(vPick(vs.tcol && vs.tcol.title, C.text), 1), T.align));
     if (X('sub').on){
       const sm = X('sub').show || 'auto';
       const parts = sm === 'artist' ? [m.artist] : sm === 'artistAlbum' ? [m.artist, m.album] : sm === 'artistYear' ? [m.artist, m.year] : sm === 'album' ? [m.album] : [m.artist, T.align === 'left' ? m.album : m.year];
       ctx.font = fontStr(400, T.size * ts * .42 * tz('sub'));
-      text(fit(tu('sub', parts.filter(Boolean).join('  ·  ')), maxW), T.x, T.y + T.size * ts * (.36 + .42 * tz('sub')), ctx.font, vs.tcol && vs.tcol.sub && vs.tcol.sub.c && vs.tcol.sub.c !== 'auto' ? col(vPick(vs.tcol.sub, C.text), (X('sub').a ?? 70) / 100) : tc('sub'), T.align);
+      text(fit(tu('sub', parts.filter(Boolean).join('  ·  ')), maxW), T.x, T.y + shift + T.size * ts * (.36 + .42 * tz('sub')), ctx.font, vs.tcol && vs.tcol.sub && vs.tcol.sub.c && vs.tcol.sub.c !== 'auto' ? col(vPick(vs.tcol.sub, C.text), (X('sub').a ?? 70) / 100) : tc('sub'), T.align);
     }
     ctx.restore();
     re();
@@ -5743,9 +5772,27 @@ function oTitle(T, it, ci, n){
   let y = 0, mw = 60 * u;
   if (S.label){ const lb = n ? `TRACK ${pad2(ci + 1)} / ${pad2(n)}` : 'PLAYLIST'; text(lb, 0, 13 * u, fontStr(600, 13 * u), col(C.accent, 1), al, 2.5 * u); mw = Math.max(mw, tw(lb, 2.5 * u)); y += 39 * u; }
   const t = up(it ? (it.title || 'Untitled') : (ps.mode === 'files' ? '곡을 추가해 주세요' : '음원을 넣어 주세요'));
+  // long titles: shrink a little, then go to two lines instead of cutting off with "…"
   let s = T.tsz; ctx.font = fontStr(ps.weight, s);
-  while (ctx.measureText(t).width > T.w && s > T.tsz * .6){ s *= .95; ctx.font = fontStr(ps.weight, s); }
-  y += T.tsz * .82; const ft = fit(t, T.w); text(ft, 0, y, ctx.font, col(c0, a), al); mw = Math.max(mw, ctx.measureText(ft).width);
+  while (ctx.measureText(t).width > T.w && s > T.tsz * .86){ s *= .96; ctx.font = fontStr(ps.weight, s); }
+  let lines = [t];
+  if (ctx.measureText(t).width > T.w){
+    for (const k of [.86, .78, .7]){
+      s = T.tsz * k; ctx.font = fontStr(ps.weight, s); lines = [''];
+      for (const w of t.split(/(\s+)/)){
+        const cur = lines[lines.length - 1];
+        if (ctx.measureText(cur + w).width <= T.w){ lines[lines.length - 1] = cur + w; continue; }
+        if (/^\s+$/.test(w)){ lines.push(''); continue; }
+        if (cur.trim() && ctx.measureText(w).width <= T.w){ lines.push(w); continue; }
+        let rest = w;
+        while (rest){ const c = lines[lines.length - 1]; let m = 0; while (m < rest.length && ctx.measureText(c + rest.slice(0, m + 1)).width <= T.w) m++; if (m === 0){ if (!c) m = 1; else { lines.push(''); continue; } } lines[lines.length - 1] = c + rest.slice(0, m); rest = rest.slice(m); if (rest) lines.push(''); }
+      }
+      lines = lines.map(x => x.trim()).filter(Boolean);
+      if (lines.length <= 2) break;
+    }
+    if (lines.length > 2) lines = [lines[0], fit(lines.slice(1).join(' '), T.w)];
+  }
+  lines.forEach((ln, i) => { y += i ? s * 1.08 : T.tsz * .82; const ft = fit(ln, T.w); text(ft, 0, y, ctx.font, col(c0, a), al); mw = Math.max(mw, ctx.measureText(ft).width); });
   if (S.artist){ y += T.asz * 1.55; if (it && it.artist){ ctx.font = fontStr(400, T.asz); const fa = fit(up(it.artist), T.w); text(fa, 0, y, ctx.font, col(c0, a * .72), al); mw = Math.max(mw, ctx.measureText(fa).width); } }
   const x0 = al === 'left' ? 0 : al === 'center' ? -mw / 2 : -mw;
   return [x0 - 6 * u, -4 * u, x0 + mw + 6 * u, y + 10 * u];
